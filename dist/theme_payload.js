@@ -1369,12 +1369,7 @@
                 <div class="agy-preset-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
                   <div style="height: 68px; width: 100%; background-image: ${thumbBg}; background-size: cover; background-position: ${th.bgPosition || 'center'}; position: relative; display: flex; align-items: flex-end; padding: 8px 14px;">
                     ${th.sticker ? `<div style="position: absolute; ${thumbOrnamentStyle} background-image: url('${th.sticker}'); background-size: contain; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
-                    <div style="display: flex; align-items: center; gap: 6px; z-index: 1;">
-                      <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">${name}</span>
-                      <span style="font-size: 10px; padding: 1.5px 6px; border-radius: 4px; background: ${isLive ? 'rgba(168, 85, 247, 0.35)' : 'rgba(56, 189, 248, 0.25)'}; color: ${isLive ? '#e9d5ff' : '#bae6fd'}; border: 1px solid ${isLive ? 'rgba(168, 85, 247, 0.45)' : 'rgba(56, 189, 248, 0.35)'}; font-weight: 500;">
-                        ${isLive ? '🎬 LIVE' : '🖼️ IMAGE'}
-                      </span>
-                    </div>
+                    <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); z-index: 1;">${name}</span>
                     ${th.isCustom ? `
                       <button class="agy-delete-preset-btn" data-preset="${name}" title="Delete preset" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
                         ✕
