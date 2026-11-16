@@ -1161,6 +1161,29 @@
   applyTheme();
 
   function openCustomThemeModal() {
+    const settingsModal = document.querySelector('.settings-modal-container');
+    if (settingsModal) {
+      injectSettingsModalTab();
+      activateSettingsCustomThemeTab(settingsModal);
+      return;
+    }
+    const spans = Array.from(document.querySelectorAll('.bg-sidebar span'));
+    const settingsSpan = spans.find(s => s.textContent.trim() === 'Settings');
+    if (settingsSpan) {
+      const btn = settingsSpan.closest('button, a, div[role="button"]') || settingsSpan.parentElement;
+      if (btn) {
+        btn.click();
+        setTimeout(() => {
+          const m = document.querySelector('.settings-modal-container');
+          if (m) {
+            injectSettingsModalTab();
+            activateSettingsCustomThemeTab(m);
+          }
+        }, 120);
+        return;
+      }
+    }
+
     let backdrop = document.getElementById('agy-custom-theme-modal-backdrop');
     if (!backdrop) {
       backdrop = document.createElement('div');
@@ -1739,70 +1762,128 @@
     });
   }
 
-  function injectMainSidebarButton() {
-    if (document.getElementById('agy-custom-theme-sidebar-btn')) return;
-
-    const sidebar = document.querySelector('.bg-sidebar');
-    if (!sidebar) return;
-
-    const spans = Array.from(sidebar.querySelectorAll('span'));
-    const customSpan = spans.find(s => s.textContent?.trim() === 'Customizations');
-    if (!customSpan) return;
-
-    const row = customSpan.closest('a, button, div[role="button"], .group\\/headerbtn') || customSpan.parentElement;
-    if (!row || !row.parentNode) return;
-
-    const btn = document.createElement('button');
-    btn.id = 'agy-custom-theme-sidebar-btn';
-    btn.type = 'button';
-    btn.className = 'w-full flex items-center gap-2.5 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer select-none';
-    btn.style.cssText = 'text-align: left;';
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-      <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Custom theme</span>
-    `;
-
-    row.parentNode.insertBefore(btn, row.nextSibling);
-
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.__ANTIGRAVITY_OPEN_THEME_MODAL__();
-    });
+  function removeMainSidebarButton() {
+    const btn = document.getElementById('agy-custom-theme-sidebar-btn');
+    if (btn) btn.remove();
   }
 
-  function injectSettingsModalButton() {
-    const modal = document.querySelector('.settings-modal-container');
-    if (!modal || document.getElementById('agy-custom-theme-settings-btn')) return;
+  function activateSettingsCustomThemeTab(modal) {
+    if (!modal) modal = document.querySelector('.settings-modal-container');
+    if (!modal) return;
 
-    const headers = Array.from(modal.querySelectorAll('h2, h3'));
-    const appearanceHeader = headers.find(h => h.textContent?.trim() === 'Appearance');
-    if (!appearanceHeader) return;
+    const tabBtn = modal.querySelector('#agy-settings-custom-theme-tab');
+    if (!tabBtn) return;
 
-    let targetContainer = appearanceHeader.parentElement;
-    while (targetContainer && !targetContainer.className.includes('justify-between') && targetContainer !== modal) {
-      targetContainer = targetContainer.parentElement;
+    tabBtn.className = 'flex items-center gap-1.5 w-full px-2 py-1 rounded-lg cursor-pointer border-none text-left transition-all outline-none bg-sidebar-secondary';
+    const span = tabBtn.querySelector('span');
+    if (span) {
+      span.className = 'transition-colors select-none truncate flex-1 text-foreground font-medium';
     }
 
-    if (!targetContainer || !targetContainer.parentNode) return;
-
-    Array.from(targetContainer.parentNode.children).forEach(child => {
-      if (child.id === 'agy-custom-theme-settings-btn') child.remove();
+    const navList = tabBtn.closest('.flex.flex-col')?.parentElement || modal;
+    navList.querySelectorAll('button:not(#agy-settings-custom-theme-tab)').forEach(b => {
+      b.className = 'flex items-center gap-1.5 w-full px-2 py-1 rounded-lg cursor-pointer border-none text-left transition-all outline-none hover:bg-sidebar-muted';
+      const sp = b.querySelector('span');
+      if (sp) sp.className = 'transition-colors select-none truncate flex-1 text-secondary-foreground group-hover/nav-item:text-foreground';
     });
 
-    const btn = document.createElement('button');
-    btn.id = 'agy-custom-theme-settings-btn';
-    btn.type = 'button';
-    btn.className = 'select-none rounded px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer text-white';
-    btn.style.cssText = 'background: linear-gradient(135deg, #e08e55 0%, #b45309 100%); border: 1px solid rgba(251, 191, 36, 0.4); box-shadow: 0 2px 10px rgba(224, 142, 85, 0.3); margin-top: 8px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;';
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-      <span>Open Custom Theme Studio</span>
-    `;
+    const splitRoot = modal.querySelector('[data-split-root="true"]');
+    const contentPane = splitRoot ? splitRoot.children[1] : null;
+    if (!contentPane) return;
 
-    targetContainer.parentNode.insertBefore(btn, targetContainer.nextSibling);
+    const nativeContent = contentPane.querySelector(':scope > div:not(#agy-settings-custom-theme-pane)');
+    if (nativeContent) nativeContent.style.display = 'none';
 
-    btn.addEventListener('click', () => {
-      window.__ANTIGRAVITY_OPEN_THEME_MODAL__();
+    let customPane = contentPane.querySelector('#agy-settings-custom-theme-pane');
+    if (!customPane) {
+      customPane = document.createElement('div');
+      customPane.id = 'agy-settings-custom-theme-pane';
+      customPane.style.cssText = 'position: relative; width: 100%; height: 100%; min-height: 0; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;';
+      customPane.innerHTML = `
+        <div style="padding: 24px 32px 14px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(22, 16, 14, 0.35); flex-shrink: 0;">
+          <div style="font-size: 19px; font-weight: 600; color: #f4f4f5; margin-bottom: 3px;">Custom theme</div>
+          <div style="font-size: 13px; color: #a1a1aa;">Customize wallpaper backgrounds (images or MP4 live videos), chat bubbles, and glassmorphic styling.</div>
+        </div>
+        <div id="agy-settings-theme-body" style="flex: 1; overflow-y: auto; height: 100%;"></div>
+      `;
+      contentPane.appendChild(customPane);
+    }
+
+    customPane.style.display = 'flex';
+    const body = customPane.querySelector('#agy-settings-theme-body');
+    if (body) {
+      renderThemePanels(body);
+    }
+  }
+
+  function deactivateSettingsCustomThemeTab(modal) {
+    if (!modal) modal = document.querySelector('.settings-modal-container');
+    if (!modal) return;
+
+    const tabBtn = modal.querySelector('#agy-settings-custom-theme-tab');
+    if (tabBtn) {
+      tabBtn.className = 'flex items-center gap-1.5 w-full px-2 py-1 rounded-lg cursor-pointer border-none text-left transition-all outline-none hover:bg-sidebar-muted';
+      const span = tabBtn.querySelector('span');
+      if (span) {
+        span.className = 'transition-colors select-none truncate flex-1 text-secondary-foreground group-hover/nav-item:text-foreground';
+      }
+    }
+
+    const splitRoot = modal.querySelector('[data-split-root="true"]');
+    const contentPane = splitRoot ? splitRoot.children[1] : null;
+    if (!contentPane) return;
+
+    const customPane = contentPane.querySelector('#agy-settings-custom-theme-pane');
+    if (customPane) customPane.style.display = 'none';
+
+    const nativeContent = contentPane.querySelector(':scope > div:not(#agy-settings-custom-theme-pane)');
+    if (nativeContent) nativeContent.style.display = '';
+  }
+
+  function injectSettingsModalTab() {
+    const modal = document.querySelector('.settings-modal-container');
+    if (!modal) return;
+
+    const oldBtn = modal.querySelector('#agy-custom-theme-settings-btn');
+    if (oldBtn) oldBtn.remove();
+
+    const appearanceNav = modal.querySelector('[data-testid="settings-nav-item-Appearance"]');
+    if (!appearanceNav) return;
+
+    const appearanceRow = appearanceNav.closest('[class*="group/nav-item"]') || appearanceNav.parentElement;
+    const navList = appearanceRow ? appearanceRow.parentElement : null;
+    if (!navList) return;
+
+    let tabRow = modal.querySelector('#agy-settings-custom-theme-tab-container');
+    if (!tabRow) {
+      tabRow = document.createElement('div');
+      tabRow.id = 'agy-settings-custom-theme-tab-container';
+      tabRow.className = 'relative group/nav-item mx-2';
+      tabRow.innerHTML = `
+        <button type="button" data-testid="settings-nav-item-CustomTheme" id="agy-settings-custom-theme-tab" class="flex items-center gap-1.5 w-full px-2 py-1 rounded-lg cursor-pointer border-none text-left transition-all outline-none hover:bg-sidebar-muted">
+          <span class="transition-colors select-none truncate flex-1 text-secondary-foreground group-hover/nav-item:text-foreground">Custom theme</span>
+        </button>
+      `;
+
+      appearanceRow.parentNode.insertBefore(tabRow, appearanceRow.nextSibling);
+    }
+
+    const tabBtn = tabRow.querySelector('#agy-settings-custom-theme-tab');
+    if (tabBtn && !tabBtn.dataset.agyTabBound) {
+      tabBtn.dataset.agyTabBound = '1';
+      tabBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        activateSettingsCustomThemeTab(modal);
+      });
+    }
+
+    navList.querySelectorAll('button:not(#agy-settings-custom-theme-tab)').forEach(btn => {
+      if (!btn.dataset.agyNavBound) {
+        btn.dataset.agyNavBound = '1';
+        btn.addEventListener('click', () => {
+          deactivateSettingsCustomThemeTab(modal);
+        });
+      }
     });
   }
 
@@ -1900,8 +1981,8 @@
   }
 
   function tick() {
-    injectMainSidebarButton();
-    injectSettingsModalButton();
+    removeMainSidebarButton();
+    injectSettingsModalTab();
     hookSidebarScroll();
     hookShellMetrics();
   }
