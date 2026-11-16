@@ -1098,7 +1098,8 @@
 
   function syncTitleBarOverlay(stOverride) {
     const st = stOverride || getState();
-    const activeTh = THEMES[st.themeName] || THEMES[DEFAULT_THEME_KEY] || {};
+    const allTh = getAllThemes();
+    const activeTh = allTh[st.themeName] || allTh[DEFAULT_THEME_KEY] || {};
     if (window.electronNative && typeof window.electronNative.setTitleBarOverlay === 'function') {
       try {
         window.electronNative.setTitleBarOverlay({
@@ -1217,6 +1218,11 @@
     const effUserAv = st.userAvatar === 'none' ? '' : (st.userAvatar || mainTheme.userAvatar || '');
     const effAgentAv = st.agentAvatar === 'none' ? '' : (st.agentAvatar || mainTheme.agentAvatar || '');
 
+    const topBadge = document.getElementById('agy-custom-theme-badge');
+    if (topBadge) {
+      topBadge.textContent = `${allThemeKeys.length} Preset${allThemeKeys.length > 1 ? 's' : ''}`;
+    }
+
     container.innerHTML = `
       <div id="agy-theme-scroll-container" style="padding: 24px 32px 48px 32px; max-width: 860px; margin: 0 auto; overflow-y: auto; height: 100%; color: #f4f4f5;">
         <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 14px;">
@@ -1287,8 +1293,8 @@
           <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">User Chat Bubble</div>
           <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Mix and match bubble frame & ornament independently from the active wallpaper.</div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-            ${THEME_KEYS.map(name => {
-              const th = THEMES[name];
+            ${allThemeKeys.map(name => {
+              const th = allThemes[name] || {};
               const isSelected = name === st.bubbleName;
               const stickerTop = th.isOrnament ? Math.round((th.stickerTop || 0) * 0.85) : Math.round((th.stickerTop || 0) * 0.74);
               const stickerW = Math.round((th.stickerW || 0) * 0.78);
@@ -1296,10 +1302,10 @@
               return `
                 <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 24px 18px 14px 18px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; transition: border-color 0.15s ease, background-color 0.15s ease;">
                   <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 6px; margin-bottom: 10px;">
-                    <div style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : '12px'}; background: ${th.frameBg}; box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow};">
-                      <div style="position: relative; width: 100%; height: 100%; background: ${th.bg}; border: ${th.innerBorder || '1px solid ' + th.borderColor}; border-radius: ${th.isScroll ? '4px' : '11px'}; display: flex; align-items: center; padding: 0 16px;">
+                    <div style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : '12px'}; background: ${th.frameBg || 'linear-gradient(135deg, #a78bfa, #38bdf8)'}; box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow || 'rgba(167, 139, 250, 0.24)'};">
+                      <div style="position: relative; width: 100%; height: 100%; background: ${th.bg || 'rgba(17, 24, 39, 0.9)'}; border: ${th.innerBorder || '1px solid ' + (th.borderColor || 'rgba(167, 139, 250, 0.34)')}; border-radius: ${th.isScroll ? '4px' : '11px'}; display: flex; align-items: center; padding: 0 16px;">
                         ${th.sticker ? `<div style="position: absolute; top: ${stickerTop}px; right: 8px; width: ${stickerW}px; height: ${stickerH}px; background-image: url('${th.sticker}'); background-size: contain; background-position: ${th.isOrnament ? 'center' : 'bottom center'}; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
-                        <span style="font-size: 13.5px; font-weight: 500; color: ${th.textColor};">Hello ✨</span>
+                        <span style="font-size: 13.5px; font-weight: 500; color: ${th.textColor || '#fff'};">Hello ✨</span>
                       </div>
                     </div>
                   </div>
