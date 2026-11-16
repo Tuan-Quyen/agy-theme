@@ -394,9 +394,9 @@
   function detectThemeMotif(name = '', concept = '', th = {}) {
     if (th && th.motif) return th.motif;
     const s = `${name} ${concept}`.toLowerCase();
+    if (/obsidian|prism|gem|diamond|crystal|thach|midnight/i.test(s)) return 'obsidian_prism';
     if (/frost|blade|ice|tuyet|kiem|hiyuki|cold|winter|wuthering/i.test(s)) return 'frost_blade';
-    if (/dem|night|moon|star|astral|cosmic|trang|sao|galaxy|space|sky/i.test(s)) return 'night_astral';
-    if (/obsidian|gem|diamond|crystal|da|stone|midnight/i.test(s)) return 'obsidian_prism';
+    if (/\b(dem|night|moon|star|astral|cosmic|trang|sao|galaxy|space|sky)\b/i.test(s) || /phong canh dem/i.test(s)) return 'night_astral';
     if (/sakura|flower|rose|hoa|petal|bloom|anime/i.test(s)) return 'sakura_bloom';
     if (/cyber|neon|tech|matrix|code|digital|glitch|circuit/i.test(s)) return 'cyber_neon';
     if (/royal|gold|crown|king|queen|hoang|gia|vintage|flame|fire|sun|solar|thien/i.test(s)) return 'royal_crest';
@@ -602,6 +602,148 @@
         <circle cx="3.5" cy="15" r="1.2" fill="${s}" opacity="0.85"/>
       </svg>
     `);
+  }
+
+  function getThemeComposerSpec(motif, primary, secondary, glow, secondaryGlow) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+    const g = glow || p;
+    const sg = secondaryGlow || g;
+
+    switch (motif) {
+      case 'frost_blade':
+        return {
+          borderRadius: '6px 26px 6px 26px',
+          innerRadius: '4.5px 24px 4.5px 24px',
+          previewRadius: '4px 16px 4px 16px',
+          previewInnerRadius: '3px 14px 3px 14px',
+          bubbleRadius: '4px 18px 4px 18px',
+          bubblePreviewRadius: '3px 14px 3px 14px',
+          outerBorder: `linear-gradient(135deg, #7dd3fc 0%, ${p}f0 32%, ${s}d9 68%, #c084fc 100%)`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.65), 0 0 20px ${g}, 0 0 35px ${sg}, inset 0 0 10px rgba(125, 211, 252, 0.28)`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.55), 0 0 16px ${g}`,
+          crestPositionCss: 'right: 28px !important; left: auto !important; transform: none !important;',
+          previewCrestPositionCss: 'right: 14px; left: auto; transform: none;',
+          bubbleCrestPositionCss: 'right: 14px !important; left: auto !important; transform: none !important;',
+          bubblePreviewCrestCss: 'right: 10px; left: auto; transform: none;',
+          styleName: 'Frost Blade Crystalline Frame',
+          styleDesc: 'Asymmetric Katana curves, sub-zero icy gradient & frost rapier snowflake crest'
+        };
+
+      case 'night_astral':
+        return {
+          borderRadius: '28px',
+          innerRadius: '26px',
+          previewRadius: '16px',
+          previewInnerRadius: '14.5px',
+          bubbleRadius: '22px',
+          bubblePreviewRadius: '14px',
+          outerBorder: `linear-gradient(90deg, ${p}f0 0%, #818cf8 35%, #fbbf24 75%, ${s}f0 100%)`,
+          boxShadow: `0 10px 38px rgba(0, 0, 0, 0.72), 0 0 24px ${g}, 0 0 36px ${sg}`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.55), 0 0 18px ${g}, 0 0 24px ${sg}`,
+          crestPositionCss: 'right: 32px !important; left: auto !important; transform: none !important;',
+          previewCrestPositionCss: 'right: 16px; left: auto; transform: none;',
+          bubbleCrestPositionCss: 'right: 16px !important; left: auto !important; transform: none !important;',
+          bubblePreviewCrestCss: 'right: 12px; left: auto; transform: none;',
+          styleName: 'Celestial Astral Arc Frame',
+          styleDesc: 'Sweeping orbital capsule curves, midnight aura & radiant crescent moon crest'
+        };
+
+      case 'royal_crest':
+        return {
+          borderRadius: '8px',
+          innerRadius: '6.5px',
+          previewRadius: '5px',
+          previewInnerRadius: '4px',
+          bubbleRadius: '7px',
+          bubblePreviewRadius: '5px',
+          outerBorder: `linear-gradient(135deg, #fef08a 0%, ${p}f0 25%, #ca8a04 50%, #fef08a 75%, ${s}f0 100%)`,
+          boxShadow: `0 8px 35px rgba(0, 0, 0, 0.75), 0 0 26px ${g}, 0 0 14px rgba(254, 240, 138, 0.4)`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.6), 0 0 18px ${g}`,
+          crestPositionCss: 'left: 50% !important; right: auto !important; transform: translateX(-50%) !important;',
+          previewCrestPositionCss: 'left: 50%; right: auto; transform: translateX(-50%);',
+          bubbleCrestPositionCss: 'left: 50% !important; right: auto !important; transform: translateX(-50%) !important;',
+          bubblePreviewCrestCss: 'left: 50%; right: auto; transform: translateX(-50%);',
+          styleName: 'Imperial Baroque Gold Frame',
+          styleDesc: 'Regal rectangular frame, antique gold double border & centered imperial crown'
+        };
+
+      case 'obsidian_prism':
+        return {
+          borderRadius: '4px 22px 4px 22px',
+          innerRadius: '3px 20px 3px 20px',
+          previewRadius: '3px 13px 3px 13px',
+          previewInnerRadius: '2px 11.5px 2px 11.5px',
+          bubbleRadius: '3px 16px 3px 16px',
+          bubblePreviewRadius: '2.5px 12px 2.5px 12px',
+          outerBorder: `linear-gradient(135deg, #c084fc 0%, ${p}f0 35%, #22d3ee 70%, ${s}f0 100%)`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.65), 0 0 22px ${g}, 0 0 16px rgba(34, 211, 238, 0.35)`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.55), 0 0 16px ${g}`,
+          crestPositionCss: 'left: 50% !important; right: auto !important; transform: translateX(-50%) !important;',
+          previewCrestPositionCss: 'left: 50%; right: auto; transform: translateX(-50%);',
+          bubbleCrestPositionCss: 'left: 50% !important; right: auto !important; transform: translateX(-50%) !important;',
+          bubblePreviewCrestCss: 'left: 50%; right: auto; transform: translateX(-50%);',
+          styleName: 'Prism Diamond Cut Frame',
+          styleDesc: 'Faceted geometric chamfers, violet-cyan refraction & diamond prism crest'
+        };
+
+      case 'sakura_bloom':
+        return {
+          borderRadius: '24px 8px 24px 8px',
+          innerRadius: '22px 6.5px 22px 6.5px',
+          previewRadius: '14px 5px 14px 5px',
+          previewInnerRadius: '12.5px 4px 12.5px 4px',
+          bubbleRadius: '18px 6px 18px 6px',
+          bubblePreviewRadius: '13px 5px 13px 5px',
+          outerBorder: `linear-gradient(135deg, #f472b6 0%, ${p}f0 40%, #fda4af 75%, ${s}f0 100%)`,
+          boxShadow: `0 8px 30px rgba(0, 0, 0, 0.55), 0 0 22px rgba(244, 114, 182, 0.45)`,
+          bubbleShadow: `0 6px 22px rgba(0, 0, 0, 0.5), 0 0 16px rgba(244, 114, 182, 0.4)`,
+          crestPositionCss: 'right: 28px !important; left: auto !important; transform: none !important;',
+          previewCrestPositionCss: 'right: 14px; left: auto; transform: none;',
+          bubbleCrestPositionCss: 'right: 14px !important; left: auto !important; transform: none !important;',
+          bubblePreviewCrestCss: 'right: 10px; left: auto; transform: none;',
+          styleName: 'Sakura Petal Arc Frame',
+          styleDesc: 'Delicate organic petal curves, spring blossom glow & cherry blossom crest'
+        };
+
+      case 'cyber_neon':
+        return {
+          borderRadius: '0px 16px 0px 16px',
+          innerRadius: '0px 14px 0px 14px',
+          previewRadius: '0px 10px 0px 10px',
+          previewInnerRadius: '0px 8.5px 0px 8.5px',
+          bubbleRadius: '0px 14px 0px 14px',
+          bubblePreviewRadius: '0px 10px 0px 10px',
+          outerBorder: `linear-gradient(90deg, #10b981 0%, ${p}f0 50%, ${s}f0 100%)`,
+          boxShadow: `0 8px 30px rgba(0, 0, 0, 0.7), 0 0 22px #06b6d4, inset 0 0 8px #10b981`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.6), 0 0 16px #06b6d4`,
+          crestPositionCss: 'right: 28px !important; left: auto !important; transform: none !important;',
+          previewCrestPositionCss: 'right: 14px; left: auto; transform: none;',
+          bubbleCrestPositionCss: 'right: 14px !important; left: auto !important; transform: none !important;',
+          bubblePreviewCrestCss: 'right: 10px; left: auto; transform: none;',
+          styleName: 'Cyber Neon Circuit Frame',
+          styleDesc: 'Tech chamfer cuts, matrix pulse glow & digital hexagon circuit core'
+        };
+
+      default:
+        return {
+          borderRadius: '16px',
+          innerRadius: '14.5px',
+          previewRadius: '10px',
+          previewInnerRadius: '8.5px',
+          bubbleRadius: '14px',
+          bubblePreviewRadius: '10px',
+          outerBorder: `linear-gradient(135deg, ${p}f0 0%, ${s}d9 35%, ${p}c8 65%, ${s}f0 100%)`,
+          boxShadow: `0 8px 30px rgba(0, 0, 0, 0.55), 0 0 18px ${g}`,
+          bubbleShadow: `0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${g}`,
+          crestPositionCss: 'right: 28px !important; left: auto !important; transform: none !important;',
+          previewCrestPositionCss: 'right: 14px; left: auto; transform: none;',
+          bubbleCrestPositionCss: 'right: 14px !important; left: auto !important; transform: none !important;',
+          bubblePreviewCrestCss: 'right: 10px; left: auto; transform: none;',
+          styleName: 'Thematic Custom Frame',
+          styleDesc: 'Synced dynamic border and crest accents tuned to theme'
+        };
+    }
   }
 
   async function migrateExistingCustomPresets() {
@@ -987,6 +1129,7 @@
     const primaryColor = bubbleTheme.primary || '#38bdf8';
     const secondaryColor = bubbleTheme.secondary || primaryColor;
     const activeMotif = detectThemeMotif(st.bubbleName, bubbleTheme.concept, bubbleTheme);
+    const composerSpec = getThemeComposerSpec(activeMotif, primaryColor, secondaryColor, bubbleTheme.glow, bubbleTheme.secondaryGlow);
     const cornerFiligreeUrl = bubbleTheme.cornerSvg || getThematicCornerSvg(primaryColor, secondaryColor, activeMotif);
     const crestOrnamentUrl = bubbleTheme.sticker || getThematicCrestSvg(primaryColor, secondaryColor, activeMotif);
     const isOrnamental = curInputStyle === 'ornamental';
@@ -1002,7 +1145,7 @@
         content: "";
         position: absolute;
         top: -12px;
-        right: 14px;
+        ${composerSpec.bubbleCrestPositionCss}
         width: ${isOrnamental ? '88px' : '78px'};
         height: 20px;
         background-image: url("${crestOrnamentUrl}");
@@ -1030,9 +1173,9 @@
         content: "";
         position: absolute;
         top: -14px;
-        right: 28px;
-        width: 120px;
-        height: 26px;
+        ${composerSpec.crestPositionCss}
+        width: 128px;
+        height: 28px;
         background-image: url("${crestOrnamentUrl}");
         background-size: contain;
         background-position: center;
@@ -1079,7 +1222,7 @@
         content: "";
         position: absolute;
         top: -12px;
-        right: 28px;
+        ${composerSpec.crestPositionCss}
         width: 104px;
         height: 24px;
         background-image: url("${crestOrnamentUrl}");
@@ -1118,7 +1261,7 @@
 
     const inputOuterBorder =
       isOrnamental
-        ? `linear-gradient(135deg, ${primaryColor}f0 0%, ${secondaryColor}d9 35%, ${primaryColor}c8 65%, ${secondaryColor}f0 100%)`
+        ? composerSpec.outerBorder
         : isThematic
         ? bubbleTheme.frameBg
         : isGlass
@@ -1389,14 +1532,14 @@
       /* User Chat Bubble Double-Border Frame & Ornament */
       .agy-user-bubble-frame {
         background: ${isOrnamental
-          ? `linear-gradient(135deg, ${primaryColor}f0 0%, ${secondaryColor}d9 50%, ${primaryColor}f0 100%)`
+          ? composerSpec.outerBorder
           : isThematic
           ? bubbleTheme.frameBg
           : (isGlass ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.12)')
         } !important;
-        border-radius: ${bubbleTheme.isScroll ? '6px' : '14px'} !important;
+        border-radius: ${bubbleTheme.isScroll ? '6px' : composerSpec.bubbleRadius} !important;
         box-shadow: ${isOrnamental
-          ? `0 6px 24px rgba(0, 0, 0, 0.55), 0 0 16px ${bubbleTheme.glow}`
+          ? composerSpec.bubbleShadow
           : isThematic
           ? `0 4px 18px rgba(0, 0, 0, 0.45), 0 0 12px ${bubbleTheme.glow}`
           : `0 2px 10px rgba(0, 0, 0, 0.3)`
@@ -1445,10 +1588,10 @@
       /* Double-Border Input Composer */
       .surface-composer {
         background: ${inputOuterBorder} !important;
-        border-radius: 16px !important;
+        border-radius: ${composerSpec.borderRadius} !important;
         padding: ${isOrnamental ? '1.8px' : isThematic ? '1.5px' : '1px'} !important;
         box-shadow: ${isOrnamental
-          ? `0 8px 30px rgba(0, 0, 0, 0.55), 0 0 18px ${bubbleTheme.glow}, 0 0 32px ${bubbleTheme.secondaryGlow || bubbleTheme.glow}`
+          ? composerSpec.boxShadow
           : isThematic
           ? `0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${bubbleTheme.glow}`
           : `0 2px 12px rgba(0, 0, 0, 0.3)`
@@ -1459,7 +1602,7 @@
       .surface-composer-card {
         background: ${inputCardBg} !important;
         backdrop-filter: none !important;
-        border-radius: 14.5px !important;
+        border-radius: ${composerSpec.innerRadius} !important;
         position: relative !important;
         border: ${isGlass
           ? '1px solid rgba(255, 255, 255, 0.08)'
@@ -1852,6 +1995,7 @@
               const bp = th.primary || '#38bdf8';
               const bs = th.secondary || bp;
               const bMotif = detectThemeMotif(name, th.concept, th);
+              const bSpec = getThemeComposerSpec(bMotif, bp, bs, th.glow, th.secondaryGlow);
               const bCornerSvg = th.cornerSvg || getThematicCornerSvg(bp, bs, bMotif);
               const bCrestSvg = th.sticker || getThematicCrestSvg(bp, bs, bMotif);
 
@@ -1861,8 +2005,8 @@
               const showBubbleOrnaments = curInputStyle === 'ornamental' || curInputStyle === 'thematic';
 
               if (curInputStyle === 'ornamental') {
-                bOuterBg = `linear-gradient(135deg, ${bp}f0 0%, ${bs}d9 50%, ${bp}f0 100%)`;
-                bOuterShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 12px ${th.glow || bp}`;
+                bOuterBg = bSpec.outerBorder;
+                bOuterShadow = bSpec.bubbleShadow;
                 bInnerBg = th.bg || 'rgba(17, 24, 39, 0.9)';
               } else if (curInputStyle === 'thematic') {
                 bOuterBg = th.frameBg || `linear-gradient(135deg, ${bp}, ${bs})`;
@@ -1881,10 +2025,10 @@
               return `
                 <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 22px 18px 14px 18px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; transition: border-color 0.15s ease, background-color 0.15s ease;">
                   <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 6px; margin-bottom: 10px;">
-                    <div class="agy-bubble-preview-outer" style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : '12px'}; background: ${bOuterBg}; box-shadow: ${bOuterShadow};">
-                      <div class="agy-bubble-preview-crest" style="position: absolute; top: -10px; right: 10px; width: 62px; height: 16px; background-image: url('${bCrestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; filter: drop-shadow(0 2px 6px ${th.glow || bp}); display: ${showBubbleOrnaments ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
+                    <div class="agy-bubble-preview-outer" style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : bSpec.bubblePreviewRadius}; background: ${bOuterBg}; box-shadow: ${bOuterShadow};">
+                      <div class="agy-bubble-preview-crest" style="position: absolute; top: -10px; ${bSpec.bubblePreviewCrestCss} width: 62px; height: 16px; background-image: url('${bCrestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; filter: drop-shadow(0 2px 6px ${th.glow || bp}); display: ${showBubbleOrnaments ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
                       <div class="agy-bubble-preview-corner" style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background-image: url('${bCornerSvg}'); background-size: contain; background-repeat: no-repeat; opacity: ${curInputStyle === 'ornamental' ? '0.95' : '0.82'}; display: ${showBubbleOrnaments ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
-                      <div class="agy-bubble-preview-inner" style="position: relative; width: 100%; height: 100%; background: ${bInnerBg}; border: ${th.innerBorder || '1px solid ' + (th.borderColor || 'rgba(167, 139, 250, 0.34)')}; border-radius: ${th.isScroll ? '4px' : '11px'}; display: flex; align-items: center; padding: 0 16px;">
+                      <div class="agy-bubble-preview-inner" style="position: relative; width: 100%; height: 100%; background: ${bInnerBg}; border: ${th.innerBorder || '1px solid ' + (th.borderColor || 'rgba(167, 139, 250, 0.34)')}; border-radius: ${th.isScroll ? '4px' : bSpec.bubblePreviewRadius}; display: flex; align-items: center; padding: 0 16px;">
                         <span style="font-size: 13.5px; font-weight: 500; color: ${th.textColor || '#fff'};">Hello ✨</span>
                       </div>
                     </div>
@@ -1909,6 +2053,7 @@
               const p = activeBubbleTh.primary || '#38bdf8';
               const s = activeBubbleTh.secondary || p;
               const curMotif = detectThemeMotif(st.bubbleName, activeBubbleTh.concept, activeBubbleTh);
+              const curSpec = getThemeComposerSpec(curMotif, p, s, activeBubbleTh.glow, activeBubbleTh.secondaryGlow);
               const cornerSvg = activeBubbleTh.cornerSvg || getThematicCornerSvg(p, s, curMotif);
               const crestSvg = activeBubbleTh.sticker || getThematicCrestSvg(p, s, curMotif);
 
@@ -1917,19 +2062,32 @@
               let previewInnerBg = '';
               let showCrest = false;
               let showCorner = false;
+              let cardTitle = item.label;
+              let cardDesc = item.desc;
+              let pRadius = '10px';
+              let pInnerRadius = '8.5px';
+              let crestPosStyle = curSpec.previewCrestPositionCss;
 
               if (key === 'ornamental') {
-                previewOuterBg = `linear-gradient(135deg, ${p}f0 0%, ${s}d9 35%, ${p}c8 65%, ${s}f0 100%)`;
+                previewOuterBg = curSpec.outerBorder;
                 previewOuterShadow = `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${activeBubbleTh.glow || p}`;
                 previewInnerBg = activeBubbleTh.inputCardBg || 'rgba(26, 18, 15, 0.92)';
                 showCrest = true;
                 showCorner = true;
+                cardTitle = curSpec.styleName;
+                cardDesc = curSpec.styleDesc;
+                pRadius = curSpec.previewRadius;
+                pInnerRadius = curSpec.previewInnerRadius;
+                crestPosStyle = curSpec.previewCrestPositionCss;
               } else if (key === 'thematic') {
                 previewOuterBg = activeBubbleTh.frameBg || `linear-gradient(135deg, ${p}, ${s})`;
                 previewOuterShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${activeBubbleTh.glow || p}`;
                 previewInnerBg = activeBubbleTh.inputCardBg || 'rgba(26, 18, 15, 0.92)';
                 showCrest = true;
                 showCorner = true;
+                pRadius = curSpec.previewRadius;
+                pInnerRadius = curSpec.previewInnerRadius;
+                crestPosStyle = curSpec.previewCrestPositionCss;
               } else if (key === 'glass') {
                 previewOuterBg = 'rgba(255, 255, 255, 0.16)';
                 previewOuterShadow = '0 2px 8px rgba(0,0,0,0.3)';
@@ -1946,19 +2104,19 @@
 
               return `
                 <div class="agy-input-card" data-style="${key}" style="border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 16px 18px; cursor: pointer; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s ease, background-color 0.15s ease;">
-                  <div class="agy-input-preview-outer" style="position: relative; margin-top: 8px; padding: 1.5px; border-radius: 10px; background: ${previewOuterBg}; box-shadow: ${previewOuterShadow};">
-                    <div class="agy-input-preview-crest" style="position: absolute; top: -11px; right: 14px; width: 72px; height: 18px; background-image: url('${crestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; display: ${showCrest ? 'block' : 'none'}; pointer-events: none; z-index: 5; filter: drop-shadow(0 2px 6px ${activeBubbleTh.glow || p});"></div>
+                  <div class="agy-input-preview-outer" style="position: relative; margin-top: 8px; padding: 1.5px; border-radius: ${pRadius}; background: ${previewOuterBg}; box-shadow: ${previewOuterShadow};">
+                    <div class="agy-input-preview-crest" style="position: absolute; top: -11px; ${crestPosStyle} width: 72px; height: 18px; background-image: url('${crestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; display: ${showCrest ? 'block' : 'none'}; pointer-events: none; z-index: 5; filter: drop-shadow(0 2px 6px ${activeBubbleTh.glow || p});"></div>
                     <div class="agy-input-preview-corner-bl" style="position: absolute; bottom: 2px; right: 2px; width: 13px; height: 13px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; transform: rotate(180deg); display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
                     <div class="agy-input-preview-corner-tl" style="position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
-                    <div class="agy-input-preview-inner" style="background: ${previewInnerBg}; border-radius: 9px; padding: 8px 12px; font-size: 12px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="agy-input-preview-inner" style="background: ${previewInnerBg}; border-radius: ${pInnerRadius}; padding: 8px 12px; font-size: 12px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;">
                       <span>Ask anything, @ to mention...</span>
                       <span class="agy-input-preview-turbo" style="color: ${p}; font-size: 11px;">Send →</span>
                     </div>
                   </div>
                   <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                      <div style="font-size: 13.5px; font-weight: 500; color: #e4e4e7;">${item.label}</div>
-                      <div style="font-size: 11.5px; color: #a1a1aa;">${item.desc}</div>
+                      <div class="agy-input-card-title" style="font-size: 13.5px; font-weight: 500; color: #e4e4e7;">${cardTitle}</div>
+                      <div class="agy-input-card-desc" style="font-size: 11.5px; color: #a1a1aa;">${cardDesc}</div>
                     </div>
                     <div class="agy-card-check-slot">${isSelected ? CHECK_SVG : ''}</div>
                   </div>
@@ -2014,6 +2172,7 @@
       const p = activeTh.primary || '#38bdf8';
       const s = activeTh.secondary || p;
       const activeMotif = detectThemeMotif(bName, activeTh.concept, activeTh);
+      const curSpec = getThemeComposerSpec(activeMotif, p, s, activeTh.glow, activeTh.secondaryGlow);
       const cornerSvg = activeTh.cornerSvg || getThematicCornerSvg(p, s, activeMotif);
       const crestSvg = activeTh.sticker || getThematicCrestSvg(p, s, activeMotif);
       const curStyle = normalizeInputStyle(getState().inputStyle);
@@ -2023,21 +2182,28 @@
         const outer = card.querySelector('.agy-input-preview-outer');
         if (outer) {
           if (key === 'ornamental') {
-            outer.style.background = `linear-gradient(135deg, ${p}f0 0%, ${s}d9 35%, ${p}c8 65%, ${s}f0 100%)`;
+            outer.style.borderRadius = curSpec.previewRadius;
+            outer.style.background = curSpec.outerBorder;
             outer.style.boxShadow = `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${activeTh.glow || p}`;
           } else if (key === 'thematic') {
+            outer.style.borderRadius = curSpec.previewRadius;
             outer.style.background = activeTh.frameBg || `linear-gradient(135deg, ${p}, ${s})`;
             outer.style.boxShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${activeTh.glow || p}`;
           } else if (key === 'glass') {
+            outer.style.borderRadius = '10px';
             outer.style.background = 'rgba(255, 255, 255, 0.16)';
             outer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
           } else {
+            outer.style.borderRadius = '10px';
             outer.style.background = 'rgba(255, 255, 255, 0.12)';
             outer.style.boxShadow = 'none';
           }
         }
         const inner = card.querySelector('.agy-input-preview-inner');
         if (inner) {
+          inner.style.borderRadius = (key === 'ornamental' || key === 'thematic')
+            ? curSpec.previewInnerRadius
+            : '8.5px';
           inner.style.background = key === 'glass'
             ? (activeTh.inputGlassBg || 'rgba(20, 15, 13, 0.45)')
             : key === 'minimal'
@@ -2049,6 +2215,19 @@
           crest.style.backgroundImage = `url('${crestSvg}')`;
           crest.style.filter = `drop-shadow(0 2px 6px ${activeTh.glow || p})`;
           crest.style.display = (key === 'ornamental' || key === 'thematic') ? 'block' : 'none';
+          if (curSpec.crestPositionCss.includes('left: 50%')) {
+            crest.style.left = '50%';
+            crest.style.right = 'auto';
+            crest.style.transform = 'translateX(-50%)';
+          } else if (curSpec.crestPositionCss.includes('right: 32px')) {
+            crest.style.left = 'auto';
+            crest.style.right = '16px';
+            crest.style.transform = 'none';
+          } else {
+            crest.style.left = 'auto';
+            crest.style.right = '14px';
+            crest.style.transform = 'none';
+          }
         }
         const cBl = card.querySelector('.agy-input-preview-corner-bl');
         if (cBl) {
@@ -2059,6 +2238,12 @@
         if (cTl) {
           cTl.style.backgroundImage = `url('${cornerSvg}')`;
           cTl.style.display = (key === 'ornamental' || key === 'thematic') ? 'block' : 'none';
+        }
+        if (key === 'ornamental') {
+          const t = card.querySelector('.agy-input-card-title');
+          const d = card.querySelector('.agy-input-card-desc');
+          if (t) t.textContent = curSpec.styleName;
+          if (d) d.textContent = curSpec.styleDesc;
         }
         const turbo = card.querySelector('.agy-input-preview-turbo');
         if (turbo) {
@@ -2072,24 +2257,27 @@
         const bp = th.primary || '#38bdf8';
         const bs = th.secondary || bp;
         const bMotif = detectThemeMotif(thName, th.concept, th);
+        const bSpec = getThemeComposerSpec(bMotif, bp, bs, th.glow, th.secondaryGlow);
         const bCornerSvg = th.cornerSvg || getThematicCornerSvg(bp, bs, bMotif);
         const bCrestSvg = th.sticker || getThematicCrestSvg(bp, bs, bMotif);
 
         const bOuter = bCard.querySelector('.agy-bubble-preview-outer');
         if (bOuter) {
+          bOuter.style.borderRadius = bSpec.bubblePreviewRadius;
           bOuter.style.background = curStyle === 'ornamental'
-            ? `linear-gradient(135deg, ${bp}f0 0%, ${bs}d9 50%, ${bp}f0 100%)`
+            ? bSpec.outerBorder
             : curStyle === 'thematic'
             ? (th.frameBg || `linear-gradient(135deg, ${bp}, ${bs})`)
             : (curStyle === 'glass' ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.12)');
           bOuter.style.boxShadow = curStyle === 'ornamental'
-            ? `0 4px 14px rgba(0,0,0,0.45), 0 0 12px ${th.glow || bp}`
+            ? bSpec.bubbleShadow
             : curStyle === 'thematic'
             ? `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow || bp}`
             : '0 2px 8px rgba(0,0,0,0.3)';
         }
         const bInner = bCard.querySelector('.agy-bubble-preview-inner');
         if (bInner) {
+          bInner.style.borderRadius = bSpec.bubblePreviewRadius;
           bInner.style.background = curStyle === 'glass'
             ? (th.inputGlassBg || 'rgba(14, 18, 28, 0.55)')
             : curStyle === 'minimal'
@@ -2101,6 +2289,15 @@
         if (bCrest) {
           bCrest.style.backgroundImage = `url('${bCrestSvg}')`;
           bCrest.style.display = showBubbleOrnaments ? 'block' : 'none';
+          if (bSpec.bubbleCrestPositionCss.includes('left: 50%')) {
+            bCrest.style.left = '50%';
+            bCrest.style.right = 'auto';
+            bCrest.style.transform = 'translateX(-50%)';
+          } else {
+            bCrest.style.left = 'auto';
+            bCrest.style.right = '10px';
+            bCrest.style.transform = 'none';
+          }
         }
         const bCorner = bCard.querySelector('.agy-bubble-preview-corner');
         if (bCorner) {
@@ -2316,11 +2513,10 @@
         const allTh = getAllThemes();
         const th = allTh[name] || {};
         const targetMode = th.bgMode || (th.liveVideo ? 'live' : 'static');
-        const curStyle = normalizeInputStyle(getState().inputStyle);
         applyTheme({
           themeName: name,
           bubbleName: name,
-          inputStyle: curStyle,
+          inputStyle: 'ornamental',
           customWp: '',
           bgMode: targetMode
         });
@@ -2346,7 +2542,7 @@
         });
 
         container.querySelectorAll('.agy-input-card').forEach(c => {
-          const isSel = c.dataset.style === curStyle;
+          const isSel = c.dataset.style === 'ornamental';
           c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
           c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
           const slot = c.querySelector('.agy-card-check-slot');
