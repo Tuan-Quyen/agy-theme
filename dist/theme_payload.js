@@ -156,6 +156,261 @@
     });
   }
 
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0;
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return [Math.round(h * 360), s, l];
+  }
+
+  function hslToRgb(h, s, l) {
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, (h / 360) + 1/3);
+      g = hue2rgb(p, q, h / 360);
+      b = hue2rgb(p, q, (h / 360) - 1/3);
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+  function toHex(r, g, b) {
+    return '#' + [r, g, b].map(x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0')).join('');
+  }
+
+  function boostAccent(r, g, b, minL = 0.58, maxL = 0.72) {
+    const [h, s, l] = rgbToHsl(r, g, b);
+    const targetS = Math.min(1, Math.max(0.68, s * 1.3));
+    const targetL = Math.min(maxL, Math.max(minL, l < 0.50 ? l * 1.35 : l));
+    const [br, bg, bb] = hslToRgb(h, targetS, targetL);
+    return { hex: toHex(br, bg, bb), r: br, g: bg, b: bb };
+  }
+
+  function extractPaletteFromCanvas(canvas) {
+    try {
+      const sampleCanvas = document.createElement('canvas');
+      sampleCanvas.width = 64;
+      sampleCanvas.height = 64;
+      const ctx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(canvas, 0, 0, 64, 64);
+      const data = ctx.getImageData(0, 0, 64, 64).data;
+
+      const buckets = Array.from({ length: 24 }, () => ({ count: 0, sSum: 0, lSum: 0, rSum: 0, gSum: 0, bSum: 0 }));
+      let totalR = 0, totalG = 0, totalB = 0, totalCount = 0;
+
+      for (let i = 0; i < data.length; i += 8) {
+        const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+        if (a < 128) continue;
+        totalR += r; totalG += g; totalB += b; totalCount++;
+        const [h, s, l] = rgbToHsl(r, g, b);
+        if (s >= 0.20 && l >= 0.18 && l <= 0.88) {
+          const bIdx = Math.floor((h % 360) / 15);
+          buckets[bIdx].count++;
+          buckets[bIdx].sSum += s;
+          buckets[bIdx].lSum += l;
+          buckets[bIdx].rSum += r;
+          buckets[bIdx].gSum += g;
+          buckets[bIdx].bSum += b;
+        }
+      }
+
+      let bestBucket = -1;
+      let maxScore = -1;
+      for (let i = 0; i < 24; i++) {
+        if (buckets[i].count === 0) continue;
+        const avgS = buckets[i].sSum / buckets[i].count;
+        const avgL = buckets[i].lSum / buckets[i].count;
+        const score = buckets[i].count * (avgS ** 1.3) * (1 - Math.abs(avgL - 0.55));
+        if (score > maxScore) {
+          maxScore = score;
+          bestBucket = i;
+        }
+      }
+
+      let pR, pG, pB, sR, sG, sB;
+      if (bestBucket !== -1) {
+        const rawPR = buckets[bestBucket].rSum / buckets[bestBucket].count;
+        const rawPG = buckets[bestBucket].gSum / buckets[bestBucket].count;
+        const rawPB = buckets[bestBucket].bSum / buckets[bestBucket].count;
+        const boosted = boostAccent(rawPR, rawPG, rawPB, 0.58, 0.70);
+        pR = boosted.r; pG = boosted.g; pB = boosted.b;
+
+        let secBucket = -1;
+        let secScore = -1;
+        for (let i = 0; i < 24; i++) {
+          const diff = Math.min(Math.abs(i - bestBucket), 24 - Math.abs(i - bestBucket));
+          if (diff < 2 || buckets[i].count === 0) continue;
+          const avgS = buckets[i].sSum / buckets[i].count;
+          const avgL = buckets[i].lSum / buckets[i].count;
+          const score = buckets[i].count * avgS * (1 - Math.abs(avgL - 0.55));
+          if (score > secScore) {
+            secScore = score;
+            secBucket = i;
+          }
+        }
+
+        if (secBucket !== -1) {
+          const rawSR = buckets[secBucket].rSum / buckets[secBucket].count;
+          const rawSG = buckets[secBucket].gSum / buckets[secBucket].count;
+          const rawSB = buckets[secBucket].bSum / buckets[secBucket].count;
+          const boostedSec = boostAccent(rawSR, rawSG, rawSB, 0.60, 0.75);
+          sR = boostedSec.r; sG = boostedSec.g; sB = boostedSec.b;
+        } else {
+          const [pH, pS] = rgbToHsl(pR, pG, pB);
+          const [r2, g2, b2] = hslToRgb((pH + 35) % 360, Math.min(1, pS * 1.1), 0.65);
+          sR = r2; sG = g2; sB = b2;
+        }
+      } else {
+        pR = 56; pG = 189; pB = 248;
+        sR = 129; sG = 140; sB = 248;
+      }
+
+      const avgR = totalCount ? totalR / totalCount : 15;
+      const avgG = totalCount ? totalG / totalCount : 20;
+      const avgB = totalCount ? totalB / totalCount : 30;
+      const darkR = Math.max(6, Math.min(22, Math.round(avgR * 0.10 + pR * 0.04)));
+      const darkG = Math.max(8, Math.min(24, Math.round(avgG * 0.10 + pG * 0.04)));
+      const darkB = Math.max(12, Math.min(32, Math.round(avgB * 0.10 + pB * 0.04)));
+
+      const primary = toHex(pR, pG, pB);
+      const secondary = toHex(sR, sG, sB);
+
+      return {
+        primary,
+        secondary,
+        borderColor: `rgba(${pR}, ${pG}, ${pB}, 0.38)`,
+        glow: `rgba(${pR}, ${pG}, ${pB}, 0.32)`,
+        secondaryGlow: `rgba(${sR}, ${sG}, ${sB}, 0.22)`,
+        bg: `linear-gradient(145deg, rgba(${darkR+10}, ${darkG+10}, ${darkB+16}, 0.88) 0%, rgba(${darkR+2}, ${darkG+2}, ${darkB+6}, 0.94) 100%)`,
+        frameBg: `linear-gradient(135deg, ${primary}e6 0%, ${secondary}c0 50%, ${primary}d9 100%)`,
+        textColor: '#f8fafc',
+        clearBackdrop: true,
+        overlayRgb: `${darkR}, ${darkG}, ${darkB}`,
+        unifiedGlass: true,
+        innerBorder: `1px solid rgba(${pR}, ${pG}, ${pB}, 0.22)`,
+        inputCardBg: `linear-gradient(145deg, rgba(${darkR+12}, ${darkG+12}, ${darkB+18}, 0.90) 0%, rgba(${darkR+4}, ${darkG+4}, ${darkB+8}, 0.95) 100%)`,
+        inputGlassBg: `rgba(${darkR+8}, ${darkG+8}, ${darkB+12}, 0.55)`,
+        aiCardBg: `rgba(${darkR+6}, ${darkG+6}, ${darkB+10}, 0.76)`,
+        aiCardBorder: `rgba(${pR}, ${pG}, ${pB}, 0.18)`,
+        btnBg: `rgba(${Math.min(255, darkR+22)}, ${Math.min(255, darkG+22)}, ${Math.min(255, darkB+32)}, 0.65)`,
+        sidebarBg: `rgba(${darkR+4}, ${darkG+4}, ${darkB+8}, 0.55)`,
+        sidebarHoverBg: `rgba(${pR}, ${pG}, ${pB}, 0.12)`,
+        headerBg: `rgba(${darkR+4}, ${darkG+4}, ${darkB+8}, 0.50)`,
+        headerBorder: `rgba(${pR}, ${pG}, ${pB}, 0.14)`,
+        cardBg: `rgba(${darkR+8}, ${darkG+8}, ${darkB+14}, 0.82)`,
+        cardSelectedBg: `rgba(${pR}, ${pG}, ${pB}, 0.28)`
+      };
+    } catch (e) {
+      console.warn('Palette extraction error:', e);
+      return null;
+    }
+  }
+
+  function extractPaletteFromImage(source) {
+    return new Promise((resolve) => {
+      if (!source) return resolve(null);
+      if (source instanceof HTMLCanvasElement) {
+        return resolve(extractPaletteFromCanvas(source));
+      }
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 64;
+          canvas.height = 64;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, 64, 64);
+          resolve(extractPaletteFromCanvas(canvas));
+        } catch (_) {
+          resolve(null);
+        }
+      };
+      img.onerror = () => resolve(null);
+      img.src = typeof source === 'string' ? source : (source.src || '');
+    });
+  }
+
+  function getFallbackPalette(mode = 'live') {
+    const isLive = mode === 'live';
+    const primary = isLive ? '#c084fc' : '#38bdf8';
+    const secondary = isLive ? '#f472b6' : '#818cf8';
+    const pR = isLive ? 192 : 56, pG = isLive ? 132 : 189, pB = isLive ? 252 : 248;
+    const darkR = isLive ? 14 : 10, darkG = isLive ? 10 : 14, darkB = isLive ? 24 : 26;
+    return {
+      primary,
+      secondary,
+      borderColor: `rgba(${pR}, ${pG}, ${pB}, 0.38)`,
+      glow: `rgba(${pR}, ${pG}, ${pB}, 0.32)`,
+      secondaryGlow: isLive ? 'rgba(244, 114, 182, 0.22)' : 'rgba(129, 140, 248, 0.22)',
+      bg: `linear-gradient(145deg, rgba(${darkR+8}, ${darkG+8}, ${darkB+12}, 0.88) 0%, rgba(${darkR}, ${darkG}, ${darkB}, 0.94) 100%)`,
+      frameBg: `linear-gradient(135deg, ${primary}e6 0%, ${secondary}c0 50%, ${primary}d9 100%)`,
+      textColor: '#f8fafc',
+      clearBackdrop: true,
+      overlayRgb: `${darkR}, ${darkG}, ${darkB}`,
+      unifiedGlass: true,
+      innerBorder: `1px solid rgba(${pR}, ${pG}, ${pB}, 0.22)`,
+      inputCardBg: `linear-gradient(145deg, rgba(${darkR+10}, ${darkG+10}, ${darkB+14}, 0.90) 0%, rgba(${darkR+2}, ${darkG+2}, ${darkB+6}, 0.95) 100%)`,
+      inputGlassBg: `rgba(${darkR+6}, ${darkG+6}, ${darkB+10}, 0.55)`,
+      aiCardBg: `rgba(${darkR+4}, ${darkG+4}, ${darkB+8}, 0.76)`,
+      aiCardBorder: `rgba(${pR}, ${pG}, ${pB}, 0.18)`,
+      btnBg: `rgba(${darkR+20}, ${darkG+20}, ${darkB+28}, 0.65)`,
+      sidebarBg: `rgba(${darkR+2}, ${darkG+2}, ${darkB+6}, 0.55)`,
+      sidebarHoverBg: `rgba(${pR}, ${pG}, ${pB}, 0.12)`,
+      headerBg: `rgba(${darkR+2}, ${darkG+2}, ${darkB+6}, 0.50)`,
+      headerBorder: `rgba(${pR}, ${pG}, ${pB}, 0.14)`,
+      cardBg: `rgba(${darkR+6}, ${darkG+6}, ${darkB+10}, 0.82)`,
+      cardSelectedBg: `rgba(${pR}, ${pG}, ${pB}, 0.28)`
+    };
+  }
+
+  async function migrateExistingCustomPresets() {
+    try {
+      const presets = JSON.parse(localStorage.getItem(STORAGE_CUSTOM_PRESETS) || '{}');
+      let changed = false;
+      for (const [name, p] of Object.entries(presets)) {
+        const isOldHardcoded = (p.primary === '#c084fc' || p.primary === '#38bdf8' || !p.inputCardBg);
+        if (isOldHardcoded && p.wallpaper) {
+          const palette = await extractPaletteFromImage(p.wallpaper);
+          if (palette) {
+            Object.assign(p, palette);
+            changed = true;
+          }
+        }
+      }
+      if (changed) {
+        localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
+        if (window.agySaveThemeConfig) {
+          try { window.agySaveThemeConfig(JSON.stringify({ customPresets: presets })); } catch (_) {}
+        }
+        applyTheme();
+      }
+    } catch (_) {}
+  }
+
   function formatThemeName(filename) {
     let base = filename.replace(/\.[^/.]+$/, '');
     base = base.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -182,6 +437,7 @@
       const existingCustom = getCustomPresets();
       if (Object.keys(existingCustom).length === 0) {
         const thumb = await extractVideoThumbnail(blob);
+        const palette = (await extractPaletteFromImage(thumb)) || getFallbackPalette('live');
         saveCustomPreset({
           id: 'custom_live_init',
           name: 'Hiyuki Frost Blade',
@@ -190,17 +446,7 @@
           videoKey: 'active_live_mp4',
           wallpaper: thumb,
           concept: 'Custom Live Wallpaper • MP4',
-          primary: '#c084fc',
-          borderColor: 'rgba(192, 132, 252, 0.36)',
-          glow: 'rgba(192, 132, 252, 0.32)',
-          bg: 'linear-gradient(145deg, rgba(20, 14, 34, 0.86) 0%, rgba(12, 8, 22, 0.92) 100%)',
-          frameBg: 'linear-gradient(135deg, rgba(192, 132, 252, 0.75) 0%, rgba(244, 114, 182, 0.60) 50%, rgba(168, 85, 247, 0.70) 100%)',
-          textColor: '#f8fafc',
-          clearBackdrop: true,
-          overlayRgb: '14, 10, 24',
-          unifiedGlass: true,
-          aiCardBg: 'rgba(16, 11, 28, 0.76)',
-          aiCardBorder: 'rgba(192, 132, 252, 0.18)'
+          ...palette
         });
       }
     }
@@ -1348,7 +1594,7 @@
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
             ${Object.entries(INPUT_STYLES).map(([key, item]) => {
               const isSelected = key === st.inputStyle;
-              const activeBubbleTh = THEMES[st.bubbleName] || mainTheme;
+              const activeBubbleTh = allThemes[st.bubbleName] || mainTheme;
               const previewStickerStyle = activeBubbleTh.isOrnament
                 ? 'top: -12px; right: 10px; width: 72px; height: 22px; background-position: center;'
                 : 'top: -22px; right: 10px; width: 32px; height: 28px; background-position: bottom center;';
@@ -1489,6 +1735,7 @@
             const videoKey = 'video_' + Date.now();
             await saveLiveVideoBlob(file, videoKey);
             const thumb = await extractVideoThumbnail(file);
+            const palette = (await extractPaletteFromImage(thumb)) || getFallbackPalette('live');
 
             const newPreset = {
               id: 'custom_' + Date.now(),
@@ -1498,17 +1745,7 @@
               videoKey: videoKey,
               wallpaper: thumb,
               concept: 'Custom Live Wallpaper • MP4',
-              primary: '#c084fc',
-              borderColor: 'rgba(192, 132, 252, 0.36)',
-              glow: 'rgba(192, 132, 252, 0.32)',
-              bg: 'linear-gradient(145deg, rgba(20, 14, 34, 0.86) 0%, rgba(12, 8, 22, 0.92) 100%)',
-              frameBg: 'linear-gradient(135deg, rgba(192, 132, 252, 0.75) 0%, rgba(244, 114, 182, 0.60) 50%, rgba(168, 85, 247, 0.70) 100%)',
-              textColor: '#f8fafc',
-              clearBackdrop: true,
-              overlayRgb: '14, 10, 24',
-              unifiedGlass: true,
-              aiCardBg: 'rgba(16, 11, 28, 0.76)',
-              aiCardBorder: 'rgba(192, 132, 252, 0.18)'
+              ...palette
             };
             saveCustomPreset(newPreset);
 
@@ -1526,15 +1763,16 @@
               v.play().catch(() => {});
             }
 
-            applyTheme({ themeName: themeName, bubbleName: themeName, customWp: '', bgMode: 'live', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: 'sync', customWp: '', bgMode: 'live', wpEnabled: true });
             renderThemePanels(container);
           } catch (err) {
             console.error('Failed to save live video preset:', err);
           }
         } else {
           const reader = new FileReader();
-          reader.onload = () => {
+          reader.onload = async () => {
             const dataUrl = reader.result;
+            const palette = (await extractPaletteFromImage(dataUrl)) || getFallbackPalette('static');
             const newPreset = {
               id: 'custom_' + Date.now(),
               name: themeName,
@@ -1542,20 +1780,10 @@
               bgMode: 'static',
               wallpaper: dataUrl,
               concept: 'Custom Image Wallpaper',
-              primary: '#38bdf8',
-              borderColor: 'rgba(56, 189, 248, 0.36)',
-              glow: 'rgba(56, 189, 248, 0.32)',
-              bg: 'linear-gradient(145deg, rgba(15, 23, 42, 0.88) 0%, rgba(9, 14, 28, 0.94) 100%)',
-              frameBg: 'linear-gradient(135deg, rgba(56, 189, 248, 0.75) 0%, rgba(129, 140, 248, 0.60) 50%, rgba(14, 165, 233, 0.70) 100%)',
-              textColor: '#f8fafc',
-              clearBackdrop: true,
-              overlayRgb: '10, 14, 22',
-              unifiedGlass: true,
-              aiCardBg: 'rgba(12, 18, 30, 0.78)',
-              aiCardBorder: 'rgba(56, 189, 248, 0.18)'
+              ...palette
             };
             saveCustomPreset(newPreset);
-            applyTheme({ themeName: themeName, bubbleName: themeName, customWp: '', bgMode: 'static', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: 'sync', customWp: '', bgMode: 'static', wpEnabled: true });
             renderThemePanels(container);
           };
           reader.readAsDataURL(file);
@@ -1682,6 +1910,7 @@
         applyTheme({
           themeName: name,
           bubbleName: name,
+          inputStyle: 'sync',
           customWp: '',
           bgMode: targetMode
         });
@@ -1703,6 +1932,14 @@
           b.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
           b.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
           const slot = b.querySelector('.agy-card-check-slot');
+          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
+        });
+
+        container.querySelectorAll('.agy-input-card').forEach(c => {
+          const isSel = c.dataset.style === 'sync';
+          c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
+          c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
+          const slot = c.querySelector('.agy-card-check-slot');
           if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
         });
 
@@ -2033,6 +2270,7 @@
     attributes: true,
     attributeFilter: ['data-has-browser-hole', 'data-browser-hole']
   });
+  migrateExistingCustomPresets();
   tick();
 
   return 'Antigravity Custom Theme Engine Ready!';
