@@ -1079,14 +1079,11 @@
               <div style="font-size: 14.5px; font-weight: 600; color: #f4f4f5; margin-bottom: 2px;">Wallpaper & Backdrop Dimming</div>
               <div style="font-size: 12.5px; color: #a1a1aa;">Balance artwork clarity against code & message readability.</div>
             </div>
-            <!-- Mode Switcher -->
-            <div style="display: flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, 0.35); padding: 3px; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.1);">
-              <button id="agy-mode-static-btn" type="button" style="padding: 4px 12px; border-radius: 7px; border: none; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; ${st.bgMode === 'static' ? `background: ${mainTheme.primary}; color: #000; font-weight: 600;` : 'background: transparent; color: #a1a1aa;'}">
-                🖼️ Static
-              </button>
-              <button id="agy-mode-live-btn" type="button" style="padding: 4px 12px; border-radius: 7px; border: none; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; ${st.bgMode === 'live' ? `background: ${mainTheme.primary}; color: #000; font-weight: 600;` : 'background: transparent; color: #a1a1aa;'}">
-                🎬 Live Video (MP4)
-              </button>
+            <!-- Auto-detected Format Badge -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="agy-bg-format-badge" style="font-size: 12px; padding: 4px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); color: #e4e4e7; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;">
+                ${st.bgMode === 'live' ? '🎬 Live Video (MP4)' : (st.customWp ? '🖼️ Custom Image' : `🖼️ Preset: ${st.themeName}`)}
+              </span>
             </div>
           </div>
 
@@ -1104,21 +1101,11 @@
             </div>
 
             <div style="display: flex; align-items: center; gap: 10px;">
-              ${st.bgMode === 'static' ? `
-                <label style="padding: 5px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
-                  Upload Image
-                  <input id="agy-wp-upload" type="file" accept="image/*" style="display: none;" />
-                </label>
-              ` : `
-                <label style="padding: 5px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
-                  Upload MP4 Video
-                  <input id="agy-live-upload" type="file" accept="video/mp4,video/webm" style="display: none;" />
-                </label>
-                <span id="agy-live-status" style="font-size: 12px; color: ${window.__AGY_HAS_LIVE_VIDEO__ ? '#4ade80' : '#f59e0b'};">
-                  ${window.__AGY_HAS_LIVE_VIDEO__ ? '● Video Ready' : '○ No MP4 Selected'}
-                </span>
-              `}
-              <button id="agy-reset-btn" type="button" style="padding: 5px 12px; border-radius: 8px; background: rgba(239, 68, 68, 0.14); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; font-size: 12px; cursor: pointer; white-space: nowrap;">
+              <label style="padding: 6px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.09); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease;">
+                <span>📁 Upload Wallpaper (Image / MP4)</span>
+                <input id="agy-unified-upload" type="file" accept="image/*,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" style="display: none;" />
+              </label>
+              <button id="agy-reset-btn" type="button" style="padding: 6px 12px; border-radius: 8px; background: rgba(239, 68, 68, 0.14); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; font-size: 12px; cursor: pointer; white-space: nowrap;">
                 Reset Default
               </button>
             </div>
@@ -1302,59 +1289,41 @@
       applyTheme({ wpEnabled: e.target.checked });
     });
 
-    const wpUpload = container.querySelector('#agy-wp-upload');
-    if (wpUpload) {
-      wpUpload.addEventListener('change', (e) => {
+    const unifiedUpload = container.querySelector('#agy-unified-upload');
+    if (unifiedUpload) {
+      unifiedUpload.addEventListener('change', async (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          applyTheme({ customWp: reader.result, wpEnabled: true });
-          const toggle = container.querySelector('#agy-wp-toggle');
-          if (toggle) toggle.checked = true;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
 
-    const modeStaticBtn = container.querySelector('#agy-mode-static-btn');
-    if (modeStaticBtn) {
-      modeStaticBtn.addEventListener('click', () => {
-        applyTheme({ bgMode: 'static' });
-        renderThemePanels(container);
-      });
-    }
+        const isVideo = (file.type && file.type.startsWith('video/')) ||
+          /\.(mp4|webm|mov|m4v)$/i.test(file.name || '');
 
-    const modeLiveBtn = container.querySelector('#agy-mode-live-btn');
-    if (modeLiveBtn) {
-      modeLiveBtn.addEventListener('click', () => {
-        applyTheme({ bgMode: 'live' });
-        renderThemePanels(container);
-      });
-    }
-
-    const liveUpload = container.querySelector('#agy-live-upload');
-    if (liveUpload) {
-      liveUpload.addEventListener('change', async (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        try {
-          await saveLiveVideoBlob(file);
-          window.__AGY_HAS_LIVE_VIDEO__ = true;
-          if (window.__AGY_ACTIVE_BLOB_URL__) {
-            URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__);
+        if (isVideo) {
+          try {
+            await saveLiveVideoBlob(file);
+            window.__AGY_HAS_LIVE_VIDEO__ = true;
+            if (window.__AGY_ACTIVE_BLOB_URL__) {
+              URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__);
+            }
+            const blobUrl = URL.createObjectURL(file);
+            window.__AGY_ACTIVE_BLOB_URL__ = blobUrl;
+            applyTheme({ bgMode: 'live', customWp: '', wpEnabled: true });
+            const v = document.getElementById('agy-live-video');
+            if (v) {
+              v.src = blobUrl;
+              v.play().catch(() => {});
+            }
+            renderThemePanels(container);
+          } catch (err) {
+            console.error('Failed to save live video:', err);
           }
-          const blobUrl = URL.createObjectURL(file);
-          window.__AGY_ACTIVE_BLOB_URL__ = blobUrl;
-          applyTheme({ bgMode: 'live', wpEnabled: true });
-          const v = document.getElementById('agy-live-video');
-          if (v) {
-            v.src = blobUrl;
-            v.play().catch(() => {});
-          }
-          renderThemePanels(container);
-        } catch (err) {
-          console.error('Failed to save live video:', err);
+        } else {
+          const reader = new FileReader();
+          reader.onload = () => {
+            applyTheme({ customWp: reader.result, bgMode: 'static', wpEnabled: true });
+            renderThemePanels(container);
+          };
+          reader.readAsDataURL(file);
         }
       });
     }
@@ -1435,6 +1404,10 @@
         bgMode: 'static'
       });
       const defTh = THEMES[DEFAULT_THEME_KEY] || {};
+      const badge = container.querySelector('#agy-bg-format-badge');
+      if (badge) {
+        badge.textContent = `🖼️ Preset: ${DEFAULT_THEME_KEY}`;
+      }
       syncAvPreview(userAvPreview, defTh.userAvatar || '', 'U');
       syncAvPreview(agentAvPreview, defTh.agentAvatar || '', 'AI');
       if (slider) slider.value = 69;
@@ -1467,7 +1440,19 @@
     container.querySelectorAll('.agy-preset-card').forEach(card => {
       card.addEventListener('click', () => {
         const name = card.dataset.name;
-        applyTheme({ themeName: name, bubbleName: name, customWp: '' });
+        const th = THEMES[name] || {};
+        const targetMode = th.bgMode || (th.liveVideo ? 'live' : 'static');
+        applyTheme({
+          themeName: name,
+          bubbleName: name,
+          customWp: '',
+          bgMode: targetMode
+        });
+
+        const badge = container.querySelector('#agy-bg-format-badge');
+        if (badge) {
+          badge.textContent = targetMode === 'live' ? '🎬 Live Video Wallpaper' : `🖼️ Preset: ${name}`;
+        }
 
         container.querySelectorAll('.agy-preset-card').forEach(c => {
           const isSel = c.dataset.name === name;
