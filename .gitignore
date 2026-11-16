@@ -1,0 +1,14 @@
+# Runtime logs and process lock
+daemon.log
+daemon.pid
+*.log
+.DS_Store
+
+# Node & Python caches
+node_modules/
+__pycache__/
+*.pyc
+
+# Local IDE config
+.vscode/
+.idea/

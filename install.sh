@@ -60,7 +60,7 @@ if node "$SCRIPT_DIR/scripts/verify_cdp.js" >/dev/null 2>&1; then
     echo -e "${GREEN}============================================================${NC}"
     echo -e "${GREEN}   CÀI ĐẶT THÀNH CÔNG! GIAO DIỆN ĐÃ ĐƯỢC ÁP DỤNG TRỰC TIẾP!  ${NC}"
     echo -e "${GREEN}============================================================${NC}"
-    echo -e "Theme hiện tại: ${CYAN}Sakura Eyes${NC} (Anime floral starlight)"
+    echo -e "Theme hiện tại: ${CYAN}Midnight Obsidian${NC} (Pure CSS Gradient • Zero-Image Ultra-Light)"
     echo -e "Nút tùy chỉnh: Xem biểu tượng Theme trên thanh Sidebar Antigravity."
 else
     echo ""
