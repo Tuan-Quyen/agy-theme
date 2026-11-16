@@ -387,6 +387,18 @@
     };
   }
 
+  function getThematicCornerSvg(primary, secondary) {
+    const p = encodeURIComponent(primary || '#38bdf8');
+    const s = encodeURIComponent(secondary || primary || '#818cf8');
+    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M2 24 L2 6 Q2 2 6 2 L24 2' stroke='${p}' stroke-width='1.8' fill='none' stroke-linecap='round' opacity='0.92'/%3E%3Cpath d='M5 18 L5 8 Q5 5 8 5 L18 5' stroke='${s}' stroke-width='1.2' fill='none' stroke-linecap='round' opacity='0.78'/%3E%3Ccircle cx='7' cy='7' r='2.2' fill='${p}' opacity='0.95'/%3E%3Ccircle cx='15' cy='3.5' r='1.2' fill='${s}' opacity='0.85'/%3E%3Ccircle cx='3.5' cy='15' r='1.2' fill='${s}' opacity='0.85'/%3E%3C/svg%3E`;
+  }
+
+  function getThematicCrestSvg(primary, secondary) {
+    const p = encodeURIComponent(primary || '#38bdf8');
+    const s = encodeURIComponent(secondary || primary || '#818cf8');
+    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' fill='none'%3E%3Cpath d='M8 18 Q28 8 44 14 Q47 15 50 11 Q53 15 56 14 Q72 8 92 18' stroke='${p}' stroke-width='1.5' stroke-linecap='round' opacity='0.88'/%3E%3Cpath d='M22 15 Q36 6 50 8 Q64 6 78 15' stroke='${s}' stroke-width='1.1' stroke-linecap='round' opacity='0.72'/%3E%3Cpath d='M50 3 L53.5 10 L50 17 L46.5 10 Z' fill='${p}' opacity='0.95'/%3E%3Ccircle cx='50' cy='10' r='1.6' fill='${s}'/%3E%3Ccircle cx='34' cy='11.5' r='1.3' fill='${p}' opacity='0.85'/%3E%3Ccircle cx='66' cy='11.5' r='1.3' fill='${p}' opacity='0.85'/%3E%3C/svg%3E`;
+  }
+
   async function migrateExistingCustomPresets() {
     try {
       const presets = JSON.parse(localStorage.getItem(STORAGE_CUSTOM_PRESETS) || '{}');
@@ -482,23 +494,30 @@
   const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
 
   const INPUT_STYLES = {
-    'sync': {
-      label: 'Synced Ornament Frame',
-      desc: 'Follows the active theme borders & decorative SVG ornament'
+    'thematic': {
+      label: 'Thematic Composer Frame',
+      desc: 'Dual-line border and glowing frame strictly tuned to active theme colors'
     },
-    'double_gold': {
-      label: 'Amber Gold Double Border',
-      desc: 'Warm metallic double border with corner filigree'
+    'ornamental': {
+      label: 'Ornamental Composer Frame',
+      desc: 'Intricate SVG corner filigrees & decorative crest flourished with theme accents'
     },
     'glass': {
       label: 'Translucent Crystal Glass',
-      desc: 'Lets more of your background artwork shine through'
+      desc: 'Lets more of your background artwork shine through with frosted transparency'
     },
     'minimal': {
       label: 'Minimal Clean',
-      desc: 'Sleek subtle border without top decorative stickers'
+      desc: 'Sleek hairline border without corner ornaments or top decorative crests'
     }
   };
+
+  function normalizeInputStyle(rawStyle) {
+    if (rawStyle === 'sync') return 'thematic';
+    if (rawStyle === 'double_gold') return 'ornamental';
+    if (INPUT_STYLES[rawStyle]) return rawStyle;
+    return 'thematic';
+  }
 
   function getState() {
     const init = window.__AGY_INITIAL_CONFIG__ || {};
@@ -509,7 +528,8 @@
     const themeName = allThemes[rawTheme] ? rawTheme : defKey;
     const rawBubble = localStorage.getItem(STORAGE_BUBBLE) || init.bubbleName || themeName;
     const bubbleName = allThemes[rawBubble] ? rawBubble : themeName;
-    const inputStyle = localStorage.getItem(STORAGE_INPUT) || init.inputStyle || 'sync';
+    const rawInput = localStorage.getItem(STORAGE_INPUT) || init.inputStyle || 'thematic';
+    const inputStyle = normalizeInputStyle(rawInput);
     const dimming = parseInt(localStorage.getItem(STORAGE_DIMMING) || (init.dimming !== undefined ? init.dimming : '69'), 10);
     const wpEnabled = localStorage.getItem(STORAGE_WP_ENABLED) !== null
       ? localStorage.getItem(STORAGE_WP_ENABLED) !== 'false'
@@ -754,122 +774,132 @@
       }
     `;
 
-    const defaultCornerSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M2 20 L2 6 Q2 2 6 2 L20 2' stroke='%23fbbf24' stroke-width='1.5' fill='none' opacity='0.65'/%3E%3Ccircle cx='6' cy='6' r='2' fill='%23fbbf24' opacity='0.75'/%3E%3C/svg%3E";
-    const cornerFiligreeUrl = bubbleTheme.cornerSvg || defaultCornerSvg;
+    const curInputStyle = normalizeInputStyle(st.inputStyle);
+    const primaryColor = bubbleTheme.primary || '#38bdf8';
+    const secondaryColor = bubbleTheme.secondary || primaryColor;
+    const cornerFiligreeUrl = bubbleTheme.cornerSvg || getThematicCornerSvg(primaryColor, secondaryColor);
+    const crestOrnamentUrl = bubbleTheme.sticker || getThematicCrestSvg(primaryColor, secondaryColor);
+    const isOrnamental = curInputStyle === 'ornamental';
+    const isThematic = curInputStyle === 'thematic';
+    const isGlass = curInputStyle === 'glass';
+    const isMinimal = curInputStyle === 'minimal';
 
-    const bubbleStickerCss = bubbleTheme.sticker ? (bubbleTheme.isOrnament ? `
+    const bubbleStickerCss = isOrnamental ? `
       .group\\/user-input-step {
         padding-top: 18px !important;
       }
       .agy-user-bubble-frame::before {
         content: "";
         position: absolute;
-        top: ${bubbleTheme.stickerTop}px;
-        right: ${bubbleTheme.stickerRight}px;
-        width: ${bubbleTheme.stickerW}px;
-        height: ${bubbleTheme.stickerH}px;
-        background-image: url("${bubbleTheme.sticker}");
+        top: -11px;
+        right: 14px;
+        width: 76px;
+        height: 18px;
+        background-image: url("${crestOrnamentUrl}");
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
         z-index: 25;
         pointer-events: none;
+        filter: drop-shadow(0 2px 6px ${bubbleTheme.glow});
         transition: transform 0.2s ease;
       }
     ` : `
       .group\\/user-input-step {
-        padding-top: ${Math.max(36, Math.abs(bubbleTheme.stickerTop) + 8)}px !important;
+        padding-top: 4px !important;
       }
-      .agy-user-bubble-frame::before {
-        content: "";
-        position: absolute;
-        top: ${bubbleTheme.stickerTop}px;
-        right: ${bubbleTheme.stickerRight}px;
-        width: ${bubbleTheme.stickerW}px;
-        height: ${bubbleTheme.stickerH}px;
-        background-image: url("${bubbleTheme.sticker}");
-        background-size: contain;
-        background-position: bottom center;
-        background-repeat: no-repeat;
-        z-index: 25;
-        pointer-events: none;
-        transition: transform 0.2s ease;
-      }
-    `) : `
       .agy-user-bubble-frame::before { display: none !important; }
     `;
 
-    const showInputSticker = st.inputStyle !== 'minimal' && bubbleTheme.sticker;
-    const inputStickerCss = showInputSticker ? (bubbleTheme.isOrnament ? `
+    const inputStickerCss = isOrnamental ? `
       .surface-composer {
-        margin-top: 16px !important;
+        margin-top: 18px !important;
         overflow: visible !important;
       }
       .surface-composer::before {
         content: "";
         position: absolute;
-        top: ${bubbleTheme.stickerTop}px;
-        right: 16px;
-        width: ${bubbleTheme.stickerW + 8}px;
-        height: ${bubbleTheme.stickerH + 2}px;
-        background-image: url("${bubbleTheme.sticker}");
+        top: -12px;
+        right: 28px;
+        width: 96px;
+        height: 22px;
+        background-image: url("${crestOrnamentUrl}");
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
         z-index: 30;
         pointer-events: none;
+        filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
       }
       .surface-composer::after {
         content: "";
         position: absolute;
-        bottom: 3px;
+        top: 3px;
         left: 4px;
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
+        background-image: url("${cornerFiligreeUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 25;
+        pointer-events: none;
+        opacity: 0.92;
+      }
+      .surface-composer-card::after {
+        content: "";
+        position: absolute;
+        bottom: 3px;
+        right: 4px;
+        width: 18px;
+        height: 18px;
         background-image: url("${cornerFiligreeUrl}");
         background-size: contain;
         background-repeat: no-repeat;
         transform: rotate(180deg);
         z-index: 25;
         pointer-events: none;
-        opacity: 0.78;
+        opacity: 0.85;
       }
-    ` : `
+    ` : (isThematic ? `
       .surface-composer {
-        margin-top: 28px !important;
+        margin-top: 6px !important;
         overflow: visible !important;
       }
-      .surface-composer::before {
+      .surface-composer::before { display: none !important; }
+      .surface-composer::after {
         content: "";
         position: absolute;
-        top: ${bubbleTheme.stickerTop - 4}px;
-        right: 16px;
-        width: ${bubbleTheme.stickerW + 6}px;
-        height: ${bubbleTheme.stickerH + 6}px;
-        background-image: url("${bubbleTheme.sticker}");
+        top: 3px;
+        left: 4px;
+        width: 16px;
+        height: 16px;
+        background-image: url("${cornerFiligreeUrl}");
         background-size: contain;
-        background-position: bottom center;
         background-repeat: no-repeat;
-        z-index: 30;
+        z-index: 25;
         pointer-events: none;
+        opacity: 0.75;
       }
-      .surface-composer::after { display: none !important; }
-    `) : `
+      .surface-composer-card::after { display: none !important; }
+    ` : `
       .surface-composer::before,
-      .surface-composer::after { display: none !important; }
-    `;
+      .surface-composer::after,
+      .surface-composer-card::after { display: none !important; }
+    `);
 
     const inputCardBg =
-      st.inputStyle === 'glass'
-        ? (bubbleTheme.inputGlassBg || 'rgba(20, 15, 13, 0.52)')
-        : st.inputStyle === 'double_gold'
-        ? 'linear-gradient(145deg, rgba(44, 28, 20, 0.90) 0%, rgba(24, 15, 12, 0.92) 100%)'
-        : (bubbleTheme.inputCardBg || 'rgba(28, 19, 16, 0.88)');
+      isGlass
+        ? (bubbleTheme.inputGlassBg || 'rgba(16, 20, 30, 0.48)')
+        : (bubbleTheme.inputCardBg || 'rgba(18, 24, 38, 0.90)');
 
     const inputOuterBorder =
-      st.inputStyle === 'double_gold'
-        ? 'linear-gradient(135deg, #f59e0b 0%, rgba(217, 119, 6, 0.35) 50%, #fbbf24 100%)'
-        : bubbleTheme.frameBg;
+      isOrnamental
+        ? `linear-gradient(135deg, ${primaryColor}f0 0%, ${secondaryColor}d9 35%, ${primaryColor}c8 65%, ${secondaryColor}f0 100%)`
+        : isThematic
+        ? bubbleTheme.frameBg
+        : isGlass
+        ? 'rgba(255, 255, 255, 0.16)'
+        : 'rgba(255, 255, 255, 0.12)';
 
     const sidebarBg = mainTheme.sidebarBg || 'rgba(14, 10, 8, 0.68)';
     const sidebarHoverBg = mainTheme.sidebarHoverBg || 'rgba(255, 255, 255, 0.08)';
@@ -1134,48 +1164,71 @@
 
       /* User Chat Bubble Double-Border Frame & Ornament */
       .agy-user-bubble-frame {
-        background: ${bubbleTheme.frameBg} !important;
+        background: ${isOrnamental
+          ? `linear-gradient(135deg, ${primaryColor}f0 0%, ${secondaryColor}d9 50%, ${primaryColor}f0 100%)`
+          : isThematic
+          ? bubbleTheme.frameBg
+          : (isGlass ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.12)')
+        } !important;
         border-radius: ${bubbleTheme.isScroll ? '6px' : '14px'} !important;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), 0 0 12px ${bubbleTheme.glow} !important;
+        box-shadow: ${isOrnamental
+          ? `0 6px 24px rgba(0, 0, 0, 0.55), 0 0 16px ${bubbleTheme.glow}`
+          : isThematic
+          ? `0 4px 18px rgba(0, 0, 0, 0.45), 0 0 12px ${bubbleTheme.glow}`
+          : `0 2px 10px rgba(0, 0, 0, 0.3)`
+        } !important;
         position: relative !important;
         overflow: visible !important;
-        padding: 1.2px !important;
+        padding: ${isOrnamental ? '1.5px' : isThematic ? '1.2px' : '1px'} !important;
       }
 
       .agy-user-bubble-frame::after {
+        ${(isOrnamental || isThematic) ? `
         content: "";
         position: absolute;
         top: 3px;
         left: 3px;
-        width: ${bubbleTheme.isOrnament ? '16px' : '14px'};
-        height: ${bubbleTheme.isOrnament ? '16px' : '14px'};
+        width: ${isOrnamental ? '18px' : '15px'};
+        height: ${isOrnamental ? '18px' : '15px'};
         background-image: url("${cornerFiligreeUrl}");
         background-size: contain;
         background-repeat: no-repeat;
         pointer-events: none;
-        opacity: ${bubbleTheme.isOrnament ? '0.85' : '0.65'};
+        opacity: ${isOrnamental ? '0.92' : '0.75'};
+        z-index: 25;
+        ` : 'display: none !important;'}
       }
 
       .agy-user-bubble {
-        background: ${bubbleTheme.bg} !important;
+        background: ${isGlass
+          ? (bubbleTheme.inputGlassBg || 'rgba(14, 18, 28, 0.55)')
+          : isMinimal
+          ? 'rgba(16, 18, 26, 0.94)'
+          : bubbleTheme.bg
+        } !important;
         border-radius: ${bubbleTheme.isScroll ? '5px' : '13px'} !important;
         padding: 8px 16px !important;
-        color: ${bubbleTheme.textColor} !important;
-        border: ${innerBubbleBorder} !important;
+        color: ${bubbleTheme.textColor || '#f8fafc'} !important;
+        border: ${isGlass ? '1px solid rgba(255, 255, 255, 0.1)' : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')} !important;
         overflow: visible !important;
         font-weight: 450 !important;
       }
 
       .agy-user-bubble * {
-        color: ${bubbleTheme.textColor} !important;
+        color: ${bubbleTheme.textColor || '#f8fafc'} !important;
       }
 
       /* Double-Border Input Composer */
       .surface-composer {
         background: ${inputOuterBorder} !important;
         border-radius: 16px !important;
-        padding: 1.5px !important;
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${bubbleTheme.glow} !important;
+        padding: ${isOrnamental ? '1.8px' : isThematic ? '1.5px' : '1px'} !important;
+        box-shadow: ${isOrnamental
+          ? `0 8px 30px rgba(0, 0, 0, 0.55), 0 0 18px ${bubbleTheme.glow}, 0 0 32px ${bubbleTheme.secondaryGlow || bubbleTheme.glow}`
+          : isThematic
+          ? `0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${bubbleTheme.glow}`
+          : `0 2px 12px rgba(0, 0, 0, 0.3)`
+        } !important;
         position: relative !important;
       }
 
@@ -1183,7 +1236,13 @@
         background: ${inputCardBg} !important;
         backdrop-filter: none !important;
         border-radius: 14.5px !important;
-        border: ${bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.07)'} !important;
+        position: relative !important;
+        border: ${isGlass
+          ? '1px solid rgba(255, 255, 255, 0.08)'
+          : isMinimal
+          ? '1px solid rgba(255, 255, 255, 0.06)'
+          : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')
+        } !important;
       }
 
       /* High-contrast pill badges for top composer bar (adaptive light/dark theme) */
@@ -1481,6 +1540,7 @@
 
   function renderThemePanels(container) {
     const st = getState();
+    const curInputStyle = normalizeInputStyle(st.inputStyle);
     const allThemes = getAllThemes();
     const allThemeKeys = Object.keys(allThemes);
     const mainTheme = allThemes[st.themeName] || allThemes[DEFAULT_THEME_KEY] || {};
@@ -1565,15 +1625,39 @@
             ${allThemeKeys.map(name => {
               const th = allThemes[name] || {};
               const isSelected = name === st.bubbleName;
-              const stickerTop = th.isOrnament ? Math.round((th.stickerTop || 0) * 0.85) : Math.round((th.stickerTop || 0) * 0.74);
-              const stickerW = Math.round((th.stickerW || 0) * 0.78);
-              const stickerH = th.isOrnament ? Math.round((th.stickerH || 0) * 0.8) : Math.round((th.stickerH || 0) * 0.78);
+              const bp = th.primary || '#38bdf8';
+              const bs = th.secondary || bp;
+              const bCornerSvg = th.cornerSvg || getThematicCornerSvg(bp, bs);
+              const bCrestSvg = th.sticker || getThematicCrestSvg(bp, bs);
+
+              let bOuterBg = '';
+              let bOuterShadow = '';
+              let bInnerBg = '';
+              if (curInputStyle === 'ornamental') {
+                bOuterBg = `linear-gradient(135deg, ${bp}f0 0%, ${bs}d9 50%, ${bp}f0 100%)`;
+                bOuterShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 12px ${th.glow || bp}`;
+                bInnerBg = th.bg || 'rgba(17, 24, 39, 0.9)';
+              } else if (curInputStyle === 'thematic') {
+                bOuterBg = th.frameBg || `linear-gradient(135deg, ${bp}, ${bs})`;
+                bOuterShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow || bp}`;
+                bInnerBg = th.bg || 'rgba(17, 24, 39, 0.9)';
+              } else if (curInputStyle === 'glass') {
+                bOuterBg = 'rgba(255, 255, 255, 0.16)';
+                bOuterShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                bInnerBg = th.inputGlassBg || 'rgba(14, 18, 28, 0.55)';
+              } else {
+                bOuterBg = 'rgba(255, 255, 255, 0.12)';
+                bOuterShadow = 'none';
+                bInnerBg = 'rgba(16, 18, 26, 0.94)';
+              }
+
               return `
-                <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 24px 18px 14px 18px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; transition: border-color 0.15s ease, background-color 0.15s ease;">
+                <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 22px 18px 14px 18px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; transition: border-color 0.15s ease, background-color 0.15s ease;">
                   <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 6px; margin-bottom: 10px;">
-                    <div style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : '12px'}; background: ${th.frameBg || 'linear-gradient(135deg, #a78bfa, #38bdf8)'}; box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow || 'rgba(167, 139, 250, 0.24)'};">
-                      <div style="position: relative; width: 100%; height: 100%; background: ${th.bg || 'rgba(17, 24, 39, 0.9)'}; border: ${th.innerBorder || '1px solid ' + (th.borderColor || 'rgba(167, 139, 250, 0.34)')}; border-radius: ${th.isScroll ? '4px' : '11px'}; display: flex; align-items: center; padding: 0 16px;">
-                        ${th.sticker ? `<div style="position: absolute; top: ${stickerTop}px; right: 8px; width: ${stickerW}px; height: ${stickerH}px; background-image: url('${th.sticker}'); background-size: contain; background-position: ${th.isOrnament ? 'center' : 'bottom center'}; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
+                    <div class="agy-bubble-preview-outer" style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : '12px'}; background: ${bOuterBg}; box-shadow: ${bOuterShadow};">
+                      <div class="agy-bubble-preview-crest" style="position: absolute; top: -8px; right: 10px; width: 56px; height: 14px; background-image: url('${bCrestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; filter: drop-shadow(0 2px 5px ${th.glow || bp}); display: ${curInputStyle === 'ornamental' ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
+                      <div class="agy-bubble-preview-corner" style="position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background-image: url('${bCornerSvg}'); background-size: contain; background-repeat: no-repeat; opacity: ${curInputStyle === 'ornamental' ? '0.92' : '0.75'}; display: ${(curInputStyle === 'ornamental' || curInputStyle === 'thematic') ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
+                      <div class="agy-bubble-preview-inner" style="position: relative; width: 100%; height: 100%; background: ${bInnerBg}; border: ${th.innerBorder || '1px solid ' + (th.borderColor || 'rgba(167, 139, 250, 0.34)')}; border-radius: ${th.isScroll ? '4px' : '11px'}; display: flex; align-items: center; padding: 0 16px;">
                         <span style="font-size: 13.5px; font-weight: 500; color: ${th.textColor || '#fff'};">Hello ✨</span>
                       </div>
                     </div>
@@ -1593,21 +1677,54 @@
           <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Customize the chat input frame without affecting keyboard shortcuts or attachments.</div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
             ${Object.entries(INPUT_STYLES).map(([key, item]) => {
-              const isSelected = key === st.inputStyle;
+              const isSelected = key === curInputStyle;
               const activeBubbleTh = allThemes[st.bubbleName] || mainTheme;
-              const previewStickerStyle = activeBubbleTh.isOrnament
-                ? 'top: -12px; right: 10px; width: 72px; height: 22px; background-position: center;'
-                : 'top: -22px; right: 10px; width: 32px; height: 28px; background-position: bottom center;';
-              const previewInnerBg = key === 'glass'
-                ? (activeBubbleTh.inputGlassBg || 'rgba(20, 15, 13, 0.45)')
-                : (activeBubbleTh.inputCardBg || 'rgba(26, 18, 15, 0.92)');
+              const p = activeBubbleTh.primary || '#38bdf8';
+              const s = activeBubbleTh.secondary || p;
+              const cornerSvg = activeBubbleTh.cornerSvg || getThematicCornerSvg(p, s);
+              const crestSvg = activeBubbleTh.sticker || getThematicCrestSvg(p, s);
+
+              let previewOuterBg = '';
+              let previewOuterShadow = '';
+              let previewInnerBg = '';
+              let showCrest = false;
+              let showCorner = false;
+
+              if (key === 'ornamental') {
+                previewOuterBg = `linear-gradient(135deg, ${p}f0 0%, ${s}d9 35%, ${p}c8 65%, ${s}f0 100%)`;
+                previewOuterShadow = `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${activeBubbleTh.glow || p}`;
+                previewInnerBg = activeBubbleTh.inputCardBg || 'rgba(26, 18, 15, 0.92)';
+                showCrest = true;
+                showCorner = true;
+              } else if (key === 'thematic') {
+                previewOuterBg = activeBubbleTh.frameBg || `linear-gradient(135deg, ${p}, ${s})`;
+                previewOuterShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${activeBubbleTh.glow || p}`;
+                previewInnerBg = activeBubbleTh.inputCardBg || 'rgba(26, 18, 15, 0.92)';
+                showCrest = false;
+                showCorner = true;
+              } else if (key === 'glass') {
+                previewOuterBg = 'rgba(255, 255, 255, 0.16)';
+                previewOuterShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                previewInnerBg = activeBubbleTh.inputGlassBg || 'rgba(20, 15, 13, 0.45)';
+                showCrest = false;
+                showCorner = false;
+              } else { // minimal
+                previewOuterBg = 'rgba(255, 255, 255, 0.12)';
+                previewOuterShadow = 'none';
+                previewInnerBg = 'rgba(18, 20, 28, 0.94)';
+                showCrest = false;
+                showCorner = false;
+              }
+
               return `
                 <div class="agy-input-card" data-style="${key}" style="border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 16px 18px; cursor: pointer; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s ease, background-color 0.15s ease;">
-                  <div class="agy-input-preview-outer" style="position: relative; margin-top: 8px; padding: 1.5px; border-radius: 10px; background: ${key === 'double_gold' ? 'linear-gradient(135deg, #f59e0b, #fbbf24)' : activeBubbleTh.frameBg};">
-                    <div class="agy-input-preview-sticker" style="position: absolute; ${previewStickerStyle} background-image: url('${activeBubbleTh.sticker || ''}'); background-size: contain; background-repeat: no-repeat; display: ${key !== 'minimal' && activeBubbleTh.sticker ? 'block' : 'none'}; pointer-events: none;"></div>
+                  <div class="agy-input-preview-outer" style="position: relative; margin-top: 8px; padding: 1.5px; border-radius: 10px; background: ${previewOuterBg}; box-shadow: ${previewOuterShadow};">
+                    <div class="agy-input-preview-crest" style="position: absolute; top: -10px; right: 14px; width: 68px; height: 16px; background-image: url('${crestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; display: ${showCrest ? 'block' : 'none'}; pointer-events: none; z-index: 5; filter: drop-shadow(0 2px 6px ${activeBubbleTh.glow || p});"></div>
+                    <div class="agy-input-preview-corner-bl" style="position: absolute; bottom: 2px; right: 2px; width: 13px; height: 13px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; transform: rotate(180deg); display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
+                    <div class="agy-input-preview-corner-tl" style="position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
                     <div class="agy-input-preview-inner" style="background: ${previewInnerBg}; border-radius: 9px; padding: 8px 12px; font-size: 12px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;">
                       <span>Ask anything, @ to mention...</span>
-                      <span class="agy-input-preview-turbo" style="color: ${activeBubbleTh.primary}; font-size: 11px;">Send →</span>
+                      <span class="agy-input-preview-turbo" style="color: ${p}; font-size: 11px;">Send →</span>
                     </div>
                   </div>
                   <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1666,43 +1783,98 @@
     function updateInputPreviews(bName) {
       const allTh = getAllThemes();
       const activeTh = allTh[bName] || allTh[DEFAULT_THEME_KEY] || {};
+      const p = activeTh.primary || '#38bdf8';
+      const s = activeTh.secondary || p;
+      const cornerSvg = activeTh.cornerSvg || getThematicCornerSvg(p, s);
+      const crestSvg = activeTh.sticker || getThematicCrestSvg(p, s);
+      const curStyle = normalizeInputStyle(getState().inputStyle);
+
       container.querySelectorAll('.agy-input-card').forEach(card => {
         const key = card.dataset.style;
         const outer = card.querySelector('.agy-input-preview-outer');
         if (outer) {
-          outer.style.background = key === 'double_gold'
-            ? 'linear-gradient(135deg, #f59e0b, #fbbf24)'
-            : activeTh.frameBg;
+          if (key === 'ornamental') {
+            outer.style.background = `linear-gradient(135deg, ${p}f0 0%, ${s}d9 35%, ${p}c8 65%, ${s}f0 100%)`;
+            outer.style.boxShadow = `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${activeTh.glow || p}`;
+          } else if (key === 'thematic') {
+            outer.style.background = activeTh.frameBg || `linear-gradient(135deg, ${p}, ${s})`;
+            outer.style.boxShadow = `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${activeTh.glow || p}`;
+          } else if (key === 'glass') {
+            outer.style.background = 'rgba(255, 255, 255, 0.16)';
+            outer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+          } else {
+            outer.style.background = 'rgba(255, 255, 255, 0.12)';
+            outer.style.boxShadow = 'none';
+          }
         }
         const inner = card.querySelector('.agy-input-preview-inner');
         if (inner) {
           inner.style.background = key === 'glass'
             ? (activeTh.inputGlassBg || 'rgba(20, 15, 13, 0.45)')
+            : key === 'minimal'
+            ? 'rgba(18, 20, 28, 0.94)'
             : (activeTh.inputCardBg || 'rgba(26, 18, 15, 0.92)');
         }
-        const sticker = card.querySelector('.agy-input-preview-sticker');
-        if (sticker) {
-          if (key !== 'minimal' && activeTh.sticker) {
-            sticker.style.display = 'block';
-            sticker.style.backgroundImage = `url('${activeTh.sticker}')`;
-            if (activeTh.isOrnament) {
-              sticker.style.top = '-12px';
-              sticker.style.width = '72px';
-              sticker.style.height = '22px';
-              sticker.style.backgroundPosition = 'center';
-            } else {
-              sticker.style.top = '-22px';
-              sticker.style.width = '32px';
-              sticker.style.height = '28px';
-              sticker.style.backgroundPosition = 'bottom center';
-            }
-          } else {
-            sticker.style.display = 'none';
-          }
+        const crest = card.querySelector('.agy-input-preview-crest');
+        if (crest) {
+          crest.style.backgroundImage = `url('${crestSvg}')`;
+          crest.style.filter = `drop-shadow(0 2px 6px ${activeTh.glow || p})`;
+          crest.style.display = key === 'ornamental' ? 'block' : 'none';
+        }
+        const cBl = card.querySelector('.agy-input-preview-corner-bl');
+        if (cBl) {
+          cBl.style.backgroundImage = `url('${cornerSvg}')`;
+          cBl.style.display = (key === 'ornamental' || key === 'thematic') ? 'block' : 'none';
+        }
+        const cTl = card.querySelector('.agy-input-preview-corner-tl');
+        if (cTl) {
+          cTl.style.backgroundImage = `url('${cornerSvg}')`;
+          cTl.style.display = (key === 'ornamental' || key === 'thematic') ? 'block' : 'none';
         }
         const turbo = card.querySelector('.agy-input-preview-turbo');
         if (turbo) {
-          turbo.style.color = activeTh.primary;
+          turbo.style.color = p;
+        }
+      });
+
+      container.querySelectorAll('.agy-bubble-card').forEach(bCard => {
+        const thName = bCard.dataset.name;
+        const th = allTh[thName] || {};
+        const bp = th.primary || '#38bdf8';
+        const bs = th.secondary || bp;
+        const bCornerSvg = th.cornerSvg || getThematicCornerSvg(bp, bs);
+        const bCrestSvg = th.sticker || getThematicCrestSvg(bp, bs);
+
+        const bOuter = bCard.querySelector('.agy-bubble-preview-outer');
+        if (bOuter) {
+          bOuter.style.background = curStyle === 'ornamental'
+            ? `linear-gradient(135deg, ${bp}f0 0%, ${bs}d9 50%, ${bp}f0 100%)`
+            : curStyle === 'thematic'
+            ? (th.frameBg || `linear-gradient(135deg, ${bp}, ${bs})`)
+            : (curStyle === 'glass' ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.12)');
+          bOuter.style.boxShadow = curStyle === 'ornamental'
+            ? `0 4px 14px rgba(0,0,0,0.45), 0 0 12px ${th.glow || bp}`
+            : curStyle === 'thematic'
+            ? `0 4px 14px rgba(0,0,0,0.45), 0 0 10px ${th.glow || bp}`
+            : '0 2px 8px rgba(0,0,0,0.3)';
+        }
+        const bInner = bCard.querySelector('.agy-bubble-preview-inner');
+        if (bInner) {
+          bInner.style.background = curStyle === 'glass'
+            ? (th.inputGlassBg || 'rgba(14, 18, 28, 0.55)')
+            : curStyle === 'minimal'
+            ? 'rgba(16, 18, 26, 0.94)'
+            : (th.bg || 'rgba(17, 24, 39, 0.9)');
+        }
+        const bCrest = bCard.querySelector('.agy-bubble-preview-crest');
+        if (bCrest) {
+          bCrest.style.backgroundImage = `url('${bCrestSvg}')`;
+          bCrest.style.display = curStyle === 'ornamental' ? 'block' : 'none';
+        }
+        const bCorner = bCard.querySelector('.agy-bubble-preview-corner');
+        if (bCorner) {
+          bCorner.style.backgroundImage = `url('${bCornerSvg}')`;
+          bCorner.style.display = (curStyle === 'ornamental' || curStyle === 'thematic') ? 'block' : 'none';
         }
       });
     }
@@ -1729,6 +1901,7 @@
         const isVideo = (file.type && file.type.startsWith('video/')) ||
           /\.(mp4|webm|mov|m4v)$/i.test(file.name || '');
         const themeName = formatThemeName(file.name);
+        const curStyle = normalizeInputStyle(getState().inputStyle);
 
         if (isVideo) {
           try {
@@ -1763,7 +1936,7 @@
               v.play().catch(() => {});
             }
 
-            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: 'sync', customWp: '', bgMode: 'live', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: curStyle, customWp: '', bgMode: 'live', wpEnabled: true });
             renderThemePanels(container);
           } catch (err) {
             console.error('Failed to save live video preset:', err);
@@ -1783,7 +1956,7 @@
               ...palette
             };
             saveCustomPreset(newPreset);
-            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: 'sync', customWp: '', bgMode: 'static', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: curStyle, customWp: '', bgMode: 'static', wpEnabled: true });
             renderThemePanels(container);
           };
           reader.readAsDataURL(file);
@@ -1855,10 +2028,11 @@
       localStorage.removeItem(STORAGE_DIMMING);
       localStorage.removeItem(STORAGE_WP_ENABLED);
       localStorage.removeItem(STORAGE_BG_MODE);
+      const defStyle = 'thematic';
       applyTheme({
         themeName: DEFAULT_THEME_KEY,
         bubbleName: DEFAULT_THEME_KEY,
-        inputStyle: 'sync',
+        inputStyle: defStyle,
         dimming: 69,
         wpEnabled: true,
         customWp: '',
@@ -1892,7 +2066,7 @@
         if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
       });
       container.querySelectorAll('.agy-input-card').forEach(c => {
-        const isSel = c.dataset.style === 'sync';
+        const isSel = c.dataset.style === defStyle;
         c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
         c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
         const slot = c.querySelector('.agy-card-check-slot');
@@ -1907,10 +2081,11 @@
         const allTh = getAllThemes();
         const th = allTh[name] || {};
         const targetMode = th.bgMode || (th.liveVideo ? 'live' : 'static');
+        const curStyle = normalizeInputStyle(getState().inputStyle);
         applyTheme({
           themeName: name,
           bubbleName: name,
-          inputStyle: 'sync',
+          inputStyle: curStyle,
           customWp: '',
           bgMode: targetMode
         });
@@ -1936,7 +2111,7 @@
         });
 
         container.querySelectorAll('.agy-input-card').forEach(c => {
-          const isSel = c.dataset.style === 'sync';
+          const isSel = c.dataset.style === curStyle;
           c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
           c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
           const slot = c.querySelector('.agy-card-check-slot');
@@ -1985,7 +2160,7 @@
 
     container.querySelectorAll('.agy-input-card').forEach(card => {
       card.addEventListener('click', () => {
-        const styleKey = card.dataset.style;
+        const styleKey = normalizeInputStyle(card.dataset.style);
         applyTheme({ inputStyle: styleKey });
 
         container.querySelectorAll('.agy-input-card').forEach(c => {
@@ -1995,6 +2170,9 @@
           const slot = c.querySelector('.agy-card-check-slot');
           if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
         });
+
+        const curBubble = getState().bubbleName;
+        updateInputPreviews(curBubble);
       });
     });
   }
