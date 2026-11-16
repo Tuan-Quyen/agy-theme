@@ -13,8 +13,49 @@
   const STORAGE_AGENT_AVATAR = 'agy_agent_avatar_v3';
   const STORAGE_BG_MODE = 'agy_bg_mode_v3';
 
+  const STORAGE_CUSTOM_PRESETS = 'agy_custom_presets_v1';
   const LIVE_DB_NAME = 'agy_live_wallpaper_db_v1';
   const LIVE_STORE_NAME = 'videos';
+
+  function getCustomPresets() {
+    try {
+      const fromLocal = JSON.parse(localStorage.getItem(STORAGE_CUSTOM_PRESETS) || '{}');
+      const fromInit = (window.__AGY_INITIAL_CONFIG__ && window.__AGY_INITIAL_CONFIG__.customPresets) || {};
+      return { ...fromInit, ...fromLocal };
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function saveCustomPreset(preset) {
+    try {
+      const presets = getCustomPresets();
+      presets[preset.name] = preset;
+      localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
+      if (window.agySaveThemeConfig) {
+        window.agySaveThemeConfig(JSON.stringify({ customPresets: presets }));
+      }
+    } catch (_) {}
+  }
+
+  function removeCustomPreset(presetName) {
+    try {
+      const presets = getCustomPresets();
+      const p = presets[presetName];
+      if (p && p.videoKey) {
+        deleteLiveVideoBlob(p.videoKey);
+      }
+      delete presets[presetName];
+      localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
+      if (window.agySaveThemeConfig) {
+        window.agySaveThemeConfig(JSON.stringify({ customPresets: presets }));
+      }
+    } catch (_) {}
+  }
+
+  function getAllThemes() {
+    return { ...THEMES, ...getCustomPresets() };
+  }
 
   function openLiveDb() {
     return new Promise((resolve, reject) => {
@@ -30,22 +71,22 @@
     });
   }
 
-  async function saveLiveVideoBlob(blob) {
+  async function saveLiveVideoBlob(blob, key = 'active_live_mp4') {
     const db = await openLiveDb();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(LIVE_STORE_NAME, 'readwrite');
-      tx.objectStore(LIVE_STORE_NAME).put(blob, 'active_live_mp4');
+      tx.objectStore(LIVE_STORE_NAME).put(blob, key);
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
   }
 
-  async function getLiveVideoBlob() {
+  async function getLiveVideoBlob(key = 'active_live_mp4') {
     try {
       const db = await openLiveDb();
       return new Promise((resolve, reject) => {
         const tx = db.transaction(LIVE_STORE_NAME, 'readonly');
-        const req = tx.objectStore(LIVE_STORE_NAME).get('active_live_mp4');
+        const req = tx.objectStore(LIVE_STORE_NAME).get(key);
         req.onsuccess = () => resolve(req.result || null);
         req.onerror = () => reject(req.error);
       });
@@ -54,8 +95,77 @@
     }
   }
 
-  // Pre-load live video blob state
-  getLiveVideoBlob().then((blob) => {
+  async function deleteLiveVideoBlob(key) {
+    try {
+      const db = await openLiveDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(LIVE_STORE_NAME, 'readwrite');
+        tx.objectStore(LIVE_STORE_NAME).delete(key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (_) {}
+  }
+
+  function extractVideoThumbnail(file) {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.muted = true;
+      video.playsInline = true;
+      const url = URL.createObjectURL(file);
+      video.src = url;
+
+      let resolved = false;
+      const done = (thumb) => {
+        if (resolved) return;
+        resolved = true;
+        URL.revokeObjectURL(url);
+        video.remove();
+        resolve(thumb);
+      };
+
+      video.onloadeddata = () => {
+        try {
+          video.currentTime = Math.min(0.5, (video.duration || 1) / 2);
+        } catch (_) {
+          capture();
+        }
+      };
+
+      video.onseeked = () => {
+        capture();
+      };
+
+      function capture() {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 320;
+          canvas.height = 180;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, 320, 180);
+          const thumb = canvas.toDataURL('image/webp', 0.85);
+          done(thumb);
+        } catch (_) {
+          done('');
+        }
+      }
+
+      video.onerror = () => done('');
+      setTimeout(() => done(''), 2000);
+    });
+  }
+
+  function formatThemeName(filename) {
+    let base = filename.replace(/\.[^/.]+$/, '');
+    base = base.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+    base = base.replace(/\b(moewalls|com|net|org|wallpaper|1080p|4k|hd)\b/gi, '').trim();
+    base = base.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+    return (base.replace(/\b\w/g, c => c.toUpperCase()) || 'Custom Theme').slice(0, 30);
+  }
+
+  // Pre-load live video blob state & register existing video if needed
+  getLiveVideoBlob('active_live_mp4').then(async (blob) => {
     if (blob) {
       window.__AGY_HAS_LIVE_VIDEO__ = true;
       if (!window.__AGY_ACTIVE_BLOB_URL__) {
@@ -67,6 +177,31 @@
         if (getState().bgMode === 'live' && getState().wpEnabled && !document.hidden) {
           v.play().catch(() => {});
         }
+      }
+      // Auto-register legacy uploaded video if customPresets is currently empty
+      const existingCustom = getCustomPresets();
+      if (Object.keys(existingCustom).length === 0) {
+        const thumb = await extractVideoThumbnail(blob);
+        saveCustomPreset({
+          id: 'custom_live_init',
+          name: 'Hiyuki Frost Blade',
+          isCustom: true,
+          bgMode: 'live',
+          videoKey: 'active_live_mp4',
+          wallpaper: thumb,
+          concept: 'Custom Live Wallpaper • MP4',
+          primary: '#c084fc',
+          borderColor: 'rgba(192, 132, 252, 0.36)',
+          glow: 'rgba(192, 132, 252, 0.32)',
+          bg: 'linear-gradient(145deg, rgba(20, 14, 34, 0.86) 0%, rgba(12, 8, 22, 0.92) 100%)',
+          frameBg: 'linear-gradient(135deg, rgba(192, 132, 252, 0.75) 0%, rgba(244, 114, 182, 0.60) 50%, rgba(168, 85, 247, 0.70) 100%)',
+          textColor: '#f8fafc',
+          clearBackdrop: true,
+          overlayRgb: '14, 10, 24',
+          unifiedGlass: true,
+          aiCardBg: 'rgba(16, 11, 28, 0.76)',
+          aiCardBorder: 'rgba(192, 132, 252, 0.18)'
+        });
       }
     }
   });
@@ -121,10 +256,13 @@
 
   function getState() {
     const init = window.__AGY_INITIAL_CONFIG__ || {};
-    const rawTheme = localStorage.getItem(STORAGE_THEME) || init.themeName || DEFAULT_THEME_KEY;
-    const themeName = THEMES[rawTheme] ? rawTheme : DEFAULT_THEME_KEY;
+    const allThemes = getAllThemes();
+    const allKeys = Object.keys(allThemes);
+    const defKey = allKeys[0] || DEFAULT_THEME_KEY;
+    const rawTheme = localStorage.getItem(STORAGE_THEME) || init.themeName || defKey;
+    const themeName = allThemes[rawTheme] ? rawTheme : defKey;
     const rawBubble = localStorage.getItem(STORAGE_BUBBLE) || init.bubbleName || themeName;
-    const bubbleName = THEMES[rawBubble] ? rawBubble : themeName;
+    const bubbleName = allThemes[rawBubble] ? rawBubble : themeName;
     const inputStyle = localStorage.getItem(STORAGE_INPUT) || init.inputStyle || 'sync';
     const dimming = parseInt(localStorage.getItem(STORAGE_DIMMING) || (init.dimming !== undefined ? init.dimming : '69'), 10);
     const wpEnabled = localStorage.getItem(STORAGE_WP_ENABLED) !== null
@@ -239,8 +377,9 @@
       } catch (e) {}
     }
 
-    const mainTheme = THEMES[st.themeName] || THEMES[DEFAULT_THEME_KEY];
-    const bubbleTheme = THEMES[st.bubbleName] || mainTheme;
+    const allThemes = getAllThemes();
+    const mainTheme = allThemes[st.themeName] || allThemes[DEFAULT_THEME_KEY] || {};
+    const bubbleTheme = allThemes[st.bubbleName] || mainTheme;
     const wpUrl = st.customWp || mainTheme.wallpaper || '';
 
     const oldLegacy = document.getElementById('antigravity-ho-ly-chibi-theme');
@@ -927,15 +1066,20 @@
         scrim.style.backgroundColor = `rgba(${overlayRgb}, ${overlayAlpha})`;
       }
       if (video) {
-        if (!video.src && window.__AGY_ACTIVE_BLOB_URL__) {
-          video.src = window.__AGY_ACTIVE_BLOB_URL__;
-        }
-        if (!video.src) {
-          getLiveVideoBlob().then((blob) => {
-            if (blob && (!video.src || !video.src.startsWith('blob:'))) {
+        const allThemes = getAllThemes();
+        const activeTheme = allThemes[st.themeName] || {};
+        const targetVideoKey = activeTheme.videoKey || 'active_live_mp4';
+
+        if (video.getAttribute('data-video-key') !== targetVideoKey || !video.src) {
+          getLiveVideoBlob(targetVideoKey).then((blob) => {
+            if (blob) {
               window.__AGY_HAS_LIVE_VIDEO__ = true;
+              if (window.__AGY_ACTIVE_BLOB_URL__) {
+                try { URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__); } catch (_) {}
+              }
               const url = URL.createObjectURL(blob);
               window.__AGY_ACTIVE_BLOB_URL__ = url;
+              video.setAttribute('data-video-key', targetVideoKey);
               video.src = url;
               if (!document.hidden) video.play().catch(() => {});
             }
@@ -1067,7 +1211,9 @@
 
   function renderThemePanels(container) {
     const st = getState();
-    const mainTheme = THEMES[st.themeName] || THEMES[DEFAULT_THEME_KEY];
+    const allThemes = getAllThemes();
+    const allThemeKeys = Object.keys(allThemes);
+    const mainTheme = allThemes[st.themeName] || allThemes[DEFAULT_THEME_KEY] || {};
     const effUserAv = st.userAvatar === 'none' ? '' : (st.userAvatar || mainTheme.userAvatar || '');
     const effAgentAv = st.agentAvatar === 'none' ? '' : (st.agentAvatar || mainTheme.agentAvatar || '');
 
@@ -1082,7 +1228,7 @@
             <!-- Auto-detected Format Badge -->
             <div style="display: flex; align-items: center; gap: 8px;">
               <span id="agy-bg-format-badge" style="font-size: 12px; padding: 4px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); color: #e4e4e7; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;">
-                ${st.bgMode === 'live' ? '🎬 Live Video (MP4)' : (st.customWp ? '🖼️ Custom Image' : `🖼️ Preset: ${st.themeName}`)}
+                ${st.bgMode === 'live' ? `🎬 Live Video: ${st.themeName || 'Custom'}` : `🖼️ Preset: ${st.themeName || 'Custom'}`}
               </span>
             </div>
           </div>
@@ -1203,12 +1349,16 @@
         </div>
 
         <div>
-          <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">Theme Presets (${THEME_KEYS.length})</div>
-          <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Complete backdrop, palette, unified L-glass, and matching ornaments.</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div style="font-size: 15px; font-weight: 600; color: #ffffff;">Theme Presets (${allThemeKeys.length})</div>
+            <span style="font-size: 12px; color: #a1a1aa;">Custom wallpapers are saved here</span>
+          </div>
+          <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Complete backdrop, palette, unified L-glass, and matching ornaments. Click any preset to switch.</div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-            ${THEME_KEYS.map(name => {
-              const th = THEMES[name];
+            ${allThemeKeys.map(name => {
+              const th = allThemes[name] || {};
               const isSelected = name === st.themeName;
+              const isLive = th.bgMode === 'live' || Boolean(th.liveVideo);
               const thumbBg = th.wallpaper
                 ? `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(14,12,12,0.85)), url('${th.wallpaper}')`
                 : (th.pureBg || th.bg);
@@ -1216,13 +1366,23 @@
                 ? 'right: 10px; bottom: 8px; width: 76px; height: 24px; background-position: center;'
                 : 'right: 12px; bottom: 4px; width: 42px; height: 38px; background-position: bottom center;';
               return `
-                <div class="agy-preset-card" data-name="${name}" style="border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease;">
+                <div class="agy-preset-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
                   <div style="height: 68px; width: 100%; background-image: ${thumbBg}; background-size: cover; background-position: ${th.bgPosition || 'center'}; position: relative; display: flex; align-items: flex-end; padding: 8px 14px;">
                     ${th.sticker ? `<div style="position: absolute; ${thumbOrnamentStyle} background-image: url('${th.sticker}'); background-size: contain; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
-                    <span style="font-size: 13.5px; font-weight: 600; color: #fff;">${name}</span>
+                    <div style="display: flex; align-items: center; gap: 6px; z-index: 1;">
+                      <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">${name}</span>
+                      <span style="font-size: 10px; padding: 1.5px 6px; border-radius: 4px; background: ${isLive ? 'rgba(168, 85, 247, 0.35)' : 'rgba(56, 189, 248, 0.25)'}; color: ${isLive ? '#e9d5ff' : '#bae6fd'}; border: 1px solid ${isLive ? 'rgba(168, 85, 247, 0.45)' : 'rgba(56, 189, 248, 0.35)'}; font-weight: 500;">
+                        ${isLive ? '🎬 LIVE' : '🖼️ IMAGE'}
+                      </span>
+                    </div>
+                    ${th.isCustom ? `
+                      <button class="agy-delete-preset-btn" data-preset="${name}" title="Delete preset" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
+                        ✕
+                      </button>
+                    ` : ''}
                   </div>
                   <div style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 12px; color: #a1a1aa;">${th.concept || ''}</span>
+                    <span style="font-size: 12px; color: #a1a1aa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;">${th.concept || ''}</span>
                     <div class="agy-card-check-slot">${isSelected ? CHECK_SVG : ''}</div>
                   </div>
                 </div>
@@ -1234,7 +1394,8 @@
     `;
 
     function updateInputPreviews(bName) {
-      const activeTh = THEMES[bName] || THEMES[DEFAULT_THEME_KEY];
+      const allTh = getAllThemes();
+      const activeTh = allTh[bName] || allTh[DEFAULT_THEME_KEY] || {};
       container.querySelectorAll('.agy-input-card').forEach(card => {
         const key = card.dataset.style;
         const outer = card.querySelector('.agy-input-preview-outer');
@@ -1297,30 +1458,80 @@
 
         const isVideo = (file.type && file.type.startsWith('video/')) ||
           /\.(mp4|webm|mov|m4v)$/i.test(file.name || '');
+        const themeName = formatThemeName(file.name);
 
         if (isVideo) {
           try {
-            await saveLiveVideoBlob(file);
+            const videoKey = 'video_' + Date.now();
+            await saveLiveVideoBlob(file, videoKey);
+            const thumb = await extractVideoThumbnail(file);
+
+            const newPreset = {
+              id: 'custom_' + Date.now(),
+              name: themeName,
+              isCustom: true,
+              bgMode: 'live',
+              videoKey: videoKey,
+              wallpaper: thumb,
+              concept: 'Custom Live Wallpaper • MP4',
+              primary: '#c084fc',
+              borderColor: 'rgba(192, 132, 252, 0.36)',
+              glow: 'rgba(192, 132, 252, 0.32)',
+              bg: 'linear-gradient(145deg, rgba(20, 14, 34, 0.86) 0%, rgba(12, 8, 22, 0.92) 100%)',
+              frameBg: 'linear-gradient(135deg, rgba(192, 132, 252, 0.75) 0%, rgba(244, 114, 182, 0.60) 50%, rgba(168, 85, 247, 0.70) 100%)',
+              textColor: '#f8fafc',
+              clearBackdrop: true,
+              overlayRgb: '14, 10, 24',
+              unifiedGlass: true,
+              aiCardBg: 'rgba(16, 11, 28, 0.76)',
+              aiCardBorder: 'rgba(192, 132, 252, 0.18)'
+            };
+            saveCustomPreset(newPreset);
+
             window.__AGY_HAS_LIVE_VIDEO__ = true;
             if (window.__AGY_ACTIVE_BLOB_URL__) {
-              URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__);
+              try { URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__); } catch (_) {}
             }
             const blobUrl = URL.createObjectURL(file);
             window.__AGY_ACTIVE_BLOB_URL__ = blobUrl;
-            applyTheme({ bgMode: 'live', customWp: '', wpEnabled: true });
+
             const v = document.getElementById('agy-live-video');
             if (v) {
+              v.setAttribute('data-video-key', videoKey);
               v.src = blobUrl;
               v.play().catch(() => {});
             }
+
+            applyTheme({ themeName: themeName, bubbleName: themeName, customWp: '', bgMode: 'live', wpEnabled: true });
             renderThemePanels(container);
           } catch (err) {
-            console.error('Failed to save live video:', err);
+            console.error('Failed to save live video preset:', err);
           }
         } else {
           const reader = new FileReader();
           reader.onload = () => {
-            applyTheme({ customWp: reader.result, bgMode: 'static', wpEnabled: true });
+            const dataUrl = reader.result;
+            const newPreset = {
+              id: 'custom_' + Date.now(),
+              name: themeName,
+              isCustom: true,
+              bgMode: 'static',
+              wallpaper: dataUrl,
+              concept: 'Custom Image Wallpaper',
+              primary: '#38bdf8',
+              borderColor: 'rgba(56, 189, 248, 0.36)',
+              glow: 'rgba(56, 189, 248, 0.32)',
+              bg: 'linear-gradient(145deg, rgba(15, 23, 42, 0.88) 0%, rgba(9, 14, 28, 0.94) 100%)',
+              frameBg: 'linear-gradient(135deg, rgba(56, 189, 248, 0.75) 0%, rgba(129, 140, 248, 0.60) 50%, rgba(14, 165, 233, 0.70) 100%)',
+              textColor: '#f8fafc',
+              clearBackdrop: true,
+              overlayRgb: '10, 14, 22',
+              unifiedGlass: true,
+              aiCardBg: 'rgba(12, 18, 30, 0.78)',
+              aiCardBorder: 'rgba(56, 189, 248, 0.18)'
+            };
+            saveCustomPreset(newPreset);
+            applyTheme({ themeName: themeName, bubbleName: themeName, customWp: '', bgMode: 'static', wpEnabled: true });
             renderThemePanels(container);
           };
           reader.readAsDataURL(file);
@@ -1403,7 +1614,8 @@
         agentAvatar: '',
         bgMode: 'static'
       });
-      const defTh = THEMES[DEFAULT_THEME_KEY] || {};
+      const allTh = getAllThemes();
+      const defTh = allTh[DEFAULT_THEME_KEY] || {};
       const badge = container.querySelector('#agy-bg-format-badge');
       if (badge) {
         badge.textContent = `🖼️ Preset: ${DEFAULT_THEME_KEY}`;
@@ -1440,7 +1652,8 @@
     container.querySelectorAll('.agy-preset-card').forEach(card => {
       card.addEventListener('click', () => {
         const name = card.dataset.name;
-        const th = THEMES[name] || {};
+        const allTh = getAllThemes();
+        const th = allTh[name] || {};
         const targetMode = th.bgMode || (th.liveVideo ? 'live' : 'static');
         applyTheme({
           themeName: name,
@@ -1451,7 +1664,7 @@
 
         const badge = container.querySelector('#agy-bg-format-badge');
         if (badge) {
-          badge.textContent = targetMode === 'live' ? '🎬 Live Video Wallpaper' : `🖼️ Preset: ${name}`;
+          badge.textContent = targetMode === 'live' ? `🎬 Live Video: ${name}` : `🖼️ Preset: ${name}`;
         }
 
         container.querySelectorAll('.agy-preset-card').forEach(c => {
@@ -1470,6 +1683,25 @@
         });
 
         updateInputPreviews(name);
+      });
+    });
+
+    container.querySelectorAll('.agy-delete-preset-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const presetName = btn.dataset.preset;
+        if (!presetName) return;
+        removeCustomPreset(presetName);
+        const st = getState();
+        if (st.themeName === presetName) {
+          applyTheme({
+            themeName: DEFAULT_THEME_KEY,
+            bubbleName: DEFAULT_THEME_KEY,
+            customWp: '',
+            bgMode: 'static'
+          });
+        }
+        renderThemePanels(container);
       });
     });
 
