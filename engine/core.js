@@ -14,29 +14,42 @@
   const STORAGE_BG_MODE = 'agy_bg_mode_v3';
   const STORAGE_ACCESSORY_KIT = 'agy_accessory_kit_v3';
   const STORAGE_ACCESSORY_MODE = 'agy_accessory_mode_v3';
+  const STORAGE_ACC_CREST = 'agy_acc_crest_v3';
+  const STORAGE_ACC_CHARM = 'agy_acc_charm_v3';
+  const STORAGE_ACC_CORNERS = 'agy_acc_corners_v3';
+  const STORAGE_ACC_SEAL = 'agy_acc_seal_v3';
+  const STORAGE_ACC_RAIL = 'agy_acc_rail_v3';
 
   const ACCESSORY_MODES = {
     full: {
       label: 'Full Thematic Set',
       badge: '✦ All',
-      desc: 'All accessories: Hanging Charm, Role Badge, Intelligence Header & Brooch'
+      desc: 'Top Crown Crest, Hanging Charm, Corner Guards, 3D Wax Seal & Luminous Rail'
     },
-    badges: {
-      label: 'Badges & Titles',
-      badge: '🏷 Badges',
-      desc: 'Sender Role Badge + Agent Header Banner (sleek cartouche style)'
-    },
-    charms: {
-      label: 'Charms & Brooches',
+    jewelry: {
+      label: 'Jewelry & Charms',
       badge: '💎 Jewelry',
-      desc: 'Floating Hanging Talisman Charm + Agent Corner Brooch Medallion'
+      desc: 'Hanging Charm, Corner Guards & 3D Wax Seal (no top crest)'
+    },
+    crown: {
+      label: 'Crown Crest & Seal',
+      badge: '👑 Royal',
+      desc: 'Symmetrical Crown Crest, 3D Wax Seal & Luminous Rail (no hanging charm)'
     },
     minimal: {
       label: 'Clean / Subtle Rail',
       badge: '━ Clean',
-      desc: 'Luminous accent rail & clean borders only (no floating badges)'
+      desc: 'Minimal luminous accent rail & sleek clean borders only'
     }
   };
+
+  const ACCESSORY_COMPONENTS = [
+    { key: 'crest', prop: 'accCrest', label: 'Top Crown Crest', icon: '👑', desc: 'Symmetrical crown resting on card top' },
+    { key: 'charm', prop: 'accCharm', label: 'Side Pendant Charm', icon: '💎', desc: 'Hanging bead talisman on bubble edge' },
+    { key: 'corners', prop: 'accCorners', label: 'Corner Guards', icon: '🛡️', desc: '4-corner ornamental filigree brackets' },
+    { key: 'seal', prop: 'accSeal', label: 'Wax Seal Stamp', icon: '💮', desc: '3D embossed wax seal on message corner' },
+    { key: 'rail', prop: 'accRail', label: 'Luminous Rail', icon: '━', desc: 'Thematic glowing vertical edge rail' }
+  ];
 
   const STORAGE_CUSTOM_PRESETS = 'agy_custom_presets_v1';
   const LIVE_DB_NAME = 'agy_live_wallpaper_db_v1';
@@ -1124,45 +1137,255 @@
     `);
   }
 
+  // Top Decorative Crest / Crown (viewBox="0 0 220 32")
+  function getThemeTopCrestSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+          <defs>
+            <linearGradient id="frostWingL" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="frostWingR" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="crestGem" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="40%" stop-color="${p}"/>
+              <stop offset="100%" stop-color="${s}"/>
+            </linearGradient>
+          </defs>
+          <path d="M110 18 Q80 14 30 18 Q65 10 95 12 Z" fill="url(#frostWingL)"/>
+          <path d="M110 18 Q85 22 45 25 Q75 19 100 18 Z" fill="url(#frostWingL)" opacity="0.6"/>
+          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#frostWingL)" stroke-width="1.2"/>
+          <circle cx="50" cy="18" r="2" fill="${s}"/>
+          <circle cx="30" cy="18" r="1.5" fill="#fff"/>
+          <circle cx="15" cy="18" r="1" fill="${p}"/>
+
+          <path d="M110 18 Q140 14 190 18 Q155 10 125 12 Z" fill="url(#frostWingR)"/>
+          <path d="M110 18 Q135 22 175 25 Q145 19 120 18 Z" fill="url(#frostWingR)" opacity="0.6"/>
+          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#frostWingR)" stroke-width="1.2"/>
+          <circle cx="170" cy="18" r="2" fill="${s}"/>
+          <circle cx="190" cy="18" r="1.5" fill="#fff"/>
+          <circle cx="205" cy="18" r="1" fill="${p}"/>
+
+          <g transform="translate(110, 18)">
+            <circle cx="0" cy="0" r="11" fill="#090d16" stroke="${p}" stroke-width="1.2"/>
+            <polygon points="0,-14 5,-4 13,0 5,4 0,14 -5,4 -13,0 -5,-4" fill="url(#crestGem)"/>
+            <line x1="-8" y1="0" x2="8" y2="0" stroke="#fff" stroke-width="1.2"/>
+            <line x1="0" y1="-8" x2="0" y2="8" stroke="#fff" stroke-width="1.2"/>
+            <circle cx="0" cy="0" r="2.2" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    } else if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+          <defs>
+            <linearGradient id="astralWingL" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="65%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="astralWingR" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="65%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M110 18 Q75 8 25 18 Q65 14 100 16 Z" fill="url(#astralWingL)"/>
+          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#astralWingL)" stroke-width="1.2"/>
+          <polygon points="55,16 57,18 55,20 53,18" fill="#fff"/>
+          <polygon points="35,16 36.5,18 35,20 33.5,18" fill="${s}"/>
+          <circle cx="16" cy="18" r="1.5" fill="${p}"/>
+
+          <path d="M110 18 Q145 8 195 18 Q155 14 120 16 Z" fill="url(#astralWingR)"/>
+          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#astralWingR)" stroke-width="1.2"/>
+          <polygon points="165,16 167,18 165,20 163,18" fill="#fff"/>
+          <polygon points="185,16 186.5,18 185,20 183.5,18" fill="${s}"/>
+          <circle cx="204" cy="18" r="1.5" fill="${p}"/>
+
+          <g transform="translate(110, 18)">
+            <circle cx="0" cy="0" r="11" fill="#090d16" stroke="${s}" stroke-width="1.2"/>
+            <path d="M-4 -9 A 9 9 0 1 0 6 7 A 6.8 6.8 0 1 1 -4 -9 Z" fill="${p}"/>
+            <polygon points="3,-4 4.5,-1 7.5,0 4.5,1 3,4 1.5,1 -1.5,0 1.5,-1" fill="#fff"/>
+            <circle cx="3" cy="0" r="1.2" fill="${s}"/>
+          </g>
+        </svg>
+      `);
+    } else if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+          <defs>
+            <linearGradient id="goldWingL" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="goldWingR" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M110 18 Q80 12 30 18 Q65 14 95 16 Z" fill="url(#goldWingL)"/>
+          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#goldWingL)" stroke-width="1.2"/>
+          <circle cx="50" cy="18" r="2" fill="${s}"/>
+          <circle cx="25" cy="18" r="1.5" fill="#fff"/>
+
+          <path d="M110 18 Q140 12 190 18 Q155 14 125 16 Z" fill="url(#goldWingR)"/>
+          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#goldWingR)" stroke-width="1.2"/>
+          <circle cx="170" cy="18" r="2" fill="${s}"/>
+          <circle cx="195" cy="18" r="1.5" fill="#fff"/>
+
+          <g transform="translate(110, 18)">
+            <circle cx="0" cy="0" r="11" fill="#140f0c" stroke="${p}" stroke-width="1.2"/>
+            <path d="M0 -9 C-3 -4 -3 -1 0 3 C3 -1 3 -4 0 -9 Z" fill="${p}"/>
+            <path d="M-2 -2 C-6 -3 -9 -6 -8 -8 C-6 -7 -5 -4 -2 -2 Z" fill="${s}"/>
+            <path d="M2 -2 C6 -3 9 -6 8 -8 C6 -7 5 -4 2 -2 Z" fill="${s}"/>
+            <circle cx="0" cy="0" r="1.8" fill="#fff"/>
+          </g>
+        </svg>
+      `);
+    } else {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+          <defs>
+            <linearGradient id="cyberWingL" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="cyberWingR" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polyline points="110,18 70,18 60,14 20,14" stroke="url(#cyberWingL)" stroke-width="1.2" fill="none"/>
+          <rect x="40" y="12" width="10" height="4" fill="${s}" opacity="0.6"/>
+          <circle cx="20" cy="14" r="1.5" fill="${p}"/>
+
+          <polyline points="110,18 150,18 160,14 200,14" stroke="url(#cyberWingR)" stroke-width="1.2" fill="none"/>
+          <rect x="170" y="12" width="10" height="4" fill="${s}" opacity="0.6"/>
+          <circle cx="200" cy="14" r="1.5" fill="${p}"/>
+
+          <g transform="translate(110, 18)">
+            <polygon points="0,-11 9,-5 9,5 0,11 -9,5 -9,-5" fill="#090d16" stroke="${p}" stroke-width="1.2"/>
+            <polygon points="0,-7 6,-3 6,3 0,7 -6,3 -6,-3" fill="${s}" opacity="0.8"/>
+            <circle cx="0" cy="0" r="2.2" fill="#fff"/>
+          </g>
+        </svg>
+      `);
+    }
+  }
+
+  // 3D Wax Seal / Royal Sigil Stamp (viewBox="0 0 36 36")
+  function getThemeWaxSealSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    let symbolSvg = '';
+    if (motif === 'frost_blade') {
+      symbolSvg = `
+        <polygon points="0,-8 2,-2 8,0 2,2 0,8 -2,2 -8,0 -2,-2" fill="#ffffff"/>
+        <circle cx="0" cy="0" r="1.8" fill="${p}"/>
+        <line x1="-5" y1="-5" x2="5" y2="5" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
+        <line x1="5" y1="-5" x2="-5" y2="5" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
+      `;
+    } else if (motif === 'night_astral') {
+      symbolSvg = `
+        <path d="M-2 -7 A 7 7 0 1 0 5 5 A 5.5 5.5 0 1 1 -2 -7 Z" fill="#ffffff"/>
+        <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="${s}"/>
+      `;
+    } else if (motif === 'royal_crest') {
+      symbolSvg = `
+        <path d="M0 -7 C-2 -4 -2 -1 0 2 C2 -1 2 -4 0 -7 Z" fill="#ffffff"/>
+        <path d="M-1 -1 C-4 -2 -6 -4 -5 -5 C-4 -4 -3 -2 -1 -1 Z" fill="${s}"/>
+        <path d="M1 -1 C4 -2 6 -4 5 -5 C4 -4 3 -2 1 -1 Z" fill="${s}"/>
+        <circle cx="0" cy="0" r="1.5" fill="#fff"/>
+      `;
+    } else {
+      symbolSvg = `
+        <polygon points="0,-7 6,-3 6,3 0,7 -6,3 -6,-3" stroke="#ffffff" stroke-width="1" fill="${p}" fill-opacity="0.3"/>
+        <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+      `;
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+        <defs>
+          <radialGradient id="sealShine_${motif}" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+            <stop offset="45%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="${s}" stop-opacity="0.85"/>
+          </radialGradient>
+        </defs>
+        <path d="M18 1 C22 0.5 25 3 28 5 C31 7 34 10 35 14 C36 18 34 22 33 25 C31 29 28 32 24 34 C20 35 16 35 12 34 C8 32 5 29 3 25 C1 22 0 18 1 14 C2 10 5 7 8 5 C11 3 14 0.5 18 1 Z" fill="url(#sealShine_${motif})" stroke="${p}" stroke-width="0.8"/>
+        <circle cx="18" cy="18" r="13" fill="#090d16" fill-opacity="0.85" stroke="${p}" stroke-width="1.2"/>
+        <circle cx="18" cy="18" r="11.5" fill="none" stroke="${s}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.85"/>
+        <g transform="translate(18, 18)">
+          ${symbolSvg}
+        </g>
+      </svg>
+    `);
+  }
+
   function getThemeUserBadgeSvg(motif, primary, secondary, customTitle) {
     const p = primary || '#38bdf8';
     const s = secondary || p;
 
-    let title = customTitle || '❄ OPERATOR';
-    let iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>`;
-
-    if (!customTitle) {
-      if (motif === 'frost_blade') {
-        title = '❄ OPERATOR';
-        iconSvg = `<polygon points="0,-5 4,0 0,5 -4,0" fill="${p}"/><circle cx="0" cy="0" r="1.2" fill="#fff"/>`;
-      } else if (motif === 'night_astral') {
-        title = '✦ STARLIGHT PILOT';
-        iconSvg = `<path d="M-2 -4 A 4 4 0 1 0 3 3 A 3 3 0 1 1 -2 -4 Z" fill="${s}"/>`;
-      } else if (motif === 'royal_crest') {
-        title = '⚜ IMPERIAL SOVEREIGN';
-        iconSvg = `<path d="M0 -4 C-1 -2 -1 0 0 2 C1 0 1 -2 0 -4 Z" fill="${p}"/><circle cx="0" cy="3" r="0.8" fill="${s}"/>`;
-      } else if (motif === 'obsidian_prism') {
-        title = '◈ CIPHER PROTOCOL';
-        iconSvg = `<polygon points="0,-4 4,-1 2,3 0,4 -2,3 -4,-1" stroke="${p}" stroke-width="1" fill="${s}"/>`;
-      }
-    } else {
-      iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${p}"/><circle cx="0" cy="0" r="1" fill="#fff"/>`;
+    let title = (customTitle || '').trim();
+    if (!title) {
+      if (motif === 'frost_blade') title = '❄ OPERATOR';
+      else if (motif === 'night_astral') title = '✦ STAR PILOT';
+      else if (motif === 'royal_crest') title = '⚜ IMPERIAL MASTER';
+      else if (motif === 'obsidian_prism') title = '◈ CIPHER NODE';
+      else title = '✦ OPERATOR';
     }
 
+    if (title.length > 20) {
+      title = title.slice(0, 18) + '…';
+    }
+
+    let iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>`;
+    if (motif === 'frost_blade') {
+      iconSvg = `<polygon points="0,-5 4,0 0,5 -4,0" fill="${p}"/><circle cx="0" cy="0" r="1.2" fill="#fff"/>`;
+    } else if (motif === 'night_astral') {
+      iconSvg = `<path d="M-2 -4 A 4 4 0 1 0 3 3 A 3 3 0 1 1 -2 -4 Z" fill="${s}"/>`;
+    } else if (motif === 'royal_crest') {
+      iconSvg = `<path d="M0 -4 C-1 -2 -1 0 0 2 C1 0 1 -2 0 -4 Z" fill="${p}"/><circle cx="0" cy="3" r="0.8" fill="${s}"/>`;
+    } else if (motif === 'obsidian_prism') {
+      iconSvg = `<polygon points="0,-4 4,-1 2,3 0,4 -2,3 -4,-1" stroke="${p}" stroke-width="1" fill="${s}"/>`;
+    }
+
+    // Dynamic width calculation so text NEVER overlaps the right dot
+    const estW = Math.ceil(title.length * 6.8);
+    const totalW = Math.max(120, 26 + estW + 22);
+    const dotX = totalW - 10;
+    const rectW = totalW - 2;
+
     return svgToDataUri(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 22" fill="none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 22" fill="none">
         <defs>
           <linearGradient id="uBadgeBrd_${motif}" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="${p}" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="${s}" stop-opacity="0.8"/>
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="${s}" stop-opacity="0.85"/>
           </linearGradient>
         </defs>
-        <rect x="1" y="1" width="138" height="20" rx="10" fill="#090d16" stroke="url(#uBadgeBrd_${motif})" stroke-width="1.2"/>
-        <g transform="translate(14, 11)">
+        <rect x="1" y="1" width="${rectW}" height="20" rx="10" fill="#090d16" stroke="url(#uBadgeBrd_${motif})" stroke-width="1.2"/>
+        <g transform="translate(13, 11)">
           ${iconSvg}
         </g>
-        <text x="26" y="14.5" fill="#f8fafc" font-size="9.5" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
-        <circle cx="128" cy="11" r="1.5" fill="${p}"/>
+        <text x="25" y="14.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${title}</text>
+        <circle cx="${dotX}" cy="11" r="1.5" fill="${p}"/>
       </svg>
     `);
   }
@@ -1171,67 +1394,63 @@
     const p = primary || '#38bdf8';
     const s = secondary || p;
 
-    let title = customTitle || '❄ HIYUKI • INTELLIGENCE CORE';
-    let iconSvg = '';
+    let rawTitle = (customTitle || '').trim();
+    if (!rawTitle) {
+      if (motif === 'frost_blade') rawTitle = '❄ HIYUKI CORE';
+      else if (motif === 'night_astral') rawTitle = '✦ ASTRAL ORACLE';
+      else if (motif === 'royal_crest') rawTitle = '⚜ THIÊN CHRONICLE';
+      else if (motif === 'obsidian_prism') rawTitle = '◈ OBSIDIAN CORE';
+      else rawTitle = '✧ ANTIGRAVITY';
+    }
 
-    if (!customTitle) {
-      if (motif === 'frost_blade') {
-        title = '❄ HIYUKI • INTELLIGENCE CORE';
-        iconSvg = `
-          <g transform="translate(14, 13)">
-            <line x1="-7" y1="0" x2="7" y2="0" stroke="${p}" stroke-width="1.3"/>
-            <line x1="0" y1="-7" x2="0" y2="7" stroke="${p}" stroke-width="1.3"/>
-            <polygon points="0,-5 3,0 0,5 -3,0" fill="${s}"/>
-            <circle cx="0" cy="0" r="1.5" fill="#fff"/>
-          </g>
-        `;
-      } else if (motif === 'night_astral') {
-        title = '✦ ASTRAL • CELESTIAL ORACLE';
-        iconSvg = `
-          <g transform="translate(14, 13)">
-            <path d="M-3 -6 A 6 6 0 1 0 4 5 A 4.5 4.5 0 1 1 -3 -6 Z" fill="${s}"/>
-            <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="#ffffff"/>
-          </g>
-        `;
-      } else if (motif === 'royal_crest') {
-        title = '⚜ THIÊN • IMPERIAL CHRONICLE';
-        iconSvg = `
-          <g transform="translate(14, 13)">
-            <path d="M0 -6 C-2 -3 -2 -1 0 2 C2 -1 2 -3 0 -6 Z" fill="${p}"/>
-            <path d="M-1 0 C-4 -1 -6 -3 -5 -5 C-4 -4 -3 -2 -1 0 Z" fill="${s}"/>
-            <path d="M1 0 C4 -1 6 -3 5 -5 C4 -4 3 -2 1 0 Z" fill="${s}"/>
-            <rect x="-4" y="1" width="8" height="1.6" rx="0.8" fill="${p}"/>
-          </g>
-        `;
-      } else if (motif === 'obsidian_prism') {
-        title = '◈ OBSIDIAN • QUANTUM SYNAPSE';
-        iconSvg = `
-          <g transform="translate(14, 13)">
-            <polygon points="0,-7 6,-2 4,5 0,7 -4,5 -6,-2" stroke="${p}" stroke-width="1.2" fill="#0d0918"/>
-            <polygon points="0,-5 4,-1 0,4 -4,-1" fill="${s}"/>
-            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
-          </g>
-        `;
-      } else {
-        title = '✧ ANTIGRAVITY • ASSISTANT';
-        iconSvg = `
-          <g transform="translate(14, 13)">
-            <polygon points="0,-6 2,-2 6,0 2,2 0,6 -2,2 -6,0 -2,-2" fill="${p}"/>
-            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
-          </g>
-        `;
-      }
+    let title = rawTitle.replace(/\s+/g, ' ').trim();
+    if (title.length > 24) {
+      title = title.slice(0, 22) + '…';
+    }
+
+    let iconSvg = '';
+    if (motif === 'frost_blade') {
+      iconSvg = `
+        <g transform="translate(14, 13)">
+          <line x1="-6" y1="0" x2="6" y2="0" stroke="${p}" stroke-width="1.3"/>
+          <line x1="0" y1="-6" x2="0" y2="6" stroke="${p}" stroke-width="1.3"/>
+          <polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>
+          <circle cx="0" cy="0" r="1.4" fill="#fff"/>
+        </g>
+      `;
+    } else if (motif === 'night_astral') {
+      iconSvg = `
+        <g transform="translate(14, 13)">
+          <path d="M-3 -5 A 5 5 0 1 0 3 4 A 4 4 0 1 1 -3 -5 Z" fill="${s}"/>
+          <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="#ffffff"/>
+        </g>
+      `;
+    } else if (motif === 'royal_crest') {
+      iconSvg = `
+        <g transform="translate(14, 13)">
+          <path d="M0 -5 C-1.5 -2.5 -1.5 0 0 2.5 C1.5 0 1.5 -2.5 0 -5 Z" fill="${p}"/>
+          <circle cx="0" cy="2" r="1" fill="${s}"/>
+        </g>
+      `;
     } else {
       iconSvg = `
         <g transform="translate(14, 13)">
-          <polygon points="0,-6 2,-2 6,0 2,2 0,6 -2,2 -6,0 -2,-2" fill="${p}"/>
+          <polygon points="0,-5 2,-2 5,0 2,2 0,5 -2,2 -5,0 -2,-2" fill="${p}"/>
           <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
         </g>
       `;
     }
 
+    // Dynamic width calculation: 30px left icon space + text + 26px right dots space
+    const estTextW = Math.ceil(title.length * 7.1);
+    const totalW = Math.max(140, 30 + estTextW + 26);
+    const rectW = totalW - 2;
+    const innerRectW = totalW - 6;
+    const dot1 = totalW - 14;
+    const dot2 = totalW - 8;
+
     return svgToDataUri(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 26" fill="none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 26" fill="none">
         <defs>
           <linearGradient id="agHdrBrd_${motif}" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
@@ -1239,12 +1458,12 @@
             <stop offset="100%" stop-color="${p}" stop-opacity="0.95"/>
           </linearGradient>
         </defs>
-        <rect x="1" y="1" width="218" height="24" rx="12" fill="#090d16" stroke="url(#agHdrBrd_${motif})" stroke-width="1.2"/>
-        <rect x="3" y="3" width="214" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
+        <rect x="1" y="1" width="${rectW}" height="24" rx="12" fill="#090d16" stroke="url(#agHdrBrd_${motif})" stroke-width="1.2"/>
+        <rect x="3" y="3" width="${innerRectW}" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
         ${iconSvg}
-        <text x="28" y="17" fill="#f8fafc" font-size="10" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
-        <circle cx="204" cy="13" r="1.8" fill="${p}"/>
-        <circle cx="210" cy="13" r="1.8" fill="${s}"/>
+        <text x="28" y="16.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${title}</text>
+        <circle cx="${dot1}" cy="13" r="1.6" fill="${p}"/>
+        <circle cx="${dot2}" cy="13" r="1.6" fill="${s}"/>
       </svg>
     `);
   }
@@ -1488,14 +1707,16 @@
             changed = true;
           }
         }
-        if (!p.accessories || p.accessories.version !== 2) {
+        if (!p.accessories || p.accessories.version !== 3) {
           const pPrimary = p.primary || '#38bdf8';
           const pSecondary = p.secondary || pPrimary;
           p.accessories = {
-            version: 2,
+            version: 3,
+            crest: getThemeTopCrestSvg(p.motif, pPrimary, pSecondary),
+            seal: getThemeWaxSealSvg(p.motif, pPrimary, pSecondary),
             charm: getThemeUserCharmSvg(p.motif, pPrimary, pSecondary),
             badge: getThemeUserBadgeSvg(p.motif, pPrimary, pSecondary, p.isCustom ? `◈ ${name.toUpperCase()}` : undefined),
-            header: getThemeAgentHeaderSvg(p.motif, pPrimary, pSecondary, p.isCustom ? `✧ ${name.toUpperCase()} • CORE` : undefined),
+            header: getThemeAgentHeaderSvg(p.motif, pPrimary, pSecondary, p.isCustom ? `✧ ${name.toUpperCase()}` : undefined),
             brooch: getThemeAgentBroochSvg(p.motif, pPrimary, pSecondary),
             watermark: getThemeWatermarkSvg(p.motif, pPrimary, pSecondary),
             corner: getThematicCornerSvg(pPrimary, pSecondary, p.motif)
@@ -1632,7 +1853,28 @@
     const accessoryKit = (rawKit === 'sync' || allThemes[rawKit]) ? rawKit : 'sync';
     const rawAccMode = localStorage.getItem(STORAGE_ACCESSORY_MODE) || init.accessoryMode || 'full';
     const accessoryMode = ACCESSORY_MODES[rawAccMode] ? rawAccMode : 'full';
-    return { themeName, bubbleName, inputStyle, dimming, wpEnabled, customWp, userAvatar, agentAvatar, bgMode, accessoryKit, accessoryMode };
+
+    const accCrest = localStorage.getItem(STORAGE_ACC_CREST) !== null
+      ? localStorage.getItem(STORAGE_ACC_CREST) === 'true'
+      : (accessoryMode === 'full' || accessoryMode === 'crown');
+    const accCharm = localStorage.getItem(STORAGE_ACC_CHARM) !== null
+      ? localStorage.getItem(STORAGE_ACC_CHARM) === 'true'
+      : (accessoryMode === 'full' || accessoryMode === 'jewelry');
+    const accCorners = localStorage.getItem(STORAGE_ACC_CORNERS) !== null
+      ? localStorage.getItem(STORAGE_ACC_CORNERS) === 'true'
+      : (accessoryMode !== 'minimal');
+    const accSeal = localStorage.getItem(STORAGE_ACC_SEAL) !== null
+      ? localStorage.getItem(STORAGE_ACC_SEAL) === 'true'
+      : (accessoryMode !== 'minimal');
+    const accRail = localStorage.getItem(STORAGE_ACC_RAIL) !== null
+      ? localStorage.getItem(STORAGE_ACC_RAIL) === 'true'
+      : true;
+
+    return {
+      themeName, bubbleName, inputStyle, dimming, wpEnabled, customWp,
+      userAvatar, agentAvatar, bgMode, accessoryKit, accessoryMode,
+      accCrest, accCharm, accCorners, accSeal, accRail
+    };
   }
 
   // Downscale user/agent avatar uploads to 192x192 WebP once so theme_config.json stays tiny
@@ -1734,6 +1976,21 @@
       }
       if (overrides.accessoryMode !== undefined) {
         localStorage.setItem(STORAGE_ACCESSORY_MODE, overrides.accessoryMode);
+      }
+      if (overrides.accCrest !== undefined) {
+        localStorage.setItem(STORAGE_ACC_CREST, String(overrides.accCrest));
+      }
+      if (overrides.accCharm !== undefined) {
+        localStorage.setItem(STORAGE_ACC_CHARM, String(overrides.accCharm));
+      }
+      if (overrides.accCorners !== undefined) {
+        localStorage.setItem(STORAGE_ACC_CORNERS, String(overrides.accCorners));
+      }
+      if (overrides.accSeal !== undefined) {
+        localStorage.setItem(STORAGE_ACC_SEAL, String(overrides.accSeal));
+      }
+      if (overrides.accRail !== undefined) {
+        localStorage.setItem(STORAGE_ACC_RAIL, String(overrides.accRail));
       }
     } catch (e) {}
 
@@ -1898,6 +2155,14 @@
     const kitSecondary = kitTheme.secondary || secondaryColor;
     const kitGlow = kitTheme.glow || bubbleTheme.glow || kitPrimary;
 
+    const themeTopCrestUrl = (kitTheme.accessories && kitTheme.accessories.crest)
+      ? kitTheme.accessories.crest
+      : getThemeTopCrestSvg(kitMotif, kitPrimary, kitSecondary);
+
+    const themeWaxSealUrl = (kitTheme.accessories && kitTheme.accessories.seal)
+      ? kitTheme.accessories.seal
+      : getThemeWaxSealSvg(kitMotif, kitPrimary, kitSecondary);
+
     const themeUserCharmUrl = (kitTheme.accessories && kitTheme.accessories.charm)
       ? kitTheme.accessories.charm
       : getThemeUserCharmSvg(kitMotif, kitPrimary, kitSecondary);
@@ -1908,7 +2173,7 @@
 
     const themeAgentHeaderUrl = (kitTheme.accessories && kitTheme.accessories.header)
       ? kitTheme.accessories.header
-      : getThemeAgentHeaderSvg(kitMotif, kitPrimary, kitSecondary, kitTheme.isCustom ? `✧ ${kitKey.toUpperCase()} • CORE` : undefined);
+      : getThemeAgentHeaderSvg(kitMotif, kitPrimary, kitSecondary, kitTheme.isCustom ? `✧ ${kitKey.toUpperCase()}` : undefined);
 
     const themeAgentBroochUrl = (kitTheme.accessories && kitTheme.accessories.brooch)
       ? kitTheme.accessories.brooch
@@ -1922,24 +2187,52 @@
       ? kitTheme.accessories.corner
       : (kitTheme.cornerSvg || getThematicCornerSvg(kitPrimary, kitSecondary, kitMotif));
 
-    const accMode = st.accessoryMode || 'full';
-    const showCharm = (accMode === 'full' || accMode === 'charms') && (isOrnamental || isThematic);
-    const showUserBadge = (accMode === 'full' || accMode === 'badges') && (isOrnamental || isThematic);
-    const showAgentHeader = (accMode === 'full' || accMode === 'badges') && (isOrnamental || isThematic);
-    const showAgentBrooch = (accMode === 'full' || accMode === 'charms') && (isOrnamental || isThematic);
-    const showFiligree = accMode !== 'minimal' && (isOrnamental || isThematic);
+    // Dynamic width calculation so title text NEVER overlaps dot ornaments
+    let rawBadgeTitle = kitTheme.isCustom ? `◈ ${kitKey.toUpperCase()}` : '';
+    if (!rawBadgeTitle) {
+      if (kitMotif === 'frost_blade') rawBadgeTitle = '❄ OPERATOR';
+      else if (kitMotif === 'night_astral') rawBadgeTitle = '✦ ASTRAL NODE';
+      else if (kitMotif === 'royal_crest') rawBadgeTitle = '⚜ NOBLE PILOT';
+      else if (kitMotif === 'obsidian_prism') rawBadgeTitle = '◈ CIPHER NODE';
+      else rawBadgeTitle = '✦ OPERATOR';
+    }
+    const cleanBadgeTitle = rawBadgeTitle.replace(/\s+/g, ' ').trim();
+    const finalBadgeTitle = cleanBadgeTitle.length > 20 ? cleanBadgeTitle.slice(0, 18) + '…' : cleanBadgeTitle;
+    const estUserBadgeW = Math.max(120, 26 + Math.ceil(finalBadgeTitle.length * 6.8) + 22);
+
+    let rawHeaderTitle = kitTheme.isCustom ? `✧ ${kitKey.toUpperCase()}` : '';
+    if (!rawHeaderTitle) {
+      if (kitMotif === 'frost_blade') rawHeaderTitle = '❄ HIYUKI CORE';
+      else if (kitMotif === 'night_astral') rawHeaderTitle = '✦ ASTRAL ORACLE';
+      else if (kitMotif === 'royal_crest') rawHeaderTitle = '⚜ THIÊN CHRONICLE';
+      else if (kitMotif === 'obsidian_prism') rawHeaderTitle = '◈ OBSIDIAN CORE';
+      else rawHeaderTitle = '✧ ANTIGRAVITY';
+    }
+    const cleanHdrTitle = rawHeaderTitle.replace(/\s+/g, ' ').trim();
+    const finalHdrTitle = cleanHdrTitle.length > 24 ? cleanHdrTitle.slice(0, 22) + '…' : cleanHdrTitle;
+    const estAgentHeaderW = Math.max(140, 30 + Math.ceil(finalHdrTitle.length * 7.1) + 26);
+
+    const showCrest = Boolean(st.accCrest) && (isOrnamental || isThematic);
+    const showCharm = Boolean(st.accCharm) && (isOrnamental || isThematic);
+    const showCorners = Boolean(st.accCorners) && (isOrnamental || isThematic);
+    const showSeal = Boolean(st.accSeal) && (isOrnamental || isThematic);
+    const showRail = Boolean(st.accRail);
+    const showUserBadge = showCorners;
+    const showAgentHeader = showCorners;
+    const showAgentBrooch = showSeal;
+    const showFiligree = showCorners;
 
     const bubbleStickerCss = (isOrnamental || isThematic) ? `
       .group\\/user-input-step {
         padding-top: ${(showCharm || showUserBadge) ? '22px' : '6px'} !important;
       }
-      /* Sender Role Cartouche Badge */
+      /* Sender Role Cartouche Badge (Dynamic Width, Zero Overlap) */
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before {
         content: "";
         position: absolute;
         top: -13px;
         right: 28px;
-        width: 135px;
+        width: ${estUserBadgeW}px;
         height: 22px;
         background-image: url("${themeUserBadgeUrl}");
         background-size: contain;
@@ -1967,12 +2260,30 @@
         filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 6px ${kitGlow});
         display: ${showCharm ? 'block' : 'none'} !important;
       }
+      /* 3D Wax Seal Stamp on User Bubble (Bottom Right) */
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"])::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        right: -8px;
+        width: 36px;
+        height: 36px;
+        background-image: url("${themeWaxSealUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 28;
+        pointer-events: none !important;
+        filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 6px ${kitGlow});
+        display: ${showSeal ? 'block' : 'none'} !important;
+      }
     ` : `
       .group\\/user-input-step {
         padding-top: 4px !important;
       }
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before { display: none !important; }
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after { display: none !important; }
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"])::after { display: none !important; }
     `;
 
     const inputStickerCss = (isOrnamental || isThematic) ? `
@@ -2158,25 +2469,31 @@
         background: ${mainTheme.aiCardBg || 'rgba(18, 20, 30, 0.72)'} !important;
         ${isLight ? `color: ${uiInk} !important;` : ''}
         backdrop-filter: none !important;
-        border-left: 3.5px solid ${kitPrimary} !important;
+        border-left: ${showRail ? `3.5px solid ${kitPrimary}` : `1px solid ${mainTheme.aiCardBorder || kitPrimary + '24'}`} !important;
         border-top: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}38`} !important;
         border-right: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}24`} !important;
         border-bottom: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}24`} !important;
         border-radius: 14px !important;
         padding: 16px 20px !important;
-        margin-top: ${(showAgentHeader || showAgentBrooch) ? '24px' : '10px'} !important;
-        box-shadow: ${isLight ? '0 4px 14px rgba(15, 23, 42, 0.08)' : `0 6px 20px rgba(0, 0, 0, 0.35), -2px 0 14px ${kitGlow}30`} !important;
+        margin-top: ${(showAgentHeader || showAgentBrooch || showCrest) ? '24px' : '10px'} !important;
+        box-shadow: ${isLight
+          ? '0 4px 14px rgba(15, 23, 42, 0.08)'
+          : (showRail
+            ? `0 6px 20px rgba(0, 0, 0, 0.35), -3px 0 16px ${kitGlow}35`
+            : `0 4px 14px rgba(0, 0, 0, 0.25)`
+          )
+        } !important;
         box-sizing: border-box !important;
         position: relative !important;
         overflow: visible !important;
       }
-      /* Thematic Intelligence Header Cartouche Banner */
+      /* Thematic Intelligence Header Cartouche Banner (Dynamic Width, Zero Overlap) */
       .agy-shell [data-testid="agent-response"]::after {
         content: "";
         position: absolute;
         top: -14px;
         left: 56px;
-        width: 225px;
+        width: ${estAgentHeaderW}px;
         height: 26px;
         background-image: url("${themeAgentHeaderUrl}");
         background-size: contain;
@@ -2186,6 +2503,24 @@
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
         z-index: 10;
         display: ${showAgentHeader ? 'block' : 'none'} !important;
+      }
+      /* Top Crown Crest (Centered symmetrically on top border) */
+      .agy-shell [data-testid="agent-response"] > div:not(.sr-only):first-of-type::after {
+        content: "";
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 220px;
+        height: 32px;
+        background-image: url("${themeTopCrestUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        pointer-events: none !important;
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px ${kitGlow});
+        z-index: 15;
+        display: ${showCrest ? 'block' : 'none'} !important;
       }
       /* Thematic Corner Brooch / Medallion */
       .agy-shell [data-testid="agent-response"] > div:not(.sr-only):first-of-type::before {
@@ -2830,6 +3165,12 @@
     const aks = activeKitTh.secondary || akp;
     const akg = activeKitTh.glow || akp;
 
+    const liveCrestUrl = (activeKitTh.accessories && activeKitTh.accessories.crest)
+      ? activeKitTh.accessories.crest
+      : getThemeTopCrestSvg(activeKitMotif, akp, aks);
+    const liveSealUrl = (activeKitTh.accessories && activeKitTh.accessories.seal)
+      ? activeKitTh.accessories.seal
+      : getThemeWaxSealSvg(activeKitMotif, akp, aks);
     const liveCharmUrl = (activeKitTh.accessories && activeKitTh.accessories.charm)
       ? activeKitTh.accessories.charm
       : getThemeUserCharmSvg(activeKitMotif, akp, aks);
@@ -2838,7 +3179,7 @@
       : getThemeUserBadgeSvg(activeKitMotif, akp, aks, activeKitTh.isCustom ? `◈ ${activeKitKey.toUpperCase()}` : undefined);
     const liveHeaderUrl = (activeKitTh.accessories && activeKitTh.accessories.header)
       ? activeKitTh.accessories.header
-      : getThemeAgentHeaderSvg(activeKitMotif, akp, aks, activeKitTh.isCustom ? `✧ ${activeKitKey.toUpperCase()} • CORE` : undefined);
+      : getThemeAgentHeaderSvg(activeKitMotif, akp, aks, activeKitTh.isCustom ? `✧ ${activeKitKey.toUpperCase()}` : undefined);
     const liveBroochUrl = (activeKitTh.accessories && activeKitTh.accessories.brooch)
       ? activeKitTh.accessories.brooch
       : getThemeAgentBroochSvg(activeKitMotif, akp, aks);
@@ -2849,11 +3190,11 @@
       ? activeKitTh.accessories.watermark
       : getThemeWatermarkSvg(activeKitMotif, akp, aks);
 
-    const liveShowCharm = curAccMode === 'full' || curAccMode === 'charms';
-    const liveShowBadge = curAccMode === 'full' || curAccMode === 'badges';
-    const liveShowHeader = curAccMode === 'full' || curAccMode === 'badges';
-    const liveShowBrooch = curAccMode === 'full' || curAccMode === 'charms';
-    const liveShowFiligree = curAccMode !== 'minimal';
+    const liveShowCrest = Boolean(st.accCrest);
+    const liveShowCharm = Boolean(st.accCharm);
+    const liveShowCorners = Boolean(st.accCorners);
+    const liveShowSeal = Boolean(st.accSeal);
+    const liveShowRail = Boolean(st.accRail);
 
     const topBadge = document.getElementById('agy-custom-theme-badge');
     if (topBadge) {
@@ -3079,7 +3420,7 @@
 
           <!-- Accessory Density / Display Mode -->
           <div style="margin-bottom: 16px;">
-            <div style="font-size: 12.5px; font-weight: 500; color: #d4d4d8; margin-bottom: 8px;">Accessory Style Mode</div>
+            <div style="font-size: 12.5px; font-weight: 500; color: #d4d4d8; margin-bottom: 8px;">Accessory Style Mode (Quick Presets)</div>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
               ${Object.entries(ACCESSORY_MODES).map(([modeKey, modeInfo]) => {
                 const isSel = modeKey === curAccMode;
@@ -3091,6 +3432,23 @@
                     </div>
                     <div style="font-size: 11px; color: #a1a1aa; line-height: 1.35;">${modeInfo.desc}</div>
                   </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Granular Component Toggles -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12.5px; font-weight: 500; color: #d4d4d8; margin-bottom: 8px;">Individual Accessory Parts (Granular Customization)</div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
+              ${ACCESSORY_COMPONENTS.map(comp => {
+                const isPartOn = Boolean(st[comp.prop]);
+                return `
+                  <button class="agy-acc-part-btn" data-prop="${comp.prop}" type="button" style="border-radius: 8px; border: ${isPartOn ? '1.5px solid ' + akp : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isPartOn ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 12, 12, 0.78)'}; padding: 8px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: all 0.15s ease;">
+                    <span style="font-size: 16px;">${comp.icon}</span>
+                    <span style="font-size: 10.5px; font-weight: 600; color: ${isPartOn ? '#ffffff' : '#a1a1aa'}; text-align: center; white-space: nowrap;">${comp.label}</span>
+                    <span style="font-size: 9px; padding: 1px 6px; border-radius: 4px; background: ${isPartOn ? akp : 'rgba(255,255,255,0.08)'}; color: ${isPartOn ? '#000' : '#71717a'}; font-weight: 700;">${isPartOn ? 'ON' : 'OFF'}</span>
+                  </button>
                 `;
               }).join('')}
             </div>
@@ -3112,10 +3470,12 @@
                       </div>
                       <div class="agy-card-check-slot">${isSyncedSel ? CHECK_SVG : ''}</div>
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 14px;">
-                      <div style="width: 18px; height: 36px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
-                      <div style="width: 110px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat;"></div>
-                      <div style="width: 28px; height: 28px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 12px; gap: 6px;">
+                      <div style="width: 16px; height: 32px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat;" title="Talisman Charm"></div>
+                      <div style="width: 80px; height: 16px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat;" title="Role Badge"></div>
+                      <div style="width: 70px; height: 16px; background-image: url('${liveCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center;" title="Top Crown Crest"></div>
+                      <div style="width: 22px; height: 22px; background-image: url('${liveSealUrl}'); background-size: contain; background-repeat: no-repeat;" title="3D Wax Seal"></div>
+                      <div style="width: 22px; height: 22px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat;" title="Corner Brooch"></div>
                     </div>
                   </div>
                 `;
@@ -3128,6 +3488,8 @@
                 const tp = th.primary || '#38bdf8';
                 const ts = th.secondary || tp;
                 const tMotif = detectThemeMotif(name, th.concept, th);
+                const tCrestUrl = (th.accessories && th.accessories.crest) ? th.accessories.crest : getThemeTopCrestSvg(tMotif, tp, ts);
+                const tSealUrl = (th.accessories && th.accessories.seal) ? th.accessories.seal : getThemeWaxSealSvg(tMotif, tp, ts);
                 const tCharmUrl = (th.accessories && th.accessories.charm) ? th.accessories.charm : getThemeUserCharmSvg(tMotif, tp, ts);
                 const tBadgeUrl = (th.accessories && th.accessories.badge) ? th.accessories.badge : getThemeUserBadgeSvg(tMotif, tp, ts, th.isCustom ? `◈ ${name.toUpperCase()}` : undefined);
                 const tBroochUrl = (th.accessories && th.accessories.brooch) ? th.accessories.brooch : getThemeAgentBroochSvg(tMotif, tp, ts);
@@ -3141,10 +3503,12 @@
                       </div>
                       <div class="agy-card-check-slot">${isSel ? CHECK_SVG : ''}</div>
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 14px;">
-                      <div style="width: 18px; height: 36px; background-image: url('${tCharmUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
-                      <div style="width: 110px; height: 18px; background-image: url('${tBadgeUrl}'); background-size: contain; background-repeat: no-repeat;"></div>
-                      <div style="width: 28px; height: 28px; background-image: url('${tBroochUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 12px; gap: 6px;">
+                      <div style="width: 16px; height: 32px; background-image: url('${tCharmUrl}'); background-size: contain; background-repeat: no-repeat;" title="Talisman Charm"></div>
+                      <div style="width: 80px; height: 16px; background-image: url('${tBadgeUrl}'); background-size: contain; background-repeat: no-repeat;" title="Role Badge"></div>
+                      <div style="width: 70px; height: 16px; background-image: url('${tCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center;" title="Top Crown Crest"></div>
+                      <div style="width: 22px; height: 22px; background-image: url('${tSealUrl}'); background-size: contain; background-repeat: no-repeat;" title="3D Wax Seal"></div>
+                      <div style="width: 22px; height: 22px; background-image: url('${tBroochUrl}'); background-size: contain; background-repeat: no-repeat;" title="Corner Brooch"></div>
                     </div>
                   </div>
                 `;
@@ -3161,24 +3525,26 @@
 
             <!-- Mini User Bubble Preview -->
             <div style="position: relative; width: 100%; max-width: 440px; margin-left: auto; margin-top: 16px; margin-bottom: 16px; padding: 1.5px; border-radius: 12px; background: ${activeKitTh.frameBg || `linear-gradient(135deg, ${akp}, ${aks})`}; box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 10px ${akg}35;">
-              ${liveShowBadge ? `<div style="position: absolute; top: -11px; right: 20px; width: 115px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));"></div>` : ''}
+              ${liveShowCorners ? `<div style="position: absolute; top: -11px; right: 20px; width: 120px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));"></div>` : ''}
               ${liveShowCharm ? `<div style="position: absolute; top: -12px; left: -8px; width: 22px; height: 46px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.75));"></div>` : ''}
-              <div style="position: relative; background: ${activeKitTh.bg || 'rgba(17, 24, 39, 0.95)'}; border-radius: 11px; padding: 8px 18px 8px 22px; font-size: 12px; color: ${activeKitTh.textColor || '#fff'}; background-image: ${liveShowFiligree ? `url('${liveWatermarkUrl}')` : 'none'}; background-size: 44px; background-position: right 6px bottom 4px; background-repeat: no-repeat;">
-                ${liveShowFiligree ? `<div style="position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background-image: url('${liveCornerUrl}'); background-size: contain; background-repeat: no-repeat; opacity: 0.85;"></div>` : ''}
+              ${liveShowSeal ? `<div style="position: absolute; bottom: -8px; right: -6px; width: 26px; height: 26px; background-image: url('${liveSealUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 7; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.75));"></div>` : ''}
+              <div style="position: relative; background: ${activeKitTh.bg || 'rgba(17, 24, 39, 0.95)'}; border-radius: 11px; padding: 8px 18px 8px 22px; font-size: 12px; color: ${activeKitTh.textColor || '#fff'}; background-image: ${liveShowCorners ? `url('${liveWatermarkUrl}')` : 'none'}; background-size: 44px; background-position: right 6px bottom 4px; background-repeat: no-repeat;">
+                ${liveShowCorners ? `<div style="position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background-image: url('${liveCornerUrl}'); background-size: contain; background-repeat: no-repeat; opacity: 0.85;"></div>` : ''}
                 <span>Can we customize the message accessories per theme?</span>
               </div>
             </div>
 
             <!-- Mini Agent Turn Preview -->
-            <div style="position: relative; width: 100%; margin-top: 20px; border-radius: 12px; border-left: 3.5px solid ${akp}; border-top: 1px solid ${akp}35; border-right: 1px solid ${akp}20; border-bottom: 1px solid ${akp}20; background: rgba(18, 20, 28, 0.72); padding: 12px 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.35), -2px 0 10px ${akg}25;">
-              ${liveShowHeader ? `<div style="position: absolute; top: -12px; left: 38px; width: 190px; height: 22px; background-image: url('${liveHeaderUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));"></div>` : ''}
-              ${liveShowBrooch ? `<div style="position: absolute; top: -16px; right: 14px; width: 34px; height: 34px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.75));"></div>` : ''}
+            <div style="position: relative; width: 100%; margin-top: 24px; border-radius: 12px; border-left: ${liveShowRail ? `3.5px solid ${akp}` : `1px solid ${akp}20`}; border-top: 1px solid ${akp}35; border-right: 1px solid ${akp}20; border-bottom: 1px solid ${akp}20; background: rgba(18, 20, 28, 0.72); padding: 14px 16px; box-shadow: ${liveShowRail ? `0 4px 14px rgba(0,0,0,0.35), -2px 0 10px ${akg}25` : `0 2px 8px rgba(0,0,0,0.2)`};">
+              ${liveShowCrest ? `<div style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 180px; height: 26px; background-image: url('${liveCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 7; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 8px ${akg});"></div>` : ''}
+              ${liveShowCorners ? `<div style="position: absolute; top: -12px; left: 38px; width: 170px; height: 22px; background-image: url('${liveHeaderUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));"></div>` : ''}
+              ${liveShowSeal ? `<div style="position: absolute; top: -16px; right: 14px; width: 34px; height: 34px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.75));"></div>` : ''}
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                 <div style="width: 20px; height: 20px; border-radius: 9999px; border: 1.2px solid ${aks}; background: #0c1424; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff;">AI</div>
                 <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Antigravity Engine</span>
               </div>
               <div style="font-size: 12px; color: #e2e8f0; line-height: 1.4;">
-                Each theme automatically crafts a matching set of hanging seals, role plaques, intelligence banners, and jewelry brooches!
+                Each theme automatically crafts a matching set of hanging seals, crown crests, role plaques, intelligence banners, and jewelry brooches!
               </div>
             </div>
           </div>
@@ -3414,9 +3780,12 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
+              version: 3,
+              crest: getThemeTopCrestSvg(motif, p, s),
+              seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
               badge: getThemeUserBadgeSvg(motif, p, s, `◈ ${themeName.toUpperCase()}`),
-              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()} • CORE`),
+              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()}`),
               brooch: getThemeAgentBroochSvg(motif, p, s),
               watermark: getThemeWatermarkSvg(motif, p, s),
               corner: getThematicCornerSvg(p, s, motif)
@@ -3464,9 +3833,12 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
+              version: 3,
+              crest: getThemeTopCrestSvg(motif, p, s),
+              seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
               badge: getThemeUserBadgeSvg(motif, p, s, `◈ ${themeName.toUpperCase()}`),
-              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()} • CORE`),
+              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()}`),
               brooch: getThemeAgentBroochSvg(motif, p, s),
               watermark: getThemeWatermarkSvg(motif, p, s),
               corner: getThematicCornerSvg(p, s, motif)
@@ -3557,12 +3929,22 @@
       localStorage.removeItem(STORAGE_BG_MODE);
       localStorage.removeItem(STORAGE_ACCESSORY_KIT);
       localStorage.removeItem(STORAGE_ACCESSORY_MODE);
+      localStorage.removeItem(STORAGE_ACC_CREST);
+      localStorage.removeItem(STORAGE_ACC_CHARM);
+      localStorage.removeItem(STORAGE_ACC_CORNERS);
+      localStorage.removeItem(STORAGE_ACC_SEAL);
+      localStorage.removeItem(STORAGE_ACC_RAIL);
       const defStyle = 'thematic';
       applyTheme({
         themeName: DEFAULT_THEME_KEY,
         bubbleName: DEFAULT_THEME_KEY,
         accessoryKit: 'sync',
         accessoryMode: 'full',
+        accCrest: true,
+        accCharm: true,
+        accCorners: true,
+        accSeal: true,
+        accRail: true,
         inputStyle: defStyle,
         dimming: 69,
         wpEnabled: true,
@@ -3732,7 +4114,43 @@
     container.querySelectorAll('.agy-acc-mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
-        applyTheme({ accessoryMode: mode });
+        const overrides = { accessoryMode: mode };
+        if (mode === 'full') {
+          overrides.accCrest = true;
+          overrides.accCharm = true;
+          overrides.accCorners = true;
+          overrides.accSeal = true;
+          overrides.accRail = true;
+        } else if (mode === 'jewelry') {
+          overrides.accCrest = false;
+          overrides.accCharm = true;
+          overrides.accCorners = true;
+          overrides.accSeal = true;
+          overrides.accRail = true;
+        } else if (mode === 'crown') {
+          overrides.accCrest = true;
+          overrides.accCharm = false;
+          overrides.accCorners = true;
+          overrides.accSeal = true;
+          overrides.accRail = true;
+        } else if (mode === 'minimal') {
+          overrides.accCrest = false;
+          overrides.accCharm = false;
+          overrides.accCorners = false;
+          overrides.accSeal = false;
+          overrides.accRail = true;
+        }
+        applyTheme(overrides);
+        renderThemePanels(container);
+      });
+    });
+
+    container.querySelectorAll('.agy-acc-part-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const prop = btn.dataset.prop;
+        const curVal = Boolean(getState()[prop]);
+        const newVal = !curVal;
+        applyTheme({ [prop]: newVal });
         renderThemePanels(container);
       });
     });
