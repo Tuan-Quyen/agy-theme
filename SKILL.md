@@ -1,9 +1,9 @@
 ---
-name: antigravity-custom-theme
+name: agy-theme
 description: Use when the user wants to design, customize, install, update, or troubleshoot an Antigravity IDE or Manager visual theme from a wallpaper image, color palette, aesthetic mood, or preset.
 ---
 
-# Antigravity Custom Theme Skill
+# AGY Theme (Antigravity Theme Studio)
 
 Creates and applies custom glassmorphic themes (wallpapers, live MP4 backgrounds, cohesive palettes, custom composer ornaments, pre-baked glass panels, and split-browser-safe overlays) to Antigravity without modifying application binaries.
 

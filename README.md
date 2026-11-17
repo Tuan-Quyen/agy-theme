@@ -72,10 +72,10 @@ Removes auto-start shortcuts/services, stops the background daemon, and immediat
 
 Copy or clone this repository into either:
 
-- **Global skill directory:** `~/.gemini/config/skills/antigravity-custom-theme/`
-- **Workspace skill directory:** `.agents/skills/antigravity-custom-theme/`
+- **Global skill directory:** `~/.gemini/config/skills/agy-theme/`
+- **Workspace skill directory:** `.agents/skills/agy-theme/`
 
-Once installed, simply prompt your Antigravity agent with an image and aesthetic preference (e.g., *"Use `antigravity-custom-theme` to build me a dark emerald studio Ghibli theme from this image"*). The agent reads `SKILL.md` + `references/theme-schema.md`, creates your preset in `themes/`, builds `dist/theme_payload.js`, and verifies it via `verify_cdp.js`.
+Once installed, simply prompt your Antigravity agent with an image and aesthetic preference (e.g., *"Use `agy-theme` to build me a dark emerald studio Ghibli theme from this image"*). The agent reads `SKILL.md` + `references/theme-schema.md`, creates your preset in `themes/`, builds `dist/theme_payload.js`, and verifies it via `verify_cdp.js`.
 
 ## Repository Structure
 

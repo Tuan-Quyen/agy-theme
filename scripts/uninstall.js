@@ -47,6 +47,7 @@ function resolvePortFile() {
 function stopDaemon() {
     const candidates = [
         PID_FILE,
+        path.join(os.homedir(), '.agy-theme', 'daemon.pid'),
         path.join(os.homedir(), '.antigravity-custom-theme', 'daemon.pid'),
     ];
     let stoppedAny = false;
@@ -99,12 +100,14 @@ function removeAutoStart() {
             fs.unlinkSync(plist);
             console.log(`[uninstall] Removed LaunchAgent plist: ${plist}`);
         }
-        const runtimeDir = path.join(os.homedir(), '.antigravity-custom-theme');
-        if (fs.existsSync(runtimeDir)) {
-            try {
-                fs.rmSync(runtimeDir, { recursive: true, force: true });
-                console.log(`[uninstall] Removed runtime directory: ${runtimeDir}`);
-            } catch (_) {}
+        for (const dirName of ['.agy-theme', '.antigravity-custom-theme']) {
+            const runtimeDir = path.join(os.homedir(), dirName);
+            if (fs.existsSync(runtimeDir)) {
+                try {
+                    fs.rmSync(runtimeDir, { recursive: true, force: true });
+                    console.log(`[uninstall] Removed runtime directory: ${runtimeDir}`);
+                } catch (_) {}
+            }
         }
         return;
     }

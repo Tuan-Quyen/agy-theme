@@ -131,9 +131,13 @@ def build_payload(themes_path: Path, engine_path: Path, out_path: Path, max_dim:
     out_path.write_text(compiled, encoding="utf-8")
 
     # Sync to runtime directory if installed
-    runtime_out = Path.home() / ".antigravity-custom-theme" / "dist" / "theme_payload.js"
-    if runtime_out.parent.is_dir():
-        runtime_out.write_text(compiled, encoding="utf-8")
+    runtime_targets = [
+        Path.home() / ".agy-theme" / "dist" / "theme_payload.js",
+        Path.home() / ".antigravity-custom-theme" / "dist" / "theme_payload.js",
+    ]
+    for r_out in runtime_targets:
+        if r_out.parent.is_dir():
+            r_out.write_text(compiled, encoding="utf-8")
 
     size_kb = out_path.stat().st_size / 1024.0
     print(

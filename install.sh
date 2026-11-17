@@ -7,7 +7,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_TARGET="$HOME/.gemini/config/skills/antigravity-custom-theme"
+SKILL_TARGET="$HOME/.gemini/config/skills/agy-theme"
+LEGACY_SKILL_TARGET="$HOME/.gemini/config/skills/antigravity-custom-theme"
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -42,10 +43,9 @@ echo -e "${YELLOW}[1/4] Đang biên dịch themes & assets vào dist/theme_paylo
 # 3. Đăng ký Agent Skill toàn cục
 echo -e "${YELLOW}[2/4] Đăng ký Agent Skill vào ~/.gemini/config/skills/...${NC}"
 mkdir -p "$HOME/.gemini/config/skills"
-if [ -L "$SKILL_TARGET" ] || [ -d "$SKILL_TARGET" ]; then
-    rm -rf "$SKILL_TARGET"
-fi
+rm -rf "$SKILL_TARGET" "$LEGACY_SKILL_TARGET"
 ln -s "$SCRIPT_DIR" "$SKILL_TARGET"
+ln -s "agy-theme" "$LEGACY_SKILL_TARGET"
 echo -e "${GREEN}      -> Đã tạo symlink skill: $SKILL_TARGET${NC}"
 
 # 4. Cài đặt LaunchAgent Service

@@ -7,7 +7,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_TARGET="$HOME/.gemini/config/skills/antigravity-custom-theme"
+SKILL_TARGET="$HOME/.gemini/config/skills/agy-theme"
+LEGACY_SKILL_TARGET="$HOME/.gemini/config/skills/antigravity-custom-theme"
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -25,10 +26,8 @@ node "$SCRIPT_DIR/scripts/uninstall.js"
 
 # 2. Xóa symlink skill nếu có
 echo -e "${YELLOW}[2/3] Gỡ bỏ liên kết Agent Skill...${NC}"
-if [ -L "$SKILL_TARGET" ]; then
-    rm -f "$SKILL_TARGET"
-    echo -e "${GREEN}      -> Đã gỡ symlink: $SKILL_TARGET${NC}"
-fi
+rm -f "$SKILL_TARGET" "$LEGACY_SKILL_TARGET"
+echo -e "${GREEN}      -> Đã gỡ symlink skill${NC}"
 
 # 3. Dọn dẹp PID và file tạm
 echo -e "${YELLOW}[3/3] Dọn dẹp trạng thái...${NC}"

@@ -60,11 +60,11 @@ stop_existing_pid() {
 
 install_macos() {
     local node_bin="$1"
-    local runtime_dir="$HOME/.antigravity-custom-theme"
+    local runtime_dir="$HOME/.agy-theme"
     local plist_dir="$HOME/Library/LaunchAgents"
     local plist_path="$plist_dir/$SERVICE_LABEL.plist"
 
-    # Copy runtime bundle to ~/.antigravity-custom-theme so macOS TCC sandbox does not block launchd
+    # Copy runtime bundle to ~/.agy-theme so macOS TCC sandbox does not block launchd
     mkdir -p "$runtime_dir/dist" "$runtime_dir/daemon" "$plist_dir"
     cp -f "$REPO_ROOT/dist/theme_payload.js" "$runtime_dir/dist/theme_payload.js"
     cp -f "$REPO_ROOT/daemon/theme_daemon.js" "$runtime_dir/daemon/theme_daemon.js"
