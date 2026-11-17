@@ -604,6 +604,384 @@
     `);
   }
 
+  function getThemeCharmSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+          <path d="M20 2 C16 2 14 6 14 10 C14 14 18 17 20 18 C22 17 26 14 26 10 C26 6 24 2 20 2 Z" stroke="${s}" stroke-width="1.4" fill="none" opacity="0.9"/>
+          <circle cx="20" cy="18" r="2.5" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
+          <ellipse cx="20" cy="28" rx="15" ry="8" stroke="${p}" stroke-width="1.6" fill="#0c1424" opacity="0.95"/>
+          <ellipse cx="20" cy="28" rx="12" ry="6" stroke="${s}" stroke-width="0.9" fill="none" opacity="0.8"/>
+          <line x1="20" y1="23" x2="20" y2="33" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="12" y1="28" x2="28" y2="28" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="20" cy="28" r="2" fill="#ffffff"/>
+          <polygon points="20,36 24,41 20,46 16,41" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
+          <circle cx="20" cy="49" r="1.8" fill="${s}"/>
+          <path d="M14 53 Q20 50 26 53 L24 57 Q20 55 16 57 Z" fill="${p}" stroke="${s}" stroke-width="0.8"/>
+          <path d="M16 57 Q13 70 14 82" stroke="${p}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M18 57 Q17 70 18 84" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.9"/>
+          <path d="M20 57 L20 84" stroke="${s}" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M22 57 Q23 70 22 84" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.9"/>
+          <path d="M24 57 Q27 70 26 82" stroke="${p}" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="15" cy="72" r="1.4" fill="${s}"/>
+          <circle cx="25" cy="72" r="1.4" fill="${s}"/>
+          <circle cx="20" cy="76" r="1.6" fill="#ffffff"/>
+          <polygon points="7,24 8,26 10,27 8,28 7,30 6,28 4,27 6,26" fill="${p}" opacity="0.85"/>
+          <polygon points="33,36 34,38 36,39 34,40 33,42 32,40 30,39 32,38" fill="${s}" opacity="0.85"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+          <line x1="20" y1="1" x2="20" y2="15" stroke="${s}" stroke-width="1.2" stroke-dasharray="2 2"/>
+          <circle cx="20" cy="15" r="2.5" fill="${p}"/>
+          <circle cx="20" cy="29" r="13" stroke="${p}" stroke-width="1.5" fill="#090d1f" opacity="0.92"/>
+          <ellipse cx="20" cy="29" rx="13" ry="5" stroke="${s}" stroke-width="0.9" fill="none" opacity="0.8"/>
+          <path d="M17 20 A 9 9 0 1 0 24 35 A 7 7 0 1 1 17 20 Z" fill="${s}" opacity="0.95"/>
+          <circle cx="22" cy="25" r="1.8" fill="#ffffff"/>
+          <line x1="20" y1="42" x2="20" y2="58" stroke="${s}" stroke-width="1" stroke-dasharray="2 2"/>
+          <line x1="12" y1="39" x2="9" y2="52" stroke="${p}" stroke-width="0.9" stroke-dasharray="2 2"/>
+          <line x1="28" y1="39" x2="31" y2="52" stroke="${p}" stroke-width="0.9" stroke-dasharray="2 2"/>
+          <polygon points="9,52 10.5,55 13.5,56 10.5,57 9,60 7.5,57 4.5,56 7.5,55" fill="${p}"/>
+          <polygon points="31,52 32.5,55 35.5,56 32.5,57 31,60 29.5,57 26.5,56 29.5,55" fill="${p}"/>
+          <g transform="translate(20, 68)">
+            <polygon points="0,-12 2.5,-3 11,-3 4,2 6.5,10 0,5 -6.5,10 -4,2 -11,-3 -2.5,-3" fill="${s}" stroke="#ffffff" stroke-width="0.7"/>
+            <circle cx="0" cy="0" r="2.2" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+          <path d="M10 2 L30 2 L28 6 L12 6 Z" fill="${p}" stroke="#ffffff" stroke-width="0.6"/>
+          <path d="M14 6 L10 22 L20 18 L30 22 L26 6 Z" fill="#991b1b" stroke="${p}" stroke-width="1.2"/>
+          <path d="M17 6 L15 20 L20 18 L25 20 L23 6 Z" fill="${s}" opacity="0.85"/>
+          <circle cx="20" cy="18" r="3" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
+          <circle cx="20" cy="36" r="14" fill="#1c140a" stroke="${p}" stroke-width="1.8"/>
+          <circle cx="20" cy="36" r="11.5" stroke="${s}" stroke-width="0.9" stroke-dasharray="2 1.5"/>
+          <g transform="translate(20, 36)">
+            <path d="M0 -8 C-2 -4 -3 -1 0 3 C3 -1 2 -4 0 -8 Z" fill="${p}"/>
+            <path d="M-1 1 C-5 0 -8 -3 -8 -6 C-7 -7 -5 -6 -4 -4 C-3 -1 -2 1 -1 1 Z" fill="${s}"/>
+            <path d="M1 1 C5 0 8 -3 8 -6 C7 -7 5 -6 4 -4 C3 -1 2 1 1 1 Z" fill="${s}"/>
+            <rect x="-5" y="1" width="10" height="2" rx="1" fill="${p}"/>
+            <circle cx="0" cy="5" r="1" fill="#ffffff"/>
+          </g>
+          <line x1="20" y1="50" x2="20" y2="58" stroke="${p}" stroke-width="1.4"/>
+          <circle cx="20" cy="58" r="2" fill="${s}"/>
+          <path d="M20 60 C16 67 15 74 20 80 C25 74 24 67 20 60 Z" fill="#fef08a" stroke="${p}" stroke-width="1.2"/>
+          <ellipse cx="19" cy="68" rx="1.5" ry="4" fill="#ffffff" opacity="0.75"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'obsidian_prism') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+          <polygon points="20,1 24,3 24,8 20,10 16,8 16,3" stroke="${p}" stroke-width="1.2" fill="none"/>
+          <polygon points="20,8 24,10 24,15 20,17 16,15 16,10" stroke="${s}" stroke-width="1.2" fill="none"/>
+          <circle cx="20" cy="20" r="3" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
+          <g transform="translate(20, 48)">
+            <polygon points="0,-24 14,-10 9,20 0,32 -9,20 -14,-10" fill="#090514" stroke="${p}" stroke-width="1.6"/>
+            <polygon points="0,-24 14,-10 0,-4" fill="${p}" opacity="0.45"/>
+            <polygon points="0,-24 -14,-10 0,-4" fill="${s}" opacity="0.35"/>
+            <polygon points="14,-10 9,20 0,7 0,-4" fill="${s}" opacity="0.5"/>
+            <polygon points="-14,-10 -9,20 0,7 0,-4" fill="${p}" opacity="0.6"/>
+            <polygon points="0,7 9,20 0,32" fill="${p}" opacity="0.8"/>
+            <polygon points="0,7 -9,20 0,32" fill="${s}" opacity="0.9"/>
+            <line x1="0" y1="-24" x2="0" y2="32" stroke="#ffffff" stroke-width="1" opacity="0.85"/>
+            <circle cx="0" cy="0" r="2.5" fill="#ffffff"/>
+          </g>
+          <polygon points="3,36 4,38 6,39 4,40 3,42 2,40 0,39 2,38" fill="${s}"/>
+          <polygon points="37,48 38,50 40,51 38,52 37,54 36,52 34,51 36,50" fill="${p}"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'sakura_bloom') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+          <path d="M15 4 C15 10 25 10 25 4" stroke="${p}" stroke-width="1.5" fill="none"/>
+          <circle cx="20" cy="14" r="3" fill="${s}" stroke="#ffffff" stroke-width="0.8"/>
+          <g transform="translate(20, 28)">
+            <g transform="rotate(0)"><path d="M0 0 C-2 -3 -3 -7 0 -8 C3 -7 2 -3 0 0" fill="${p}" opacity="0.95"/></g>
+            <g transform="rotate(72)"><path d="M0 0 C-2 -3 -3 -7 0 -8 C3 -7 2 -3 0 0" fill="${p}" opacity="0.95"/></g>
+            <g transform="rotate(144)"><path d="M0 0 C-2 -3 -3 -7 0 -8 C3 -7 2 -3 0 0" fill="${p}" opacity="0.95"/></g>
+            <g transform="rotate(216)"><path d="M0 0 C-2 -3 -3 -7 0 -8 C3 -7 2 -3 0 0" fill="${p}" opacity="0.95"/></g>
+            <g transform="rotate(288)"><path d="M0 0 C-2 -3 -3 -7 0 -8 C3 -7 2 -3 0 0" fill="${p}" opacity="0.95"/></g>
+            <circle cx="0" cy="0" r="2.5" fill="${s}"/>
+            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+          </g>
+          <line x1="20" y1="38" x2="20" y2="48" stroke="${p}" stroke-width="1.2"/>
+          <circle cx="20" cy="54" r="6" fill="#fdf2f8" stroke="${s}" stroke-width="1.4"/>
+          <circle cx="20" cy="57" r="1.5" fill="${p}"/>
+          <path d="M16 60 Q13 72 15 84" stroke="${p}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 60 L20 84" stroke="${s}" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M24 60 Q27 72 25 84" stroke="${p}" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      `);
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 84" fill="none">
+        <line x1="20" y1="2" x2="20" y2="16" stroke="${p}" stroke-width="1.5"/>
+        <circle cx="20" cy="18" r="4" fill="${s}" stroke="#ffffff" stroke-width="1"/>
+        <polygon points="20,24 32,38 20,52 8,38" fill="#111827" stroke="${p}" stroke-width="1.8"/>
+        <polygon points="20,29 28,38 20,47 12,38" fill="${s}" opacity="0.75"/>
+        <circle cx="20" cy="38" r="2.5" fill="#ffffff"/>
+        <line x1="20" y1="52" x2="20" y2="68" stroke="${p}" stroke-width="1.5"/>
+        <polygon points="20,68 25,76 20,84 15,76" fill="${p}"/>
+      </svg>
+    `);
+  }
+
+  function getThemeBadgeSvg(motif, primary, secondary, customTitle) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    let title = customTitle;
+    let iconPath = '';
+
+    if (motif === 'frost_blade') {
+      title = title || '❄ HIYUKI • FROST BLADE';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <line x1="-7" y1="0" x2="7" y2="0" stroke="${p}" stroke-width="1.4"/>
+          <line x1="0" y1="-7" x2="0" y2="7" stroke="${p}" stroke-width="1.4"/>
+          <line x1="-5" y1="-5" x2="5" y2="5" stroke="${s}" stroke-width="1.1"/>
+          <line x1="-5" y1="5" x2="5" y2="-5" stroke="${s}" stroke-width="1.1"/>
+          <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+        </g>
+      `;
+    } else if (motif === 'night_astral') {
+      title = title || '✦ ASTRAL NIGHT • COSMOS';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <path d="M-3 -6 A 6 6 0 1 0 4 5 A 4.5 4.5 0 1 1 -3 -6 Z" fill="${s}"/>
+          <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="#ffffff"/>
+        </g>
+      `;
+    } else if (motif === 'royal_crest') {
+      title = title || '⚜ THIÊN • IMPERIAL';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <path d="M0 -6 C-2 -3 -2 -1 0 2 C2 -1 2 -3 0 -6 Z" fill="${p}"/>
+          <path d="M-1 0 C-4 -1 -6 -3 -5 -5 C-4 -4 -3 -2 -1 0 Z" fill="${s}"/>
+          <path d="M1 0 C4 -1 6 -3 5 -5 C4 -4 3 -2 1 0 Z" fill="${s}"/>
+          <rect x="-4" y="1" width="8" height="1.6" rx="0.8" fill="${p}"/>
+        </g>
+      `;
+    } else if (motif === 'obsidian_prism') {
+      title = title || '◈ OBSIDIAN • PRISM GEM';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <polygon points="0,-7 6,-2 4,5 0,7 -4,5 -6,-2" stroke="${p}" stroke-width="1.2" fill="#0d0918"/>
+          <polygon points="0,-5 4,-1 0,4 -4,-1" fill="${s}"/>
+          <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+        </g>
+      `;
+    } else if (motif === 'sakura_bloom') {
+      title = title || '🌸 SAKURA • BLOSSOM';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <path d="M0 -6 C-2 -4 -2 -1 0 1 C2 -1 2 -4 0 -6 Z" fill="${p}"/>
+          <circle cx="0" cy="0" r="1.5" fill="${s}"/>
+        </g>
+      `;
+    } else {
+      title = title || '✧ THEME STUDIO';
+      iconPath = `
+        <g transform="translate(14, 13)">
+          <polygon points="0,-6 2,-2 6,0 2,2 0,6 -2,2 -6,0 -2,-2" fill="${p}"/>
+          <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+        </g>
+      `;
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 26" fill="none">
+        <defs>
+          <linearGradient id="badgeBorder_${motif}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.9"/>
+            <stop offset="50%" stop-color="${s}" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="${p}" stop-opacity="0.9"/>
+          </linearGradient>
+          <linearGradient id="badgeBg_${motif}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0f172a" stop-opacity="0.92"/>
+            <stop offset="100%" stop-color="#020617" stop-opacity="0.96"/>
+          </linearGradient>
+        </defs>
+        <rect x="1" y="1" width="178" height="24" rx="12" fill="url(#badgeBg_${motif})" stroke="url(#badgeBorder_${motif})" stroke-width="1.2"/>
+        <rect x="3" y="3" width="174" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
+        ${iconPath}
+        <text x="28" y="17" fill="#f8fafc" font-size="10.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
+        <circle cx="164" cy="13" r="1.8" fill="${p}"/>
+        <circle cx="170" cy="13" r="1.8" fill="${s}"/>
+      </svg>
+    `);
+  }
+
+  function getThemeWatermarkSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+          <g transform="translate(100, 100)" opacity="0.08">
+            <circle cx="0" cy="0" r="90" stroke="${p}" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <circle cx="0" cy="0" r="76" stroke="${s}" stroke-width="1"/>
+            <circle cx="0" cy="0" r="54" stroke="${p}" stroke-width="1.2" stroke-dasharray="2 3"/>
+            <circle cx="0" cy="0" r="32" stroke="${s}" stroke-width="1"/>
+            <line x1="-80" y1="-80" x2="80" y2="80" stroke="${p}" stroke-width="3" stroke-linecap="round"/>
+            <line x1="-80" y1="80" x2="80" y2="-80" stroke="${p}" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="0" cy="0" rx="14" ry="7" transform="rotate(45)" stroke="${s}" stroke-width="2"/>
+            <ellipse cx="0" cy="0" rx="14" ry="7" transform="rotate(-45)" stroke="${s}" stroke-width="2"/>
+            <line x1="0" y1="-85" x2="0" y2="85" stroke="${s}" stroke-width="1.6"/>
+            <line x1="-73.6" y1="-42.5" x2="73.6" y2="42.5" stroke="${s}" stroke-width="1.6"/>
+            <line x1="-73.6" y1="42.5" x2="73.6" y2="-42.5" stroke="${s}" stroke-width="1.6"/>
+            <path d="M-15 -60 L0 -75 L15 -60" stroke="${p}" stroke-width="1.5" fill="none"/>
+            <path d="M-15 60 L0 75 L15 60" stroke="${p}" stroke-width="1.5" fill="none"/>
+            <polygon points="0,-22 18,0 0,22 -18,0" stroke="${s}" stroke-width="1.5" fill="none"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+          <g transform="translate(100, 100)" opacity="0.08">
+            <circle cx="0" cy="0" r="92" stroke="${p}" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <circle cx="0" cy="0" r="80" stroke="${s}" stroke-width="1.2"/>
+            <ellipse cx="0" cy="0" rx="80" ry="34" stroke="${s}" stroke-width="1" transform="rotate(30)"/>
+            <ellipse cx="0" cy="0" rx="80" ry="34" stroke="${p}" stroke-width="1" transform="rotate(-30)"/>
+            <circle cx="0" cy="0" r="50" stroke="${p}" stroke-width="1.2" stroke-dasharray="3 4"/>
+            <path d="M-22 -35 A 42 42 0 1 0 32 30 A 32 32 0 1 1 -22 -35 Z" stroke="${s}" stroke-width="2" fill="none"/>
+            <polygon points="0,-65 8,-18 55,0 8,18 0,65 -8,18 -55,0 -8,-18" stroke="${p}" stroke-width="1.5" fill="none"/>
+            <polygon points="0,-40 6,-12 34,0 6,12 0,40 -6,12 -34,0 -6,-12" stroke="${s}" stroke-width="1" fill="none"/>
+            <circle cx="0" cy="-80" r="3" fill="${s}"/>
+            <circle cx="0" cy="80" r="3" fill="${s}"/>
+            <circle cx="-80" cy="0" r="3" fill="${p}"/>
+            <circle cx="80" cy="0" r="3" fill="${p}"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+          <g transform="translate(100, 100)" opacity="0.08">
+            <circle cx="0" cy="0" r="90" stroke="${p}" stroke-width="1.5"/>
+            <circle cx="0" cy="0" r="82" stroke="${s}" stroke-width="1" stroke-dasharray="2 3"/>
+            <circle cx="0" cy="0" r="62" stroke="${p}" stroke-width="1.2"/>
+            <path d="M-36 -10 L-42 -35 L-20 -24 L0 -45 L20 -24 L42 -35 L36 -10 Z" stroke="${p}" stroke-width="2" fill="none"/>
+            <line x1="-36" y1="-10" x2="36" y2="-10" stroke="${s}" stroke-width="2"/>
+            <path d="M0 -5 C-12 10 -15 28 0 45 C15 28 12 10 0 -5 Z" stroke="${s}" stroke-width="1.8" fill="none"/>
+            <path d="M-6 12 C-24 10 -35 -4 -32 -18 C-26 -14 -18 -4 -6 12 Z" stroke="${p}" stroke-width="1.6" fill="none"/>
+            <path d="M6 12 C24 10 35 -4 32 -18 C26 -14 18 -4 6 12 Z" stroke="${p}" stroke-width="1.6" fill="none"/>
+            <line x1="-65" y1="55" x2="65" y2="-55" stroke="${s}" stroke-width="1.8"/>
+            <line x1="65" y1="55" x2="-65" y2="-55" stroke="${s}" stroke-width="1.8"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'obsidian_prism') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+          <g transform="translate(100, 100)" opacity="0.08">
+            <polygon points="0,-88 76,-44 76,44 0,88 -76,44 -76,-44" stroke="${p}" stroke-width="1.8"/>
+            <polygon points="0,-64 55,-32 55,32 0,64 -55,32 -55,-32" stroke="${s}" stroke-width="1.4"/>
+            <line x1="0" y1="0" x2="0" y2="88" stroke="${p}" stroke-width="1.6"/>
+            <line x1="0" y1="0" x2="-76" y2="-44" stroke="${p}" stroke-width="1.6"/>
+            <line x1="0" y1="0" x2="76" y2="-44" stroke="${p}" stroke-width="1.6"/>
+            <polygon points="0,-64 36,-18 0,28 -36,-18" stroke="${s}" stroke-width="1.5" fill="none"/>
+            <line x1="-55" y1="32" x2="55" y2="-32" stroke="${p}" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="55" y1="32" x2="-55" y2="-32" stroke="${s}" stroke-width="1" stroke-dasharray="3 3"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+        <g transform="translate(100, 100)" opacity="0.08">
+          <circle cx="0" cy="0" r="85" stroke="${p}" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <polygon points="0,-75 22,-22 75,0 22,22 0,75 -22,22 -75,0 -22,-22" stroke="${s}" stroke-width="1.5" fill="none"/>
+          <circle cx="0" cy="0" r="30" stroke="${p}" stroke-width="1.2"/>
+        </g>
+      </svg>
+    `);
+  }
+
+  function getThemeAgentAccentSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 16" fill="none">
+          <line x1="0" y1="8" x2="38" y2="8" stroke="${p}" stroke-width="1.2"/>
+          <line x1="62" y1="8" x2="100" y2="8" stroke="${p}" stroke-width="1.2"/>
+          <g transform="translate(50, 8)">
+            <polygon points="0,-6 4,0 0,6 -4,0" fill="${s}"/>
+            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+          </g>
+          <circle cx="34" cy="8" r="1.5" fill="${s}"/>
+          <circle cx="66" cy="8" r="1.5" fill="${s}"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 16" fill="none">
+          <line x1="0" y1="8" x2="36" y2="8" stroke="${s}" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="64" y1="8" x2="100" y2="8" stroke="${s}" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <g transform="translate(50, 8)">
+            <polygon points="0,-6 1.8,-1.8 6,0 1.8,1.8 0,6 -1.8,1.8 -6,0 -1.8,-1.8" fill="${s}"/>
+            <circle cx="0" cy="0" r="1" fill="#ffffff"/>
+          </g>
+          <circle cx="32" cy="8" r="1.5" fill="${p}"/>
+          <circle cx="68" cy="8" r="1.5" fill="${p}"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 16" fill="none">
+          <line x1="0" y1="8" x2="36" y2="8" stroke="${p}" stroke-width="1.4"/>
+          <line x1="64" y1="8" x2="100" y2="8" stroke="${p}" stroke-width="1.4"/>
+          <g transform="translate(50, 8)">
+            <path d="M0 -5 C-1.5 -2 -1.5 0 0 2 C1.5 0 1.5 -2 0 -5 Z" fill="${p}"/>
+            <circle cx="-3" cy="2" r="1" fill="${s}"/>
+            <circle cx="3" cy="2" r="1" fill="${s}"/>
+            <circle cx="0" cy="0" r="1" fill="#ffffff"/>
+          </g>
+          <circle cx="32" cy="8" r="1.6" fill="${p}"/>
+          <circle cx="68" cy="8" r="1.6" fill="${p}"/>
+        </svg>
+      `);
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 16" fill="none">
+        <line x1="0" y1="8" x2="38" y2="8" stroke="${p}" stroke-width="1.2"/>
+        <line x1="62" y1="8" x2="100" y2="8" stroke="${p}" stroke-width="1.2"/>
+        <polygon points="50,2 54,8 50,14 46,8" fill="${s}"/>
+      </svg>
+    `);
+  }
+
   function getThemeComposerSpec(motif, primary, secondary, glow, secondaryGlow) {
     const p = primary || '#38bdf8';
     const s = secondary || p;
@@ -1132,6 +1510,10 @@
     const composerSpec = getThemeComposerSpec(activeMotif, primaryColor, secondaryColor, bubbleTheme.glow, bubbleTheme.secondaryGlow);
     const cornerFiligreeUrl = bubbleTheme.cornerSvg || getThematicCornerSvg(primaryColor, secondaryColor, activeMotif);
     const crestOrnamentUrl = bubbleTheme.sticker || getThematicCrestSvg(primaryColor, secondaryColor, activeMotif);
+    const charmPendantUrl = getThemeCharmSvg(activeMotif, primaryColor, secondaryColor);
+    const themeBadgeUrl = getThemeBadgeSvg(activeMotif, primaryColor, secondaryColor, st.bubbleName);
+    const watermarkUrl = getThemeWatermarkSvg(activeMotif, primaryColor, secondaryColor);
+    const agentAccentUrl = getThemeAgentAccentSvg(activeMotif, primaryColor, secondaryColor);
     const isOrnamental = curInputStyle === 'ornamental';
     const isThematic = curInputStyle === 'thematic';
     const isGlass = curInputStyle === 'glass';
@@ -1139,9 +1521,9 @@
 
     const bubbleStickerCss = (isOrnamental || isThematic) ? `
       .group\\/user-input-step {
-        padding-top: ${isOrnamental ? '18px' : '14px'} !important;
+        padding-top: ${isOrnamental ? '20px' : '16px'} !important;
       }
-      .agy-user-bubble-frame::before {
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before {
         content: "";
         position: absolute;
         top: -12px;
@@ -1153,7 +1535,7 @@
         background-position: center;
         background-repeat: no-repeat;
         z-index: 25;
-        pointer-events: none;
+        pointer-events: none !important;
         filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
         transition: transform 0.2s ease;
       }
@@ -1161,44 +1543,70 @@
       .group\\/user-input-step {
         padding-top: 4px !important;
       }
-      .agy-user-bubble-frame::before { display: none !important; }
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before { display: none !important; }
     `;
 
-    const inputStickerCss = isOrnamental ? `
+    const inputStickerCss = (isOrnamental || isThematic) ? `
       .surface-composer {
-        margin-top: 18px !important;
+        margin-top: ${isOrnamental ? '24px' : '18px'} !important;
         overflow: visible !important;
       }
+      /* Thematic Engraved Nameplate Badge */
       .surface-composer::before {
         content: "";
         position: absolute;
         top: -14px;
+        left: 32px;
+        width: 175px;
+        height: 26px;
+        background-image: url("${themeBadgeUrl}");
+        background-size: contain;
+        background-position: center left;
+        background-repeat: no-repeat;
+        z-index: 34;
+        pointer-events: none !important;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${bubbleTheme.glow});
+      }
+      /* Floating Thematic Charm / Tassel Pendant */
+      .surface-composer::after {
+        content: "";
+        position: absolute;
+        top: -16px;
+        left: -12px;
+        width: 36px;
+        height: 80px;
+        background-image: url("${charmPendantUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: top center;
+        z-index: 35;
+        pointer-events: none !important;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${bubbleTheme.glow});
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .surface-composer:hover::after {
+        transform: translateY(-2px) rotate(2deg);
+      }
+      /* Top-right crest & corner filigree on composer card */
+      .surface-composer-card::before {
+        ${isOrnamental ? `
+        content: "";
+        position: absolute;
+        top: -13px;
         ${composerSpec.crestPositionCss}
-        width: 128px;
-        height: 28px;
+        width: 104px;
+        height: 24px;
         background-image: url("${crestOrnamentUrl}");
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
-        z-index: 30;
-        pointer-events: none;
-        filter: drop-shadow(0 2px 10px ${bubbleTheme.glow});
-      }
-      .surface-composer::after {
-        content: "";
-        position: absolute;
-        top: 3px;
-        left: 4px;
-        width: 18px;
-        height: 18px;
-        background-image: url("${cornerFiligreeUrl}");
-        background-size: contain;
-        background-repeat: no-repeat;
-        z-index: 25;
-        pointer-events: none;
-        opacity: 0.95;
+        z-index: 33;
+        pointer-events: none !important;
+        filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
+        ` : 'display: none !important;'}
       }
       .surface-composer-card::after {
+        ${isOrnamental ? `
         content: "";
         position: absolute;
         bottom: 3px;
@@ -1210,49 +1618,16 @@
         background-repeat: no-repeat;
         transform: rotate(180deg);
         z-index: 25;
-        pointer-events: none;
+        pointer-events: none !important;
         opacity: 0.88;
+        ` : 'display: none !important;'}
       }
-    ` : (isThematic ? `
-      .surface-composer {
-        margin-top: 14px !important;
-        overflow: visible !important;
-      }
-      .surface-composer::before {
-        content: "";
-        position: absolute;
-        top: -12px;
-        ${composerSpec.crestPositionCss}
-        width: 104px;
-        height: 24px;
-        background-image: url("${crestOrnamentUrl}");
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        z-index: 30;
-        pointer-events: none;
-        filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
-      }
-      .surface-composer::after {
-        content: "";
-        position: absolute;
-        top: 3px;
-        left: 4px;
-        width: 16px;
-        height: 16px;
-        background-image: url("${cornerFiligreeUrl}");
-        background-size: contain;
-        background-repeat: no-repeat;
-        z-index: 25;
-        pointer-events: none;
-        opacity: 0.85;
-      }
-      .surface-composer-card::after { display: none !important; }
     ` : `
       .surface-composer::before,
       .surface-composer::after,
+      .surface-composer-card::before,
       .surface-composer-card::after { display: none !important; }
-    `);
+    `;
 
     const inputCardBg =
       isGlass
@@ -1348,17 +1723,36 @@
       }
     ` : '';
 
-    const aiCardCss = mainTheme.aiCardBg ? `
-      /* Translucent reading card for AI responses (zero live backdrop-filter for max 120fps scroll) */
+    const aiCardCss = `
+      /* Translucent reading card for AI responses with thematic accent */
       .agy-shell [data-testid="agent-response"] {
-        background: ${mainTheme.aiCardBg} !important;
+        background: ${mainTheme.aiCardBg || 'rgba(18, 20, 30, 0.72)'} !important;
         ${isLight ? `color: ${uiInk} !important;` : ''}
         backdrop-filter: none !important;
-        border: 1px solid ${mainTheme.aiCardBorder || (isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255, 255, 255, 0.1)')} !important;
+        border-left: 3px solid ${primaryColor} !important;
+        border-top: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}38`} !important;
+        border-right: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}24`} !important;
+        border-bottom: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}24`} !important;
         border-radius: 14px !important;
-        padding: 12px 16px !important;
-        box-shadow: ${isLight ? '0 4px 14px rgba(15, 23, 42, 0.08)' : '0 4px 14px rgba(0, 0, 0, 0.28)'} !important;
+        padding: 14px 18px !important;
+        box-shadow: ${isLight ? '0 4px 14px rgba(15, 23, 42, 0.08)' : `0 6px 20px rgba(0, 0, 0, 0.35), 0 0 14px ${mainTheme.glow}20`} !important;
         box-sizing: border-box !important;
+        position: relative !important;
+      }
+      .agy-shell [data-testid="agent-response"]::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 28px;
+        width: 100px;
+        height: 16px;
+        background-image: url("${agentAccentUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: right center;
+        pointer-events: none !important;
+        opacity: 0.88;
+        z-index: 5;
       }
       ${isLight ? `
       .agy-shell [data-main-content-body="true"],
@@ -1370,7 +1764,7 @@
       .agy-shell [data-main-content-body="true"] h2 {
         text-shadow: ${isLight ? 'none' : '0 2px 10px rgba(0, 0, 0, 0.85)'};
       }
-    ` : '';
+    `;
 
     const useUnifiedGlass = Boolean(st.wpEnabled && wpUrl && mainTheme.unifiedGlass);
     if (useUnifiedGlass && typeof syncShellMetrics === 'function') {
@@ -1530,7 +1924,7 @@
       }
 
       /* User Chat Bubble Double-Border Frame & Ornament */
-      .agy-user-bubble-frame {
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"])) {
         background: ${isOrnamental
           ? composerSpec.outerBorder
           : isThematic
@@ -1549,7 +1943,7 @@
         padding: ${isOrnamental ? '1.5px' : isThematic ? '1.2px' : '1px'} !important;
       }
 
-      .agy-user-bubble-frame::after {
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after {
         ${(isOrnamental || isThematic) ? `
         content: "";
         position: absolute;
@@ -1560,20 +1954,24 @@
         background-image: url("${cornerFiligreeUrl}");
         background-size: contain;
         background-repeat: no-repeat;
-        pointer-events: none;
+        pointer-events: none !important;
         opacity: ${isOrnamental ? '0.92' : '0.75'};
         z-index: 25;
         ` : 'display: none !important;'}
       }
 
-      .agy-user-bubble {
-        background: ${isGlass
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"]) {
+        background-color: ${isGlass
           ? (bubbleTheme.inputGlassBg || 'rgba(14, 18, 28, 0.55)')
           : isMinimal
           ? 'rgba(16, 18, 26, 0.94)'
           : bubbleTheme.bg
         } !important;
-        border-radius: ${bubbleTheme.isScroll ? '5px' : '13px'} !important;
+        background-image: ${isOrnamental || isThematic ? `url("${watermarkUrl}")` : 'none'} !important;
+        background-repeat: no-repeat !important;
+        background-position: right 6px bottom 4px !important;
+        background-size: 64px 64px !important;
+        border-radius: ${bubbleTheme.isScroll ? '5px' : composerSpec.bubbleRadius} !important;
         padding: 8px 16px !important;
         color: ${bubbleTheme.textColor || '#f8fafc'} !important;
         border: ${isGlass ? '1px solid rgba(255, 255, 255, 0.1)' : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')} !important;
@@ -1581,7 +1979,7 @@
         font-weight: 450 !important;
       }
 
-      .agy-user-bubble * {
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"]) * {
         color: ${bubbleTheme.textColor || '#f8fafc'} !important;
       }
 
@@ -1600,9 +1998,14 @@
       }
 
       .surface-composer-card {
-        background: ${inputCardBg} !important;
+        background-color: ${inputCardBg} !important;
+        background-image: ${isOrnamental || isThematic ? `url("${watermarkUrl}")` : 'none'} !important;
+        background-repeat: no-repeat !important;
+        background-position: right 24px center !important;
+        background-size: 135px 135px !important;
         backdrop-filter: none !important;
         border-radius: ${composerSpec.innerRadius} !important;
+        padding-left: 14px !important;
         position: relative !important;
         border: ${isGlass
           ? '1px solid rgba(255, 255, 255, 0.08)'
@@ -1610,6 +2013,42 @@
           ? '1px solid rgba(255, 255, 255, 0.06)'
           : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')
         } !important;
+      }
+
+      /* Thematic Action Orb (Send Button) */
+      .surface-composer [data-testid="send-button"],
+      .surface-composer .agy-send-button {
+        background: linear-gradient(135deg, ${primaryColor}f0, ${secondaryColor}d9) !important;
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        box-shadow: 0 0 14px ${bubbleTheme.glow}, 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        position: relative !important;
+      }
+
+      .surface-composer [data-testid="send-button"]:hover,
+      .surface-composer .agy-send-button:hover {
+        transform: scale(1.12) !important;
+        box-shadow: 0 0 22px ${bubbleTheme.glow}, 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 2px #ffffff !important;
+      }
+
+      .surface-composer [data-testid="send-button"] svg,
+      .surface-composer .agy-send-button svg {
+        color: #ffffff !important;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) !important;
+      }
+
+      /* Thematic Model & Permission Selectors */
+      .surface-composer [data-testid="model-selector-trigger"],
+      .surface-composer [data-testid="permissions-selector-trigger"] {
+        border: 1px solid ${primaryColor}40 !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 8px ${primaryColor}14 !important;
+        transition: all 0.15s ease !important;
+      }
+
+      .surface-composer [data-testid="model-selector-trigger"]:hover,
+      .surface-composer [data-testid="permissions-selector-trigger"]:hover {
+        border-color: ${primaryColor}99 !important;
+        box-shadow: 0 0 12px ${bubbleTheme.glow} !important;
       }
 
       /* High-contrast pill badges for top composer bar (adaptive light/dark theme) */
@@ -2056,6 +2495,8 @@
               const curSpec = getThemeComposerSpec(curMotif, p, s, activeBubbleTh.glow, activeBubbleTh.secondaryGlow);
               const cornerSvg = activeBubbleTh.cornerSvg || getThematicCornerSvg(p, s, curMotif);
               const crestSvg = activeBubbleTh.sticker || getThematicCrestSvg(p, s, curMotif);
+              const charmSvg = getThemeCharmSvg(curMotif, p, s);
+              const watermarkSvg = getThemeWatermarkSvg(curMotif, p, s);
 
               let previewOuterBg = '';
               let previewOuterShadow = '';
@@ -2105,12 +2546,13 @@
               return `
                 <div class="agy-input-card" data-style="${key}" style="border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 16px 18px; cursor: pointer; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s ease, background-color 0.15s ease;">
                   <div class="agy-input-preview-outer" style="position: relative; margin-top: 8px; padding: 1.5px; border-radius: ${pRadius}; background: ${previewOuterBg}; box-shadow: ${previewOuterShadow};">
+                    <div class="agy-input-preview-charm" style="position: absolute; top: -14px; left: 8px; width: 18px; height: 38px; background-image: url('${charmSvg}'); background-size: contain; background-repeat: no-repeat; display: ${showCrest ? 'block' : 'none'}; pointer-events: none; z-index: 6; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
                     <div class="agy-input-preview-crest" style="position: absolute; top: -11px; ${crestPosStyle} width: 72px; height: 18px; background-image: url('${crestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; display: ${showCrest ? 'block' : 'none'}; pointer-events: none; z-index: 5; filter: drop-shadow(0 2px 6px ${activeBubbleTh.glow || p});"></div>
                     <div class="agy-input-preview-corner-bl" style="position: absolute; bottom: 2px; right: 2px; width: 13px; height: 13px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; transform: rotate(180deg); display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
                     <div class="agy-input-preview-corner-tl" style="position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background-image: url('${cornerSvg}'); background-size: contain; background-repeat: no-repeat; display: ${showCorner ? 'block' : 'none'}; pointer-events: none; z-index: 5; opacity: ${key === 'ornamental' ? '0.92' : '0.75'};"></div>
-                    <div class="agy-input-preview-inner" style="background: ${previewInnerBg}; border-radius: ${pInnerRadius}; padding: 8px 12px; font-size: 12px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="agy-input-preview-inner" style="background: ${previewInnerBg}; background-image: ${showCrest ? `url('${watermarkSvg}')` : 'none'}; background-repeat: no-repeat; background-position: right 6px center; background-size: 38px 38px; border-radius: ${pInnerRadius}; padding: 8px 12px; font-size: 12px; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;">
                       <span>Ask anything, @ to mention...</span>
-                      <span class="agy-input-preview-turbo" style="color: ${p}; font-size: 11px;">Send →</span>
+                      <span class="agy-input-preview-turbo" style="color: #fff; background: linear-gradient(135deg, ${p}, ${s}); padding: 2px 8px; border-radius: 9999px; font-size: 10.5px; font-weight: 600; box-shadow: 0 0 6px ${activeBubbleTh.glow || p};">Send →</span>
                     </div>
                   </div>
                   <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2175,6 +2617,8 @@
       const curSpec = getThemeComposerSpec(activeMotif, p, s, activeTh.glow, activeTh.secondaryGlow);
       const cornerSvg = activeTh.cornerSvg || getThematicCornerSvg(p, s, activeMotif);
       const crestSvg = activeTh.sticker || getThematicCrestSvg(p, s, activeMotif);
+      const charmSvg = getThemeCharmSvg(activeMotif, p, s);
+      const watermarkSvg = getThemeWatermarkSvg(activeMotif, p, s);
       const curStyle = normalizeInputStyle(getState().inputStyle);
 
       container.querySelectorAll('.agy-input-card').forEach(card => {
@@ -2209,6 +2653,14 @@
             : key === 'minimal'
             ? 'rgba(18, 20, 28, 0.94)'
             : (activeTh.inputCardBg || 'rgba(26, 18, 15, 0.92)');
+          inner.style.backgroundImage = (key === 'ornamental' || key === 'thematic')
+            ? `url('${watermarkSvg}')`
+            : 'none';
+        }
+        const charm = card.querySelector('.agy-input-preview-charm');
+        if (charm) {
+          charm.style.backgroundImage = `url('${charmSvg}')`;
+          charm.style.display = (key === 'ornamental' || key === 'thematic') ? 'block' : 'none';
         }
         const crest = card.querySelector('.agy-input-preview-crest');
         if (crest) {
@@ -2247,7 +2699,9 @@
         }
         const turbo = card.querySelector('.agy-input-preview-turbo');
         if (turbo) {
-          turbo.style.color = p;
+          turbo.style.background = `linear-gradient(135deg, ${p}, ${s})`;
+          turbo.style.boxShadow = `0 0 6px ${activeTh.glow || p}`;
+          turbo.style.color = '#ffffff';
         }
       });
 
