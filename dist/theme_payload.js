@@ -44,9 +44,25 @@
 
   function getCustomPresets() {
     try {
-      const fromLocal = JSON.parse(localStorage.getItem(STORAGE_CUSTOM_PRESETS) || '{}');
+      const raw = localStorage.getItem(STORAGE_CUSTOM_PRESETS);
+      if (raw !== null) {
+        const fromLocal = JSON.parse(raw);
+        if (fromLocal && typeof fromLocal === 'object') {
+          for (const k of Object.keys(fromLocal)) {
+            if (!THEMES[k]) fromLocal[k].isCustom = true;
+          }
+          return fromLocal;
+        }
+      }
+      // Cold start hydration from initial daemon config
       const fromInit = (window.__AGY_INITIAL_CONFIG__ && window.__AGY_INITIAL_CONFIG__.customPresets) || {};
-      return { ...fromInit, ...fromLocal };
+      for (const k of Object.keys(fromInit)) {
+        if (!THEMES[k]) fromInit[k].isCustom = true;
+      }
+      if (Object.keys(fromInit).length > 0) {
+        localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(fromInit));
+      }
+      return fromInit;
     } catch (_) {
       return {};
     }
@@ -55,7 +71,14 @@
   function saveCustomPreset(preset) {
     try {
       const presets = getCustomPresets();
+      preset.isCustom = true;
       presets[preset.name] = preset;
+      if (window.__AGY_INITIAL_CONFIG__) {
+        if (!window.__AGY_INITIAL_CONFIG__.customPresets) {
+          window.__AGY_INITIAL_CONFIG__.customPresets = {};
+        }
+        window.__AGY_INITIAL_CONFIG__.customPresets[preset.name] = preset;
+      }
       localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
       if (window.agySaveThemeConfig) {
         window.agySaveThemeConfig(JSON.stringify({ customPresets: presets }));
@@ -71,6 +94,9 @@
         deleteLiveVideoBlob(p.videoKey);
       }
       delete presets[presetName];
+      if (window.__AGY_INITIAL_CONFIG__ && window.__AGY_INITIAL_CONFIG__.customPresets) {
+        delete window.__AGY_INITIAL_CONFIG__.customPresets[presetName];
+      }
       localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
       if (window.agySaveThemeConfig) {
         window.agySaveThemeConfig(JSON.stringify({ customPresets: presets }));
@@ -2548,6 +2574,13 @@
         backdrop-filter: none !important;
       }
 
+      .agy-delete-preset-btn:hover {
+        background: rgba(220, 38, 38, 0.9) !important;
+        color: #ffffff !important;
+        border-color: rgba(248, 113, 113, 0.8) !important;
+        transform: scale(1.12) !important;
+      }
+
       #agy-custom-theme-modal-dialog {
         background: ${modalBg} !important;
         border-color: ${mainTheme.borderColor} !important;
@@ -2778,6 +2811,8 @@
   }
 
   function renderThemePanels(container) {
+    if (!container) return;
+    const savedScrollTop = container.scrollTop;
     const st = getState();
     const curInputStyle = normalizeInputStyle(st.inputStyle);
     const allThemes = getAllThemes();
@@ -3160,19 +3195,21 @@
               const th = allThemes[name] || {};
               const isSelected = name === st.themeName;
               const isLive = th.bgMode === 'live' || Boolean(th.liveVideo);
+              const isCustomTheme = Boolean(th.isCustom || !THEMES[name]);
               const thumbBg = th.wallpaper
                 ? `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(14,12,12,0.85)), url('${th.wallpaper}')`
                 : (th.pureBg || th.bg);
               const thumbOrnamentStyle = th.isOrnament
                 ? 'right: 10px; bottom: 8px; width: 76px; height: 24px; background-position: center;'
                 : 'right: 12px; bottom: 4px; width: 42px; height: 38px; background-position: bottom center;';
+              const safeName = String(name).replace(/"/g, '&quot;');
               return `
-                <div class="agy-preset-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
+                <div class="agy-preset-card" data-name="${safeName}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
                   <div style="height: 68px; width: 100%; background-image: ${thumbBg}; background-size: cover; background-position: ${th.bgPosition || 'center'}; position: relative; display: flex; align-items: flex-end; padding: 8px 14px;">
                     ${th.sticker ? `<div style="position: absolute; ${thumbOrnamentStyle} background-image: url('${th.sticker}'); background-size: contain; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
                     <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); z-index: 1;">${name}</span>
-                    ${th.isCustom ? `
-                      <button class="agy-delete-preset-btn" data-preset="${name}" title="Delete preset" style="position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
+                    ${isCustomTheme ? `
+                      <button class="agy-delete-preset-btn" data-preset="${safeName}" title="Delete preset ${safeName}" style="position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
                         ✕
                       </button>
                     ` : ''}
@@ -3618,17 +3655,40 @@
     container.querySelectorAll('.agy-delete-preset-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         const presetName = btn.dataset.preset;
         if (!presetName) return;
+
+        const curTheme = localStorage.getItem(STORAGE_THEME);
+        const curBubble = localStorage.getItem(STORAGE_BUBBLE);
+        const curKit = localStorage.getItem(STORAGE_ACCESSORY_KIT);
+
         removeCustomPreset(presetName);
-        const st = getState();
-        if (st.themeName === presetName) {
-          applyTheme({
-            themeName: DEFAULT_THEME_KEY,
-            bubbleName: DEFAULT_THEME_KEY,
-            customWp: '',
-            bgMode: 'static'
-          });
+
+        const overrides = {};
+        if (curTheme === presetName) {
+          overrides.themeName = DEFAULT_THEME_KEY;
+          overrides.bubbleName = DEFAULT_THEME_KEY;
+          overrides.customWp = '';
+          overrides.bgMode = 'static';
+          const v = document.getElementById('agy-live-video');
+          if (v) {
+            v.pause();
+            v.removeAttribute('src');
+            v.load();
+          }
+          if (window.__AGY_ACTIVE_BLOB_URL__) {
+            try { URL.revokeObjectURL(window.__AGY_ACTIVE_BLOB_URL__); } catch (_) {}
+            window.__AGY_ACTIVE_BLOB_URL__ = null;
+          }
+        } else if (curBubble === presetName) {
+          overrides.bubbleName = curTheme || DEFAULT_THEME_KEY;
+        }
+        if (curKit === presetName) {
+          overrides.accessoryKit = 'sync';
+        }
+        if (Object.keys(overrides).length > 0) {
+          applyTheme(overrides);
         }
         renderThemePanels(container);
       });
@@ -3684,6 +3744,10 @@
         renderThemePanels(container);
       });
     });
+
+    if (savedScrollTop && container) {
+      container.scrollTop = savedScrollTop;
+    }
   }
 
   function removeMainSidebarButton() {
