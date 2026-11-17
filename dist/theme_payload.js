@@ -12,6 +12,31 @@
   const STORAGE_USER_AVATAR = 'agy_user_avatar_v3';
   const STORAGE_AGENT_AVATAR = 'agy_agent_avatar_v3';
   const STORAGE_BG_MODE = 'agy_bg_mode_v3';
+  const STORAGE_ACCESSORY_KIT = 'agy_accessory_kit_v3';
+  const STORAGE_ACCESSORY_MODE = 'agy_accessory_mode_v3';
+
+  const ACCESSORY_MODES = {
+    full: {
+      label: 'Full Thematic Set',
+      badge: '✦ All',
+      desc: 'All accessories: Hanging Charm, Role Badge, Intelligence Header & Brooch'
+    },
+    badges: {
+      label: 'Badges & Titles',
+      badge: '🏷 Badges',
+      desc: 'Sender Role Badge + Agent Header Banner (sleek cartouche style)'
+    },
+    charms: {
+      label: 'Charms & Brooches',
+      badge: '💎 Jewelry',
+      desc: 'Floating Hanging Talisman Charm + Agent Corner Brooch Medallion'
+    },
+    minimal: {
+      label: 'Clean / Subtle Rail',
+      badge: '━ Clean',
+      desc: 'Luminous accent rail & clean borders only (no floating badges)'
+    }
+  };
 
   const STORAGE_CUSTOM_PRESETS = 'agy_custom_presets_v1';
   const LIVE_DB_NAME = 'agy_live_wallpaper_db_v1';
@@ -388,7 +413,7 @@
   }
 
   function svgToDataUri(svg) {
-    return 'data:image/svg+xml,' + encodeURIComponent(svg.trim());
+    return 'data:image/svg+xml,' + encodeURIComponent(svg.trim()).replace(/'/g, '%27').replace(/"/g, '%22');
   }
 
   function detectThemeMotif(name = '', concept = '', th = {}) {
@@ -982,6 +1007,302 @@
     `);
   }
 
+  function getThemeUserCharmSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
+          <circle cx="17" cy="6" r="3" stroke="${s}" stroke-width="1.2" fill="#0c1424"/>
+          <line x1="17" y1="9" x2="17" y2="15" stroke="${p}" stroke-width="1.4"/>
+          <rect x="7" y="15" width="20" height="24" rx="4" fill="#0f172a" stroke="${p}" stroke-width="1.4"/>
+          <rect x="9" y="17" width="16" height="20" rx="2" stroke="${s}" stroke-width="0.8" stroke-dasharray="2 1.5" fill="none"/>
+          <polygon points="17,21 21,27 17,33 13,27" fill="${p}"/>
+          <circle cx="17" cy="27" r="1.5" fill="#ffffff"/>
+          <circle cx="17" cy="42" r="2" fill="${s}"/>
+          <path d="M13 46 Q17 44 21 46 L20 49 Q17 48 14 49 Z" fill="${p}"/>
+          <path d="M14 49 Q12 59 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M17 49 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 49 Q22 59 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="17" cy="62" r="1.4" fill="#ffffff"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
+          <line x1="17" y1="2" x2="17" y2="14" stroke="${s}" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <circle cx="17" cy="14" r="2.5" fill="${p}"/>
+          <circle cx="17" cy="26" r="11" fill="#090d1f" stroke="${p}" stroke-width="1.4"/>
+          <path d="M14 18 A 8 8 0 1 0 20 32 A 6 6 0 1 1 14 18 Z" fill="${s}"/>
+          <circle cx="19" cy="23" r="1.5" fill="#ffffff"/>
+          <line x1="17" y1="37" x2="17" y2="48" stroke="${s}" stroke-width="1" stroke-dasharray="2 1.5"/>
+          <g transform="translate(17, 56)">
+            <polygon points="0,-10 2,-2 10,-2 3.5,2 6,9 0,4.5 -6,9 -3.5,2 -10,-2 -2,-2" fill="${s}" stroke="#ffffff" stroke-width="0.6"/>
+            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
+          <rect x="8" y="2" width="18" height="4" rx="2" fill="${p}" stroke="#ffffff" stroke-width="0.6"/>
+          <path d="M12 6 L9 20 L17 17 L25 20 L22 6 Z" fill="#991b1b" stroke="${p}" stroke-width="1"/>
+          <circle cx="17" cy="28" r="11" fill="#7f1d1d" stroke="${p}" stroke-width="1.6"/>
+          <circle cx="17" cy="28" r="9" stroke="${s}" stroke-width="0.8" stroke-dasharray="1.5 1.5" fill="none"/>
+          <g transform="translate(17, 28)">
+            <path d="M0 -6 C-1.5 -3 -2 -1 0 2 C2 -1 1.5 -3 0 -6 Z" fill="${p}"/>
+            <path d="M-1 0 C-4 -1 -5 -2 -4 -4 C-3 -3 -2 -1 -1 0 Z" fill="${s}"/>
+            <path d="M1 0 C4 -1 5 -2 4 -4 C3 -3 2 -1 1 0 Z" fill="${s}"/>
+            <rect x="-3" y="1" width="6" height="1.4" rx="0.7" fill="${p}"/>
+          </g>
+          <line x1="17" y1="39" x2="17" y2="48" stroke="${p}" stroke-width="1.2"/>
+          <path d="M17 50 C14 56 13 62 17 66 C21 62 20 56 17 50 Z" fill="#fef08a" stroke="${p}" stroke-width="1"/>
+        </svg>
+      `);
+    }
+
+    if (motif === 'obsidian_prism') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
+          <polygon points="17,2 20,4 20,8 17,10 14,8 14,4" stroke="${p}" stroke-width="1" fill="none"/>
+          <polygon points="17,8 20,10 20,14 17,16 14,14 14,10" stroke="${s}" stroke-width="1" fill="none"/>
+          <circle cx="17" cy="19" r="2.5" fill="${p}" stroke="#ffffff" stroke-width="0.6"/>
+          <g transform="translate(17, 40)">
+            <polygon points="0,-18 11,-8 7,16 0,26 -7,16 -11,-8" fill="#090514" stroke="${p}" stroke-width="1.4"/>
+            <polygon points="0,-18 11,-8 0,-3" fill="${p}" opacity="0.5"/>
+            <polygon points="0,-18 -11,-8 0,-3" fill="${s}" opacity="0.4"/>
+            <polygon points="11,-8 7,16 0,5 0,-3" fill="${s}" opacity="0.6"/>
+            <polygon points="-11,-8 -7,16 0,5 0,-3" fill="${p}" opacity="0.7"/>
+            <polygon points="0,5 7,16 0,26" fill="${p}" opacity="0.85"/>
+            <polygon points="0,5 -7,16 0,26" fill="${s}" opacity="0.95"/>
+            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
+        <line x1="17" y1="2" x2="17" y2="16" stroke="${p}" stroke-width="1.4"/>
+        <circle cx="17" cy="18" r="3.5" fill="${s}"/>
+        <polygon points="17,24 26,36 17,48 8,36" fill="#111827" stroke="${p}" stroke-width="1.5"/>
+        <circle cx="17" cy="36" r="2" fill="#ffffff"/>
+        <line x1="17" y1="48" x2="17" y2="66" stroke="${p}" stroke-width="1.4"/>
+        <circle cx="17" cy="66" r="2" fill="${s}"/>
+      </svg>
+    `);
+  }
+
+  function getThemeUserBadgeSvg(motif, primary, secondary, customTitle) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    let title = customTitle || '❄ OPERATOR';
+    let iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>`;
+
+    if (!customTitle) {
+      if (motif === 'frost_blade') {
+        title = '❄ OPERATOR';
+        iconSvg = `<polygon points="0,-5 4,0 0,5 -4,0" fill="${p}"/><circle cx="0" cy="0" r="1.2" fill="#fff"/>`;
+      } else if (motif === 'night_astral') {
+        title = '✦ STARLIGHT PILOT';
+        iconSvg = `<path d="M-2 -4 A 4 4 0 1 0 3 3 A 3 3 0 1 1 -2 -4 Z" fill="${s}"/>`;
+      } else if (motif === 'royal_crest') {
+        title = '⚜ IMPERIAL SOVEREIGN';
+        iconSvg = `<path d="M0 -4 C-1 -2 -1 0 0 2 C1 0 1 -2 0 -4 Z" fill="${p}"/><circle cx="0" cy="3" r="0.8" fill="${s}"/>`;
+      } else if (motif === 'obsidian_prism') {
+        title = '◈ CIPHER PROTOCOL';
+        iconSvg = `<polygon points="0,-4 4,-1 2,3 0,4 -2,3 -4,-1" stroke="${p}" stroke-width="1" fill="${s}"/>`;
+      }
+    } else {
+      iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${p}"/><circle cx="0" cy="0" r="1" fill="#fff"/>`;
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 22" fill="none">
+        <defs>
+          <linearGradient id="uBadgeBrd_${motif}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="${s}" stop-opacity="0.8"/>
+          </linearGradient>
+        </defs>
+        <rect x="1" y="1" width="138" height="20" rx="10" fill="#090d16" stroke="url(#uBadgeBrd_${motif})" stroke-width="1.2"/>
+        <g transform="translate(14, 11)">
+          ${iconSvg}
+        </g>
+        <text x="26" y="14.5" fill="#f8fafc" font-size="9.5" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
+        <circle cx="128" cy="11" r="1.5" fill="${p}"/>
+      </svg>
+    `);
+  }
+
+  function getThemeAgentHeaderSvg(motif, primary, secondary, customTitle) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    let title = customTitle || '❄ HIYUKI • INTELLIGENCE CORE';
+    let iconSvg = '';
+
+    if (!customTitle) {
+      if (motif === 'frost_blade') {
+        title = '❄ HIYUKI • INTELLIGENCE CORE';
+        iconSvg = `
+          <g transform="translate(14, 13)">
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="${p}" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="${p}" stroke-width="1.3"/>
+            <polygon points="0,-5 3,0 0,5 -3,0" fill="${s}"/>
+            <circle cx="0" cy="0" r="1.5" fill="#fff"/>
+          </g>
+        `;
+      } else if (motif === 'night_astral') {
+        title = '✦ ASTRAL • CELESTIAL ORACLE';
+        iconSvg = `
+          <g transform="translate(14, 13)">
+            <path d="M-3 -6 A 6 6 0 1 0 4 5 A 4.5 4.5 0 1 1 -3 -6 Z" fill="${s}"/>
+            <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="#ffffff"/>
+          </g>
+        `;
+      } else if (motif === 'royal_crest') {
+        title = '⚜ THIÊN • IMPERIAL CHRONICLE';
+        iconSvg = `
+          <g transform="translate(14, 13)">
+            <path d="M0 -6 C-2 -3 -2 -1 0 2 C2 -1 2 -3 0 -6 Z" fill="${p}"/>
+            <path d="M-1 0 C-4 -1 -6 -3 -5 -5 C-4 -4 -3 -2 -1 0 Z" fill="${s}"/>
+            <path d="M1 0 C4 -1 6 -3 5 -5 C4 -4 3 -2 1 0 Z" fill="${s}"/>
+            <rect x="-4" y="1" width="8" height="1.6" rx="0.8" fill="${p}"/>
+          </g>
+        `;
+      } else if (motif === 'obsidian_prism') {
+        title = '◈ OBSIDIAN • QUANTUM SYNAPSE';
+        iconSvg = `
+          <g transform="translate(14, 13)">
+            <polygon points="0,-7 6,-2 4,5 0,7 -4,5 -6,-2" stroke="${p}" stroke-width="1.2" fill="#0d0918"/>
+            <polygon points="0,-5 4,-1 0,4 -4,-1" fill="${s}"/>
+            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+          </g>
+        `;
+      } else {
+        title = '✧ ANTIGRAVITY • ASSISTANT';
+        iconSvg = `
+          <g transform="translate(14, 13)">
+            <polygon points="0,-6 2,-2 6,0 2,2 0,6 -2,2 -6,0 -2,-2" fill="${p}"/>
+            <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+          </g>
+        `;
+      }
+    } else {
+      iconSvg = `
+        <g transform="translate(14, 13)">
+          <polygon points="0,-6 2,-2 6,0 2,2 0,6 -2,2 -6,0 -2,-2" fill="${p}"/>
+          <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+        </g>
+      `;
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 26" fill="none">
+        <defs>
+          <linearGradient id="agHdrBrd_${motif}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="50%" stop-color="${s}" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="${p}" stop-opacity="0.95"/>
+          </linearGradient>
+        </defs>
+        <rect x="1" y="1" width="218" height="24" rx="12" fill="#090d16" stroke="url(#agHdrBrd_${motif})" stroke-width="1.2"/>
+        <rect x="3" y="3" width="214" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
+        ${iconSvg}
+        <text x="28" y="17" fill="#f8fafc" font-size="10" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
+        <circle cx="204" cy="13" r="1.8" fill="${p}"/>
+        <circle cx="210" cy="13" r="1.8" fill="${s}"/>
+      </svg>
+    `);
+  }
+
+  function getThemeAgentBroochSvg(motif, primary, secondary) {
+    const p = primary || '#38bdf8';
+    const s = secondary || p;
+
+    if (motif === 'frost_blade') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="21" fill="#0c1424" stroke="${p}" stroke-width="1.6"/>
+          <circle cx="24" cy="24" r="18" stroke="${s}" stroke-width="0.9" stroke-dasharray="2 2" fill="none"/>
+          <g transform="translate(24, 24)">
+            <line x1="0" y1="-14" x2="0" y2="14" stroke="${p}" stroke-width="1.4"/>
+            <line x1="-12.1" y1="-7" x2="12.1" y2="7" stroke="${p}" stroke-width="1.4"/>
+            <line x1="-12.1" y1="7" x2="12.1" y2="-7" stroke="${p}" stroke-width="1.4"/>
+            <polygon points="0,-12 3.5,-5 0,0 -3.5,-5" fill="${s}"/>
+            <polygon points="0,12 3.5,5 0,0 -3.5,5" fill="${s}"/>
+            <polygon points="-10.4,-6 -3.5,-5 0,0 -7,-1" fill="${p}"/>
+            <polygon points="10.4,6 3.5,5 0,0 7,1" fill="${p}"/>
+            <polygon points="-10.4,6 -3.5,5 0,0 -7,1" fill="${p}"/>
+            <polygon points="10.4,-6 3.5,-5 0,0 7,-1" fill="${p}"/>
+            <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'night_astral') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="21" fill="#090d1f" stroke="${p}" stroke-width="1.6"/>
+          <ellipse cx="24" cy="24" rx="21" ry="8" stroke="${s}" stroke-width="1" stroke-dasharray="2 1.5" transform="rotate(30 24 24)" fill="none"/>
+          <g transform="translate(24, 24)">
+            <path d="M-6 -10 A 11 11 0 1 0 7 11 A 8.5 8.5 0 1 1 -6 -10 Z" fill="${s}"/>
+            <polygon points="0,-8 1.8,-1.8 8,0 1.8,1.8 0,8 -1.8,1.8 -8,0 -1.8,-1.8" fill="#ffffff"/>
+            <circle cx="0" cy="0" r="1.5" fill="${p}"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'royal_crest') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="21" fill="#1c140a" stroke="${p}" stroke-width="1.8"/>
+          <circle cx="24" cy="24" r="18" stroke="${s}" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+          <g transform="translate(24, 24)">
+            <path d="M-10 6 L-12 -3 L-5 1 L0 -7 L5 1 L12 -3 L10 6 Z" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
+            <circle cx="-12" cy="-4" r="1.5" fill="${s}"/>
+            <circle cx="0" cy="-8" r="2" fill="#ffffff"/>
+            <circle cx="12" cy="-4" r="1.5" fill="${s}"/>
+            <line x1="-9" y1="6" x2="9" y2="6" stroke="${s}" stroke-width="1.8"/>
+            <circle cx="0" cy="2" r="1.5" fill="${s}"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    if (motif === 'obsidian_prism') {
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+          <polygon points="24,3 42,13 42,35 24,45 6,35 6,13" fill="#090514" stroke="${p}" stroke-width="1.6"/>
+          <polygon points="24,9 37,17 37,31 24,39 11,31 11,17" stroke="${s}" stroke-width="1" fill="none"/>
+          <g transform="translate(24, 24)">
+            <polygon points="0,-15 13,-7 0,0 -13,-7" fill="${p}" opacity="0.65"/>
+            <polygon points="0,0 13,-7 13,8 0,15" fill="${s}" opacity="0.8"/>
+            <polygon points="0,0 -13,-7 -13,8 0,15" fill="${p}" opacity="0.95"/>
+            <circle cx="0" cy="0" r="2.5" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+    }
+
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="21" fill="#111827" stroke="${p}" stroke-width="1.6"/>
+        <polygon points="24,8 36,24 24,40 12,24" fill="${s}" opacity="0.8"/>
+        <circle cx="24" cy="24" r="3" fill="#ffffff"/>
+      </svg>
+    `);
+  }
+
   function getThemeComposerSpec(motif, primary, secondary, glow, secondaryGlow) {
     const p = primary || '#38bdf8';
     const s = secondary || p;
@@ -1141,6 +1462,20 @@
             changed = true;
           }
         }
+        if (!p.accessories || p.accessories.version !== 2) {
+          const pPrimary = p.primary || '#38bdf8';
+          const pSecondary = p.secondary || pPrimary;
+          p.accessories = {
+            version: 2,
+            charm: getThemeUserCharmSvg(p.motif, pPrimary, pSecondary),
+            badge: getThemeUserBadgeSvg(p.motif, pPrimary, pSecondary, p.isCustom ? `◈ ${name.toUpperCase()}` : undefined),
+            header: getThemeAgentHeaderSvg(p.motif, pPrimary, pSecondary, p.isCustom ? `✧ ${name.toUpperCase()} • CORE` : undefined),
+            brooch: getThemeAgentBroochSvg(p.motif, pPrimary, pSecondary),
+            watermark: getThemeWatermarkSvg(p.motif, pPrimary, pSecondary),
+            corner: getThematicCornerSvg(pPrimary, pSecondary, p.motif)
+          };
+          changed = true;
+        }
       }
       if (changed) {
         localStorage.setItem(STORAGE_CUSTOM_PRESETS, JSON.stringify(presets));
@@ -1267,7 +1602,11 @@
     const userAvatar = localStorage.getItem(STORAGE_USER_AVATAR) ?? init.userAvatar ?? '';
     const agentAvatar = localStorage.getItem(STORAGE_AGENT_AVATAR) ?? init.agentAvatar ?? '';
     const bgMode = localStorage.getItem(STORAGE_BG_MODE) || init.bgMode || 'static';
-    return { themeName, bubbleName, inputStyle, dimming, wpEnabled, customWp, userAvatar, agentAvatar, bgMode };
+    const rawKit = localStorage.getItem(STORAGE_ACCESSORY_KIT) || init.accessoryKit || 'sync';
+    const accessoryKit = (rawKit === 'sync' || allThemes[rawKit]) ? rawKit : 'sync';
+    const rawAccMode = localStorage.getItem(STORAGE_ACCESSORY_MODE) || init.accessoryMode || 'full';
+    const accessoryMode = ACCESSORY_MODES[rawAccMode] ? rawAccMode : 'full';
+    return { themeName, bubbleName, inputStyle, dimming, wpEnabled, customWp, userAvatar, agentAvatar, bgMode, accessoryKit, accessoryMode };
   }
 
   // Downscale user/agent avatar uploads to 192x192 WebP once so theme_config.json stays tiny
@@ -1363,6 +1702,12 @@
       }
       if (overrides.bgMode !== undefined) {
         localStorage.setItem(STORAGE_BG_MODE, overrides.bgMode);
+      }
+      if (overrides.accessoryKit !== undefined) {
+        localStorage.setItem(STORAGE_ACCESSORY_KIT, overrides.accessoryKit);
+      }
+      if (overrides.accessoryMode !== undefined) {
+        localStorage.setItem(STORAGE_ACCESSORY_MODE, overrides.accessoryMode);
       }
     } catch (e) {}
 
@@ -1519,31 +1864,89 @@
     const isGlass = curInputStyle === 'glass';
     const isMinimal = curInputStyle === 'minimal';
 
+    // Resolve active accessory kit and display density mode
+    const kitKey = (st.accessoryKit && st.accessoryKit !== 'sync') ? st.accessoryKit : st.bubbleName;
+    const kitTheme = allThemes[kitKey] || bubbleTheme;
+    const kitMotif = detectThemeMotif(kitKey, kitTheme.concept, kitTheme);
+    const kitPrimary = kitTheme.primary || primaryColor;
+    const kitSecondary = kitTheme.secondary || secondaryColor;
+    const kitGlow = kitTheme.glow || bubbleTheme.glow || kitPrimary;
+
+    const themeUserCharmUrl = (kitTheme.accessories && kitTheme.accessories.charm)
+      ? kitTheme.accessories.charm
+      : getThemeUserCharmSvg(kitMotif, kitPrimary, kitSecondary);
+
+    const themeUserBadgeUrl = (kitTheme.accessories && kitTheme.accessories.badge)
+      ? kitTheme.accessories.badge
+      : getThemeUserBadgeSvg(kitMotif, kitPrimary, kitSecondary, kitTheme.isCustom ? `◈ ${kitKey.toUpperCase()}` : undefined);
+
+    const themeAgentHeaderUrl = (kitTheme.accessories && kitTheme.accessories.header)
+      ? kitTheme.accessories.header
+      : getThemeAgentHeaderSvg(kitMotif, kitPrimary, kitSecondary, kitTheme.isCustom ? `✧ ${kitKey.toUpperCase()} • CORE` : undefined);
+
+    const themeAgentBroochUrl = (kitTheme.accessories && kitTheme.accessories.brooch)
+      ? kitTheme.accessories.brooch
+      : getThemeAgentBroochSvg(kitMotif, kitPrimary, kitSecondary);
+
+    const themeWatermarkUrl = (kitTheme.accessories && kitTheme.accessories.watermark)
+      ? kitTheme.accessories.watermark
+      : getThemeWatermarkSvg(kitMotif, kitPrimary, kitSecondary);
+
+    const themeCornerSvgUrl = (kitTheme.accessories && kitTheme.accessories.corner)
+      ? kitTheme.accessories.corner
+      : (kitTheme.cornerSvg || getThematicCornerSvg(kitPrimary, kitSecondary, kitMotif));
+
+    const accMode = st.accessoryMode || 'full';
+    const showCharm = (accMode === 'full' || accMode === 'charms') && (isOrnamental || isThematic);
+    const showUserBadge = (accMode === 'full' || accMode === 'badges') && (isOrnamental || isThematic);
+    const showAgentHeader = (accMode === 'full' || accMode === 'badges') && (isOrnamental || isThematic);
+    const showAgentBrooch = (accMode === 'full' || accMode === 'charms') && (isOrnamental || isThematic);
+    const showFiligree = accMode !== 'minimal' && (isOrnamental || isThematic);
+
     const bubbleStickerCss = (isOrnamental || isThematic) ? `
       .group\\/user-input-step {
-        padding-top: ${isOrnamental ? '20px' : '16px'} !important;
+        padding-top: ${(showCharm || showUserBadge) ? '22px' : '6px'} !important;
       }
+      /* Sender Role Cartouche Badge */
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before {
         content: "";
         position: absolute;
-        top: -12px;
-        ${composerSpec.bubbleCrestPositionCss}
-        width: ${isOrnamental ? '88px' : '78px'};
-        height: 20px;
-        background-image: url("${crestOrnamentUrl}");
+        top: -13px;
+        right: 28px;
+        width: 135px;
+        height: 22px;
+        background-image: url("${themeUserBadgeUrl}");
         background-size: contain;
-        background-position: center;
+        background-position: center right;
         background-repeat: no-repeat;
         z-index: 25;
         pointer-events: none !important;
-        filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
-        transition: transform 0.2s ease;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
+        display: ${showUserBadge ? 'block' : 'none'} !important;
+      }
+      /* Floating Thematic Hanging Talisman Charm */
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after {
+        content: "";
+        position: absolute;
+        top: -14px;
+        left: -10px;
+        width: 32px;
+        height: 64px;
+        background-image: url("${themeUserCharmUrl}");
+        background-size: contain;
+        background-position: top center;
+        background-repeat: no-repeat;
+        z-index: 26;
+        pointer-events: none !important;
+        filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 6px ${kitGlow});
+        display: ${showCharm ? 'block' : 'none'} !important;
       }
     ` : `
       .group\\/user-input-step {
         padding-top: 4px !important;
       }
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::before { display: none !important; }
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after { display: none !important; }
     `;
 
     const inputStickerCss = (isOrnamental || isThematic) ? `
@@ -1729,30 +2132,60 @@
         background: ${mainTheme.aiCardBg || 'rgba(18, 20, 30, 0.72)'} !important;
         ${isLight ? `color: ${uiInk} !important;` : ''}
         backdrop-filter: none !important;
-        border-left: 3px solid ${primaryColor} !important;
-        border-top: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}38`} !important;
-        border-right: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}24`} !important;
-        border-bottom: 1px solid ${mainTheme.aiCardBorder || `${primaryColor}24`} !important;
+        border-left: 3.5px solid ${kitPrimary} !important;
+        border-top: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}38`} !important;
+        border-right: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}24`} !important;
+        border-bottom: 1px solid ${mainTheme.aiCardBorder || `${kitPrimary}24`} !important;
         border-radius: 14px !important;
-        padding: 14px 18px !important;
-        box-shadow: ${isLight ? '0 4px 14px rgba(15, 23, 42, 0.08)' : `0 6px 20px rgba(0, 0, 0, 0.35), 0 0 14px ${mainTheme.glow}20`} !important;
+        padding: 16px 20px !important;
+        margin-top: ${(showAgentHeader || showAgentBrooch) ? '24px' : '10px'} !important;
+        box-shadow: ${isLight ? '0 4px 14px rgba(15, 23, 42, 0.08)' : `0 6px 20px rgba(0, 0, 0, 0.35), -2px 0 14px ${kitGlow}30`} !important;
         box-sizing: border-box !important;
         position: relative !important;
+        overflow: visible !important;
       }
+      /* Thematic Intelligence Header Cartouche Banner */
       .agy-shell [data-testid="agent-response"]::after {
         content: "";
         position: absolute;
-        top: 0;
-        right: 28px;
-        width: 100px;
-        height: 16px;
-        background-image: url("${agentAccentUrl}");
+        top: -14px;
+        left: 56px;
+        width: 225px;
+        height: 26px;
+        background-image: url("${themeAgentHeaderUrl}");
         background-size: contain;
         background-repeat: no-repeat;
-        background-position: right center;
+        background-position: left center;
         pointer-events: none !important;
-        opacity: 0.88;
-        z-index: 5;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
+        z-index: 10;
+        display: ${showAgentHeader ? 'block' : 'none'} !important;
+      }
+      /* Thematic Corner Brooch / Medallion */
+      .agy-shell [data-testid="agent-response"] > div:not(.sr-only):first-of-type::before {
+        content: "";
+        position: absolute;
+        top: -22px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        background-image: url("${themeAgentBroochUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        pointer-events: none !important;
+        filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${kitGlow});
+        z-index: 12;
+        display: ${showAgentBrooch ? 'block' : 'none'} !important;
+      }
+      .agy-shell [data-testid="agent-response"] pre {
+        border-left: 2.5px solid ${kitPrimary} !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      }
+      .agy-shell [data-testid="worked-for-collapsible"] {
+        border: 1px solid ${kitPrimary}30 !important;
+        border-radius: 8px !important;
+        background: rgba(0, 0, 0, 0.2) !important;
       }
       ${isLight ? `
       .agy-shell [data-main-content-body="true"],
@@ -1943,23 +2376,6 @@
         padding: ${isOrnamental ? '1.5px' : isThematic ? '1.2px' : '1px'} !important;
       }
 
-      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after {
-        ${(isOrnamental || isThematic) ? `
-        content: "";
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: ${isOrnamental ? '18px' : '15px'};
-        height: ${isOrnamental ? '18px' : '15px'};
-        background-image: url("${cornerFiligreeUrl}");
-        background-size: contain;
-        background-repeat: no-repeat;
-        pointer-events: none !important;
-        opacity: ${isOrnamental ? '0.92' : '0.75'};
-        z-index: 25;
-        ` : 'display: none !important;'}
-      }
-
       :is(.agy-user-bubble, [data-testid="user-message-bubble"]) {
         background-color: ${isGlass
           ? (bubbleTheme.inputGlassBg || 'rgba(14, 18, 28, 0.55)')
@@ -1967,16 +2383,33 @@
           ? 'rgba(16, 18, 26, 0.94)'
           : bubbleTheme.bg
         } !important;
-        background-image: ${isOrnamental || isThematic ? `url("${watermarkUrl}")` : 'none'} !important;
+        background-image: ${showFiligree ? `url("${themeWatermarkUrl}")` : 'none'} !important;
         background-repeat: no-repeat !important;
         background-position: right 6px bottom 4px !important;
         background-size: 64px 64px !important;
         border-radius: ${bubbleTheme.isScroll ? '5px' : composerSpec.bubbleRadius} !important;
-        padding: 8px 16px !important;
+        padding: ${(showCharm || showUserBadge) ? '10px 22px 10px 26px' : '8px 16px'} !important;
         color: ${bubbleTheme.textColor || '#f8fafc'} !important;
         border: ${isGlass ? '1px solid rgba(255, 255, 255, 0.1)' : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')} !important;
         overflow: visible !important;
+        position: relative !important;
         font-weight: 450 !important;
+      }
+
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"])::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 4px;
+        width: 16px;
+        height: 16px;
+        background-image: url("${themeCornerSvgUrl}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        pointer-events: none !important;
+        opacity: 0.85;
+        z-index: 10;
+        display: ${showFiligree ? 'block' : 'none'} !important;
       }
 
       :is(.agy-user-bubble, [data-testid="user-message-bubble"]) * {
@@ -2353,6 +2786,40 @@
     const effUserAv = st.userAvatar === 'none' ? '' : (st.userAvatar || mainTheme.userAvatar || '');
     const effAgentAv = st.agentAvatar === 'none' ? '' : (st.agentAvatar || mainTheme.agentAvatar || '');
 
+    const curAccMode = st.accessoryMode || 'full';
+    const curAccKit = st.accessoryKit || 'sync';
+    const activeKitKey = (curAccKit && curAccKit !== 'sync') ? curAccKit : st.bubbleName;
+    const activeKitTh = allThemes[activeKitKey] || mainTheme;
+    const activeKitMotif = detectThemeMotif(activeKitKey, activeKitTh.concept, activeKitTh);
+    const akp = activeKitTh.primary || '#38bdf8';
+    const aks = activeKitTh.secondary || akp;
+    const akg = activeKitTh.glow || akp;
+
+    const liveCharmUrl = (activeKitTh.accessories && activeKitTh.accessories.charm)
+      ? activeKitTh.accessories.charm
+      : getThemeUserCharmSvg(activeKitMotif, akp, aks);
+    const liveBadgeUrl = (activeKitTh.accessories && activeKitTh.accessories.badge)
+      ? activeKitTh.accessories.badge
+      : getThemeUserBadgeSvg(activeKitMotif, akp, aks, activeKitTh.isCustom ? `◈ ${activeKitKey.toUpperCase()}` : undefined);
+    const liveHeaderUrl = (activeKitTh.accessories && activeKitTh.accessories.header)
+      ? activeKitTh.accessories.header
+      : getThemeAgentHeaderSvg(activeKitMotif, akp, aks, activeKitTh.isCustom ? `✧ ${activeKitKey.toUpperCase()} • CORE` : undefined);
+    const liveBroochUrl = (activeKitTh.accessories && activeKitTh.accessories.brooch)
+      ? activeKitTh.accessories.brooch
+      : getThemeAgentBroochSvg(activeKitMotif, akp, aks);
+    const liveCornerUrl = (activeKitTh.accessories && activeKitTh.accessories.corner)
+      ? activeKitTh.accessories.corner
+      : (activeKitTh.cornerSvg || getThematicCornerSvg(akp, aks, activeKitMotif));
+    const liveWatermarkUrl = (activeKitTh.accessories && activeKitTh.accessories.watermark)
+      ? activeKitTh.accessories.watermark
+      : getThemeWatermarkSvg(activeKitMotif, akp, aks);
+
+    const liveShowCharm = curAccMode === 'full' || curAccMode === 'charms';
+    const liveShowBadge = curAccMode === 'full' || curAccMode === 'badges';
+    const liveShowHeader = curAccMode === 'full' || curAccMode === 'badges';
+    const liveShowBrooch = curAccMode === 'full' || curAccMode === 'charms';
+    const liveShowFiligree = curAccMode !== 'minimal';
+
     const topBadge = document.getElementById('agy-custom-theme-badge');
     if (topBadge) {
       topBadge.textContent = `${allThemeKeys.length} Preset${allThemeKeys.length > 1 ? 's' : ''}`;
@@ -2565,6 +3032,120 @@
                 </div>
               `;
             }).join('')}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 28px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div style="font-size: 15px; font-weight: 600; color: #ffffff;">Message Box Accessories</div>
+            <span style="font-size: 12px; color: #a1a1aa;">Thematic charms, seals, role badges & brooches</span>
+          </div>
+          <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Customize the ornamental accessories on User Chat Bubbles and Assistant Response turns. Uploaded themes generate their own matching kit automatically.</div>
+
+          <!-- Accessory Density / Display Mode -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12.5px; font-weight: 500; color: #d4d4d8; margin-bottom: 8px;">Accessory Style Mode</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+              ${Object.entries(ACCESSORY_MODES).map(([modeKey, modeInfo]) => {
+                const isSel = modeKey === curAccMode;
+                return `
+                  <div class="agy-acc-mode-btn" data-mode="${modeKey}" style="border-radius: 10px; border: ${isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 12px 14px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; transition: border-color 0.15s ease, background-color 0.15s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="font-size: 13px; font-weight: 600; color: ${isSel ? '#ffffff' : '#e4e4e7'};">${modeInfo.label}</span>
+                      <div class="agy-card-check-slot">${isSel ? CHECK_SVG : ''}</div>
+                    </div>
+                    <div style="font-size: 11px; color: #a1a1aa; line-height: 1.35;">${modeInfo.desc}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Accessory Theme Kit Selection -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12.5px; font-weight: 500; color: #d4d4d8; margin-bottom: 8px;">Theme Accessory Kits</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+              <!-- Synced with Active Theme -->
+              ${(() => {
+                const isSyncedSel = curAccKit === 'sync';
+                return `
+                  <div class="agy-acc-kit-card" data-kit="sync" style="border-radius: 12px; border: ${isSyncedSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSyncedSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: border-color 0.15s ease, background-color 0.15s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <div style="font-size: 13.5px; font-weight: 600; color: #ffffff;">✨ Synced with Active Theme</div>
+                        <div style="font-size: 11.5px; color: #a1a1aa;">Automatically adapts to active preset (${st.themeName})</div>
+                      </div>
+                      <div class="agy-card-check-slot">${isSyncedSel ? CHECK_SVG : ''}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 14px;">
+                      <div style="width: 18px; height: 36px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                      <div style="width: 110px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat;"></div>
+                      <div style="width: 28px; height: 28px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                    </div>
+                  </div>
+                `;
+              })()}
+
+              <!-- Individual Theme Kits -->
+              ${allThemeKeys.map(name => {
+                const th = allThemes[name] || {};
+                const isSel = curAccKit === name;
+                const tp = th.primary || '#38bdf8';
+                const ts = th.secondary || tp;
+                const tMotif = detectThemeMotif(name, th.concept, th);
+                const tCharmUrl = (th.accessories && th.accessories.charm) ? th.accessories.charm : getThemeUserCharmSvg(tMotif, tp, ts);
+                const tBadgeUrl = (th.accessories && th.accessories.badge) ? th.accessories.badge : getThemeUserBadgeSvg(tMotif, tp, ts, th.isCustom ? `◈ ${name.toUpperCase()}` : undefined);
+                const tBroochUrl = (th.accessories && th.accessories.brooch) ? th.accessories.brooch : getThemeAgentBroochSvg(tMotif, tp, ts);
+
+                return `
+                  <div class="agy-acc-kit-card" data-kit="${name}" style="border-radius: 12px; border: ${isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: border-color 0.15s ease, background-color 0.15s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                        <div style="font-size: 13.5px; font-weight: 600; color: #ffffff;">${name} Kit</div>
+                        <div style="font-size: 11.5px; color: #a1a1aa;">${th.concept || 'Custom Theme Kit'}</div>
+                      </div>
+                      <div class="agy-card-check-slot">${isSel ? CHECK_SVG : ''}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.35); border-radius: 8px; padding: 6px 14px;">
+                      <div style="width: 18px; height: 36px; background-image: url('${tCharmUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                      <div style="width: 110px; height: 18px; background-image: url('${tBadgeUrl}'); background-size: contain; background-repeat: no-repeat;"></div>
+                      <div style="width: 28px; height: 28px; background-image: url('${tBroochUrl}'); background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Live Mini-Preview of Message Box Accessories -->
+          <div style="border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(10, 12, 18, 0.7); padding: 16px 20px; margin-top: 14px; position: relative;">
+            <div style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <span>LIVE ACCESSORIES PREVIEW (${curAccKit === 'sync' ? `SYNCED • ${st.themeName}` : curAccKit})</span>
+              <span style="font-size: 11.5px; color: ${akp}; font-weight: 600;">Mode: ${ACCESSORY_MODES[curAccMode]?.label || curAccMode}</span>
+            </div>
+
+            <!-- Mini User Bubble Preview -->
+            <div style="position: relative; width: 100%; max-width: 440px; margin-left: auto; margin-top: 16px; margin-bottom: 16px; padding: 1.5px; border-radius: 12px; background: ${activeKitTh.frameBg || `linear-gradient(135deg, ${akp}, ${aks})`}; box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 10px ${akg}35;">
+              ${liveShowBadge ? `<div style="position: absolute; top: -11px; right: 20px; width: 115px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));"></div>` : ''}
+              ${liveShowCharm ? `<div style="position: absolute; top: -12px; left: -8px; width: 22px; height: 46px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.75));"></div>` : ''}
+              <div style="position: relative; background: ${activeKitTh.bg || 'rgba(17, 24, 39, 0.95)'}; border-radius: 11px; padding: 8px 18px 8px 22px; font-size: 12px; color: ${activeKitTh.textColor || '#fff'}; background-image: ${liveShowFiligree ? `url('${liveWatermarkUrl}')` : 'none'}; background-size: 44px; background-position: right 6px bottom 4px; background-repeat: no-repeat;">
+                ${liveShowFiligree ? `<div style="position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background-image: url('${liveCornerUrl}'); background-size: contain; background-repeat: no-repeat; opacity: 0.85;"></div>` : ''}
+                <span>Can we customize the message accessories per theme?</span>
+              </div>
+            </div>
+
+            <!-- Mini Agent Turn Preview -->
+            <div style="position: relative; width: 100%; margin-top: 20px; border-radius: 12px; border-left: 3.5px solid ${akp}; border-top: 1px solid ${akp}35; border-right: 1px solid ${akp}20; border-bottom: 1px solid ${akp}20; background: rgba(18, 20, 28, 0.72); padding: 12px 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.35), -2px 0 10px ${akg}25;">
+              ${liveShowHeader ? `<div style="position: absolute; top: -12px; left: 38px; width: 190px; height: 22px; background-image: url('${liveHeaderUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));"></div>` : ''}
+              ${liveShowBrooch ? `<div style="position: absolute; top: -16px; right: 14px; width: 34px; height: 34px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.75));"></div>` : ''}
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <div style="width: 20px; height: 20px; border-radius: 9999px; border: 1.2px solid ${aks}; background: #0c1424; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff;">AI</div>
+                <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Antigravity Engine</span>
+              </div>
+              <div style="font-size: 12px; color: #e2e8f0; line-height: 1.4;">
+                Each theme automatically crafts a matching set of hanging seals, role plaques, intelligence banners, and jewelry brooches!
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2793,6 +3374,17 @@
             const palette = (await extractPaletteFromImage(thumb)) || getFallbackPalette('live');
             const motif = detectThemeMotif(themeName, 'Custom Live Wallpaper • MP4', palette);
 
+            const p = palette.primary || '#38bdf8';
+            const s = palette.secondary || p;
+            const newAccessories = {
+              charm: getThemeUserCharmSvg(motif, p, s),
+              badge: getThemeUserBadgeSvg(motif, p, s, `◈ ${themeName.toUpperCase()}`),
+              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()} • CORE`),
+              brooch: getThemeAgentBroochSvg(motif, p, s),
+              watermark: getThemeWatermarkSvg(motif, p, s),
+              corner: getThematicCornerSvg(p, s, motif)
+            };
+
             const newPreset = {
               id: 'custom_' + Date.now(),
               name: themeName,
@@ -2802,6 +3394,7 @@
               wallpaper: thumb,
               concept: 'Custom Live Wallpaper • MP4',
               motif: motif,
+              accessories: newAccessories,
               ...palette
             };
             saveCustomPreset(newPreset);
@@ -2820,7 +3413,7 @@
               v.play().catch(() => {});
             }
 
-            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: curStyle, customWp: '', bgMode: 'live', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, accessoryKit: themeName, inputStyle: curStyle, customWp: '', bgMode: 'live', wpEnabled: true });
             renderThemePanels(container);
           } catch (err) {
             console.error('Failed to save live video preset:', err);
@@ -2831,6 +3424,16 @@
             const dataUrl = reader.result;
             const palette = (await extractPaletteFromImage(dataUrl)) || getFallbackPalette('static');
             const motif = detectThemeMotif(themeName, 'Custom Image Wallpaper', palette);
+            const p = palette.primary || '#38bdf8';
+            const s = palette.secondary || p;
+            const newAccessories = {
+              charm: getThemeUserCharmSvg(motif, p, s),
+              badge: getThemeUserBadgeSvg(motif, p, s, `◈ ${themeName.toUpperCase()}`),
+              header: getThemeAgentHeaderSvg(motif, p, s, `✧ ${themeName.toUpperCase()} • CORE`),
+              brooch: getThemeAgentBroochSvg(motif, p, s),
+              watermark: getThemeWatermarkSvg(motif, p, s),
+              corner: getThematicCornerSvg(p, s, motif)
+            };
             const newPreset = {
               id: 'custom_' + Date.now(),
               name: themeName,
@@ -2839,10 +3442,11 @@
               wallpaper: dataUrl,
               concept: 'Custom Image Wallpaper',
               motif: motif,
+              accessories: newAccessories,
               ...palette
             };
             saveCustomPreset(newPreset);
-            applyTheme({ themeName: themeName, bubbleName: themeName, inputStyle: curStyle, customWp: '', bgMode: 'static', wpEnabled: true });
+            applyTheme({ themeName: themeName, bubbleName: themeName, accessoryKit: themeName, inputStyle: curStyle, customWp: '', bgMode: 'static', wpEnabled: true });
             renderThemePanels(container);
           };
           reader.readAsDataURL(file);
@@ -2914,10 +3518,14 @@
       localStorage.removeItem(STORAGE_DIMMING);
       localStorage.removeItem(STORAGE_WP_ENABLED);
       localStorage.removeItem(STORAGE_BG_MODE);
+      localStorage.removeItem(STORAGE_ACCESSORY_KIT);
+      localStorage.removeItem(STORAGE_ACCESSORY_MODE);
       const defStyle = 'thematic';
       applyTheme({
         themeName: DEFAULT_THEME_KEY,
         bubbleName: DEFAULT_THEME_KEY,
+        accessoryKit: 'sync',
+        accessoryMode: 'full',
         inputStyle: defStyle,
         dimming: 69,
         wpEnabled: true,
@@ -3058,6 +3666,22 @@
 
         const curBubble = getState().bubbleName;
         updateInputPreviews(curBubble);
+      });
+    });
+
+    container.querySelectorAll('.agy-acc-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        applyTheme({ accessoryMode: mode });
+        renderThemePanels(container);
+      });
+    });
+
+    container.querySelectorAll('.agy-acc-kit-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const kit = card.dataset.kit;
+        applyTheme({ accessoryKit: kit });
+        renderThemePanels(container);
       });
     });
   }
