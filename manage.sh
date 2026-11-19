@@ -26,10 +26,11 @@ echo ""
 echo -e "  ${BOLD}[1]${NC} ${GREEN}Cài đặt & Kích hoạt Theme Daemon${NC} (Auto-start on boot)"
 echo -e "  ${BOLD}[2]${NC} ${CYAN}Kiểm tra trạng thái Theme (Verify CDP)${NC}"
 echo -e "  ${BOLD}[3]${NC} ${YELLOW}Biên dịch lại Payload (Rebuild themes.json/assets)${NC}"
-echo -e "  ${BOLD}[4]${NC} ${RED}Gỡ bỏ hoàn toàn (Uninstall & Restore default UI)${NC}"
-echo -e "  ${BOLD}[5]${NC} Thoát"
+echo -e "  ${BOLD}[4]${NC} ${MAGENTA}Mở Antigravity với CDP Port (--remote-debugging-port=0)${NC}"
+echo -e "  ${BOLD}[5]${NC} ${RED}Gỡ bỏ hoàn toàn (Uninstall & Restore default UI)${NC}"
+echo -e "  ${BOLD}[6]${NC} Thoát"
 echo ""
-read -r -p "Vui lòng chọn [1-5]: " choice
+read -r -p "Vui lòng chọn [1-6]: " choice
 
 case "$choice" in
     1)
@@ -44,9 +45,13 @@ case "$choice" in
         echo -e "${GREEN}Biên dịch thành công! Daemon sẽ tự động nạp lại theme.${NC}"
         ;;
     4)
-        bash "$SCRIPT_DIR/uninstall.sh"
+        echo -e "${CYAN}Đang khởi chạy Antigravity với CDP port...${NC}"
+        open -a /Applications/Antigravity.app --args --remote-debugging-port=0
         ;;
     5)
+        bash "$SCRIPT_DIR/uninstall.sh"
+        ;;
+    6)
         echo "Tạm biệt!"
         exit 0
         ;;

@@ -868,8 +868,19 @@
       `;
     }
 
+    let cleanTitle = (title || '✧ THEME STUDIO').replace(/\s+/g, ' ').trim();
+    if (cleanTitle.length > 24) {
+      cleanTitle = cleanTitle.slice(0, 22) + '…';
+    }
+    const estTextW = Math.ceil(cleanTitle.length * 7.2);
+    const totalW = Math.max(160, 32 + estTextW + 28);
+    const rectW = totalW - 2;
+    const innerRectW = totalW - 6;
+    const dot1 = totalW - 16;
+    const dot2 = totalW - 9;
+
     return svgToDataUri(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 26" fill="none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 26" fill="none">
         <defs>
           <linearGradient id="badgeBorder_${motif}" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stop-color="${p}" stop-opacity="0.9"/>
@@ -881,12 +892,12 @@
             <stop offset="100%" stop-color="#020617" stop-opacity="0.96"/>
           </linearGradient>
         </defs>
-        <rect x="1" y="1" width="178" height="24" rx="12" fill="url(#badgeBg_${motif})" stroke="url(#badgeBorder_${motif})" stroke-width="1.2"/>
-        <rect x="3" y="3" width="174" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
+        <rect x="1" y="1" width="${rectW}" height="24" rx="12" fill="url(#badgeBg_${motif})" stroke="url(#badgeBorder_${motif})" stroke-width="1.2"/>
+        <rect x="3" y="3" width="${innerRectW}" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
         ${iconPath}
-        <text x="28" y="17" fill="#f8fafc" font-size="10.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" letter-spacing="0.8">${title}</text>
-        <circle cx="164" cy="13" r="1.8" fill="${p}"/>
-        <circle cx="170" cy="13" r="1.8" fill="${s}"/>
+        <text x="28" y="16.5" fill="#f8fafc" font-size="9.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" letter-spacing="0.6">${cleanTitle}</text>
+        <circle cx="${dot1}" cy="13" r="1.8" fill="${p}"/>
+        <circle cx="${dot2}" cy="13" r="1.8" fill="${s}"/>
       </svg>
     `);
   }
@@ -2212,6 +2223,19 @@
     const finalHdrTitle = cleanHdrTitle.length > 24 ? cleanHdrTitle.slice(0, 22) + '…' : cleanHdrTitle;
     const estAgentHeaderW = Math.max(140, 30 + Math.ceil(finalHdrTitle.length * 7.1) + 26);
 
+    let rawComposerTitle = st.bubbleName || '';
+    if (!rawComposerTitle) {
+      if (activeMotif === 'frost_blade') rawComposerTitle = '❄ HIYUKI • FROST BLADE';
+      else if (activeMotif === 'night_astral') rawComposerTitle = '✦ ASTRAL NIGHT • COSMOS';
+      else if (activeMotif === 'royal_crest') rawComposerTitle = '⚜ THIÊN • IMPERIAL';
+      else if (activeMotif === 'obsidian_prism') rawComposerTitle = '◈ OBSIDIAN • PRISM GEM';
+      else if (activeMotif === 'sakura_bloom') rawComposerTitle = '🌸 SAKURA • BLOSSOM';
+      else rawComposerTitle = '✧ THEME STUDIO';
+    }
+    const cleanComposerTitle = rawComposerTitle.replace(/\s+/g, ' ').trim();
+    const finalComposerTitle = cleanComposerTitle.length > 24 ? cleanComposerTitle.slice(0, 22) + '…' : cleanComposerTitle;
+    const estComposerBadgeW = Math.max(160, 32 + Math.ceil(finalComposerTitle.length * 7.2) + 28);
+
     const showCrest = Boolean(st.accCrest) && (isOrnamental || isThematic);
     const showCharm = Boolean(st.accCharm) && (isOrnamental || isThematic);
     const showCorners = Boolean(st.accCorners) && (isOrnamental || isThematic);
@@ -2297,7 +2321,7 @@
         position: absolute;
         top: -14px;
         left: 32px;
-        width: 175px;
+        width: ${estComposerBadgeW}px;
         height: 26px;
         background-image: url("${themeBadgeUrl}");
         background-size: contain;
@@ -3121,7 +3145,7 @@
             </div>
             <button id="agy-theme-modal-close-btn" type="button" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: #d4d4d8; cursor: pointer; width: 30px; height: 30px; border-radius: 8px; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">✕</button>
           </div>
-          <div id="agy-theme-modal-body" style="flex: 1; overflow-y: auto; height: 100%;"></div>
+          <div id="agy-theme-modal-body" style="flex: 1; overflow: hidden; display: flex; flex-direction: column; height: 100%; min-height: 0;"></div>
         </div>
       `;
 
@@ -3147,7 +3171,10 @@
 
   function renderThemePanels(container) {
     if (!container) return;
-    const savedScrollTop = container.scrollTop;
+    const prevScrollEl = container.querySelector('#agy-theme-scroll-container') || container;
+    const savedScrollTop = (prevScrollEl && prevScrollEl.scrollTop > 0)
+      ? prevScrollEl.scrollTop
+      : (container.scrollTop || 0);
     const st = getState();
     const curInputStyle = normalizeInputStyle(st.inputStyle);
     const allThemes = getAllThemes();
@@ -3202,7 +3229,7 @@
     }
 
     container.innerHTML = `
-      <div id="agy-theme-scroll-container" style="padding: 24px 32px 48px 32px; max-width: 860px; margin: 0 auto; overflow-y: auto; height: 100%; color: #f4f4f5;">
+      <div id="agy-theme-scroll-container" style="padding: 24px 32px 48px 32px; max-width: 860px; margin: 0 auto; overflow-y: auto; flex: 1; height: 100%; color: #f4f4f5;">
         <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
@@ -3917,79 +3944,53 @@
     }
 
     const resetBtn = container.querySelector('#agy-reset-btn');
-    resetBtn.addEventListener('click', () => {
-      localStorage.removeItem(STORAGE_CUSTOM_WP);
-      localStorage.removeItem(STORAGE_USER_AVATAR);
-      localStorage.removeItem(STORAGE_AGENT_AVATAR);
-      localStorage.removeItem(STORAGE_THEME);
-      localStorage.removeItem(STORAGE_BUBBLE);
-      localStorage.removeItem(STORAGE_INPUT);
-      localStorage.removeItem(STORAGE_DIMMING);
-      localStorage.removeItem(STORAGE_WP_ENABLED);
-      localStorage.removeItem(STORAGE_BG_MODE);
-      localStorage.removeItem(STORAGE_ACCESSORY_KIT);
-      localStorage.removeItem(STORAGE_ACCESSORY_MODE);
-      localStorage.removeItem(STORAGE_ACC_CREST);
-      localStorage.removeItem(STORAGE_ACC_CHARM);
-      localStorage.removeItem(STORAGE_ACC_CORNERS);
-      localStorage.removeItem(STORAGE_ACC_SEAL);
-      localStorage.removeItem(STORAGE_ACC_RAIL);
-      const defStyle = 'thematic';
-      applyTheme({
-        themeName: DEFAULT_THEME_KEY,
-        bubbleName: DEFAULT_THEME_KEY,
-        accessoryKit: 'sync',
-        accessoryMode: 'full',
-        accCrest: true,
-        accCharm: true,
-        accCorners: true,
-        accSeal: true,
-        accRail: true,
-        inputStyle: defStyle,
-        dimming: 69,
-        wpEnabled: true,
-        customWp: '',
-        userAvatar: '',
-        agentAvatar: '',
-        bgMode: 'static'
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        localStorage.removeItem(STORAGE_CUSTOM_WP);
+        localStorage.removeItem(STORAGE_USER_AVATAR);
+        localStorage.removeItem(STORAGE_AGENT_AVATAR);
+        localStorage.removeItem(STORAGE_THEME);
+        localStorage.removeItem(STORAGE_BUBBLE);
+        localStorage.removeItem(STORAGE_INPUT);
+        localStorage.removeItem(STORAGE_DIMMING);
+        localStorage.removeItem(STORAGE_WP_ENABLED);
+        localStorage.removeItem(STORAGE_BG_MODE);
+        localStorage.removeItem(STORAGE_ACCESSORY_KIT);
+        localStorage.removeItem(STORAGE_ACCESSORY_MODE);
+        localStorage.removeItem(STORAGE_ACC_CREST);
+        localStorage.removeItem(STORAGE_ACC_CHARM);
+        localStorage.removeItem(STORAGE_ACC_CORNERS);
+        localStorage.removeItem(STORAGE_ACC_SEAL);
+        localStorage.removeItem(STORAGE_ACC_RAIL);
+        const defStyle = 'thematic';
+        applyTheme({
+          themeName: DEFAULT_THEME_KEY,
+          bubbleName: DEFAULT_THEME_KEY,
+          accessoryKit: 'sync',
+          accessoryMode: 'full',
+          accCrest: true,
+          accCharm: true,
+          accCorners: true,
+          accSeal: true,
+          accRail: true,
+          inputStyle: defStyle,
+          dimming: 69,
+          wpEnabled: true,
+          customWp: '',
+          userAvatar: '',
+          agentAvatar: '',
+          bgMode: 'static'
+        });
+        renderThemePanels(container);
       });
-      const allTh = getAllThemes();
-      const defTh = allTh[DEFAULT_THEME_KEY] || {};
-      const badge = container.querySelector('#agy-bg-format-badge');
-      if (badge) {
-        badge.textContent = `🖼️ Preset: ${DEFAULT_THEME_KEY}`;
-      }
-      syncAvPreview(userAvPreview, defTh.userAvatar || '', 'U');
-      syncAvPreview(agentAvPreview, defTh.agentAvatar || '', 'AI');
-      if (slider) slider.value = 69;
-      if (valLabel) valLabel.textContent = '69%';
-      if (wpToggle) wpToggle.checked = true;
-
-      container.querySelectorAll('.agy-preset-card').forEach(c => {
-        const isSel = c.dataset.name === DEFAULT_THEME_KEY;
-        c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-        const slot = c.querySelector('.agy-card-check-slot');
-        if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-      });
-      container.querySelectorAll('.agy-bubble-card').forEach(b => {
-        const isSel = b.dataset.name === DEFAULT_THEME_KEY;
-        b.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-        b.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-        const slot = b.querySelector('.agy-card-check-slot');
-        if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-      });
-      container.querySelectorAll('.agy-input-card').forEach(c => {
-        const isSel = c.dataset.style === defStyle;
-        c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-        c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-        const slot = c.querySelector('.agy-card-check-slot');
-        if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-      });
-      updateInputPreviews(DEFAULT_THEME_KEY);
-    });
+    }
 
     container.querySelectorAll('.agy-preset-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const name = card.dataset.name;
         const allTh = getAllThemes();
         const th = allTh[name] || {};
@@ -4001,36 +4002,7 @@
           customWp: '',
           bgMode: targetMode
         });
-
-        const badge = container.querySelector('#agy-bg-format-badge');
-        if (badge) {
-          badge.textContent = targetMode === 'live' ? `🎬 Live Video: ${name}` : `🖼️ Preset: ${name}`;
-        }
-
-        container.querySelectorAll('.agy-preset-card').forEach(c => {
-          const isSel = c.dataset.name === name;
-          c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-          const slot = c.querySelector('.agy-card-check-slot');
-          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-        });
-
-        container.querySelectorAll('.agy-bubble-card').forEach(b => {
-          const isSel = b.dataset.name === name;
-          b.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-          b.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-          const slot = b.querySelector('.agy-card-check-slot');
-          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-        });
-
-        container.querySelectorAll('.agy-input-card').forEach(c => {
-          const isSel = c.dataset.style === 'ornamental';
-          c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-          c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-          const slot = c.querySelector('.agy-card-check-slot');
-          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-        });
-
-        updateInputPreviews(name);
+        renderThemePanels(container);
       });
     });
 
@@ -4077,42 +4049,29 @@
     });
 
     container.querySelectorAll('.agy-bubble-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const name = card.dataset.name;
         applyTheme({ bubbleName: name });
-
-        container.querySelectorAll('.agy-bubble-card').forEach(b => {
-          const isSel = b.dataset.name === name;
-          b.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-          b.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-          const slot = b.querySelector('.agy-card-check-slot');
-          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-        });
-
-        updateInputPreviews(name);
+        renderThemePanels(container);
       });
     });
 
     container.querySelectorAll('.agy-input-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const styleKey = normalizeInputStyle(card.dataset.style);
         applyTheme({ inputStyle: styleKey });
-
-        container.querySelectorAll('.agy-input-card').forEach(c => {
-          const isSel = c.dataset.style === styleKey;
-          c.style.border = isSel ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)';
-          c.style.background = isSel ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)';
-          const slot = c.querySelector('.agy-card-check-slot');
-          if (slot) slot.innerHTML = isSel ? CHECK_SVG : '';
-        });
-
-        const curBubble = getState().bubbleName;
-        updateInputPreviews(curBubble);
+        renderThemePanels(container);
       });
     });
 
     container.querySelectorAll('.agy-acc-mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const mode = btn.dataset.mode;
         const overrides = { accessoryMode: mode };
         if (mode === 'full') {
@@ -4146,7 +4105,9 @@
     });
 
     container.querySelectorAll('.agy-acc-part-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const prop = btn.dataset.prop;
         const curVal = Boolean(getState()[prop]);
         const newVal = !curVal;
@@ -4156,16 +4117,29 @@
     });
 
     container.querySelectorAll('.agy-acc-kit-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const kit = card.dataset.kit;
         applyTheme({ accessoryKit: kit });
         renderThemePanels(container);
       });
     });
 
-    if (savedScrollTop && container) {
-      container.scrollTop = savedScrollTop;
-    }
+    const restoreScroll = () => {
+      if (savedScrollTop <= 0) return;
+      const newScrollEl = container.querySelector('#agy-theme-scroll-container') || container;
+      if (newScrollEl) {
+        newScrollEl.scrollTop = savedScrollTop;
+      }
+      if (container && container !== newScrollEl && container.scrollTop > 0) {
+        container.scrollTop = 0;
+      }
+    };
+    restoreScroll();
+    requestAnimationFrame(restoreScroll);
+    setTimeout(restoreScroll, 10);
+    setTimeout(restoreScroll, 40);
   }
 
   function removeMainSidebarButton() {
@@ -4210,7 +4184,7 @@
           <div style="font-size: 19px; font-weight: 600; color: #f4f4f5; margin-bottom: 3px;">Custom theme</div>
           <div style="font-size: 13px; color: #a1a1aa;">Customize wallpaper backgrounds (images or MP4 live videos), chat bubbles, and glassmorphic styling.</div>
         </div>
-        <div id="agy-settings-theme-body" style="flex: 1; overflow-y: auto; height: 100%;"></div>
+        <div id="agy-settings-theme-body" style="flex: 1; overflow: hidden; display: flex; flex-direction: column; height: 100%; min-height: 0;"></div>
       `;
       contentPane.appendChild(customPane);
     }

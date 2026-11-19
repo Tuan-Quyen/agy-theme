@@ -69,7 +69,7 @@ install_macos() {
     cp -f "$REPO_ROOT/dist/theme_payload.js" "$runtime_dir/dist/theme_payload.js"
     cp -f "$REPO_ROOT/daemon/theme_daemon.js" "$runtime_dir/daemon/theme_daemon.js"
     chmod +x "$runtime_dir/daemon/theme_daemon.js"
-    if [ -f "$REPO_ROOT/theme_config.json" ]; then
+    if [ -f "$REPO_ROOT/theme_config.json" ] && [ ! -f "$runtime_dir/theme_config.json" ]; then
         cp -f "$REPO_ROOT/theme_config.json" "$runtime_dir/theme_config.json"
     fi
 
