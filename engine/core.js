@@ -3207,9 +3207,109 @@
       topBadge.textContent = `${allThemeKeys.length} Preset${allThemeKeys.length > 1 ? 's' : ''}`;
     }
 
+
+    const activeBubbleTh = allThemes[st.bubbleName] || mainTheme;
+    const liveRawBadgeTitle = activeKitTh.isCustom ? `◈ ${activeKitKey.toUpperCase()}` : '';
+    const liveCleanBadgeTitle = (liveRawBadgeTitle || '✦ OPERATOR').slice(0, 18);
+    const liveEstUserBadgeW = Math.max(130, 30 + Math.ceil(liveCleanBadgeTitle.length * 7.8) + 28);
+
+    const liveRawHdrTitle = activeKitTh.isCustom ? `✧ ${activeKitKey.toUpperCase()}` : '';
+    const liveCleanHdrTitle = (liveRawHdrTitle || '✧ ANTIGRAVITY').slice(0, 22);
+    const liveEstAgentHeaderW = Math.max(160, 36 + Math.ceil(liveCleanHdrTitle.length * 8.0) + 36);
+
+    const curStudioTab = localStorage.getItem('agy_studio_active_tab') || 'themes';
+    const previewStageBg = st.wpEnabled
+      ? (mainTheme.wallpaper ? `url('${st.customWp || mainTheme.wallpaper}')` : (mainTheme.pureBg || mainTheme.bg))
+      : (mainTheme.pureBg || mainTheme.bg);
+    const dimmingStagePercent = (st.dimming !== undefined ? st.dimming : 60) / 100;
+
     container.innerHTML = `
-      <div id="agy-theme-scroll-container" style="padding: 24px 32px 48px 32px; max-width: 860px; margin: 0 auto; overflow-y: auto; flex: 1; height: 100%; color: #f4f4f5;">
-        <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 14px;">
+      <!-- Pinned Live Stage (Nested at Top, Always Visible) -->
+      <div id="agy-studio-pinned-stage" style="flex-shrink: 0; padding: 12px 24px 10px 24px; background: rgba(14, 11, 10, 0.94); border-bottom: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); position: relative; z-index: 10;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; color: ${akp}; text-transform: uppercase;">✦ LIVE PREVIEW</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: #ffffff;">${st.themeName}</span>
+            <span style="font-size: 10px; padding: 1.5px 7px; border-radius: 9999px; background: ${akp}22; border: 1px solid ${akp}40; color: ${akp}; font-weight: 600;">${activeKitMotif.replace('_', ' ').toUpperCase()}</span>
+            <span style="font-size: 10px; padding: 1.5px 7px; border-radius: 9999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #d4d4d8;">Mode: ${ACCESSORY_MODES[curAccMode]?.label || curAccMode}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 11px; color: #a1a1aa;">Style: <strong style="color: #fff;">${curInputStyle}</strong></span>
+            <span style="font-size: 11px; color: #a1a1aa;">Kit: <strong style="color: #fff;">${curAccKit === 'sync' ? 'Synced' : curAccKit}</strong></span>
+            <div style="display: flex; align-items: center; gap: 4px;" title="Palette: ${akp} / ${aks}">
+              <span style="width: 11px; height: 11px; border-radius: 50%; background: ${akp}; display: inline-block; box-shadow: 0 0 6px ${akp};"></span>
+              <span style="width: 11px; height: 11px; border-radius: 50%; background: ${aks}; display: inline-block; box-shadow: 0 0 6px ${aks};"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage Visual Window -->
+        <div style="position: relative; border-radius: 10px; border: 1px solid ${mainTheme.borderColor || 'rgba(255, 255, 255, 0.12)'}; background-image: ${previewStageBg}; background-size: cover; background-position: ${mainTheme.bgPosition || 'center'}; overflow: hidden; padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.7);">
+          <!-- Backdrop Dimming Layer -->
+          <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, ${dimmingStagePercent}); pointer-events: none; z-index: 1;"></div>
+
+          <!-- Turn 1: Agent Turn (Left-aligned) -->
+          <div style="position: relative; z-index: 2; display: flex; align-items: flex-start; gap: 8px; max-width: 86%;">
+            <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.4px solid ${aks}; background: #0c1220 ${effAgentAv ? `url('${effAgentAv}') center/cover` : ''}; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; box-shadow: 0 0 6px ${aks}40;">${effAgentAv ? '' : 'AI'}</div>
+            <div style="position: relative; background: ${mainTheme.aiCardBg || 'rgba(15, 23, 42, 0.88)'}; border: 1px solid ${mainTheme.aiCardBorder || akp + '35'}; border-left: ${liveShowRail ? `3px solid ${akp}` : `1px solid ${mainTheme.aiCardBorder || akp + '35'}`}; border-radius: 8px; padding: 6px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+              ${liveShowCrest ? `<div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 130px; height: 18px; background-image: url('${liveCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; animation: agy-crest-aura 6s infinite; filter: drop-shadow(0 2px 6px ${akg});"></div>` : ''}
+              ${liveShowCorners ? `<div style="position: absolute; top: -9px; left: 14px; width: ${Math.min(170, liveEstAgentHeaderW * 0.7)}px; height: 17px; background-image: url('${liveHeaderUrl}'); background-size: contain; background-repeat: no-repeat; background-position: left center; pointer-events: none; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));"></div>` : ''}
+              ${liveShowSeal ? `<div style="position: absolute; top: -12px; right: 8px; width: 26px; height: 26px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; animation: agy-brooch-gleam 5s infinite; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));"></div>` : ''}
+              <span style="font-size: 11px; color: ${mainTheme.textColor || '#f8fafc'}; line-height: 1.35; display: block; margin-top: ${liveShowCrest || liveShowCorners ? '3px' : '0'};">Ready to assist. Live preview reflects active theme & accessories. ✨</span>
+            </div>
+          </div>
+
+          <!-- Turn 2: User Turn (Right-aligned) -->
+          <div style="position: relative; z-index: 2; display: flex; justify-content: flex-end; align-items: flex-start; gap: 8px; margin-left: auto; max-width: 82%;">
+            <div style="position: relative; padding: 1.2px; border-radius: 9px; background: ${activeKitTh.frameBg || `linear-gradient(135deg, ${akp}, ${aks})`}; box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 0 8px ${akg}30;">
+              ${liveShowCharm ? `<div style="position: absolute; top: -8px; left: -6px; width: 16px; height: 34px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; background-position: top center; pointer-events: none; transform-origin: top center; animation: agy-charm-sway 4.8s infinite; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8)); z-index: 3;"></div>` : ''}
+              ${liveShowCorners ? `<div style="position: absolute; top: -8px; right: 14px; width: ${Math.min(125, liveEstUserBadgeW * 0.7)}px; height: 15px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center right; pointer-events: none; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); z-index: 3;"></div>` : ''}
+              ${liveShowSeal ? `<div style="position: absolute; bottom: -6px; right: -5px; width: 20px; height: 20px; background-image: url('${liveSealUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; animation: agy-seal-breathe 5.2s infinite; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); z-index: 3;"></div>` : ''}
+              <div style="position: relative; background: ${activeKitTh.bg || 'rgba(17, 24, 39, 0.94)'}; border-radius: 8px; padding: 4px 10px; font-size: 11px; color: ${activeKitTh.textColor || '#fff'}; font-weight: 500;">
+                <span>Custom theme studio tabs & nested preview 💎</span>
+              </div>
+            </div>
+            <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.4px solid ${akp}; background: #0c1220 ${effUserAv ? `url('${effUserAv}') center/cover` : ''}; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; box-shadow: 0 0 6px ${akp}40;">${effUserAv ? '' : 'U'}</div>
+          </div>
+
+          <!-- Turn 3: Composer Input Bar -->
+          <div style="position: relative; z-index: 2; width: 100%; border-radius: 7px; background: ${activeBubbleTh.inputCardBg || 'rgba(20, 16, 26, 0.92)'}; border: 1px solid ${akp}40; padding: 3px 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 10px; color: ${akp}; font-weight: 600;">✦</span>
+              <span style="font-size: 10.5px; color: #94a3b8;">Ask anything, @ to mention, / for workflows...</span>
+            </div>
+            <span style="font-size: 9.5px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: linear-gradient(135deg, ${akp}, ${aks}); color: #fff; box-shadow: 0 0 6px ${akg}60;">Send →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Studio Navigation Tab Bar -->
+      <div id="agy-studio-tabs" style="display: flex; gap: 8px; padding: 8px 24px; background: rgba(18, 14, 12, 0.92); border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex-shrink: 0;">
+        <button class="agy-studio-tab-btn" data-tab="themes" type="button" style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; border: ${curStudioTab === 'themes' ? `1.5px solid ${akp}` : '1px solid rgba(255, 255, 255, 0.1)'}; background: ${curStudioTab === 'themes' ? `${akp}22` : 'rgba(255, 255, 255, 0.04)'}; color: ${curStudioTab === 'themes' ? '#ffffff' : '#a1a1aa'}; cursor: pointer; transition: all 0.15s ease;">
+          <span style="font-size: 14px;">🎨</span>
+          <span style="font-size: 12px; font-weight: 600;">Presets & Wallpaper</span>
+          <span class="agy-tab-badge" style="font-size: 10px; padding: 1px 6px; border-radius: 9999px; background: ${curStudioTab === 'themes' ? akp : 'rgba(255,255,255,0.08)'}; color: ${curStudioTab === 'themes' ? '#000' : '#a1a1aa'}; font-weight: 700;">${allThemeKeys.length}</span>
+        </button>
+        <button class="agy-studio-tab-btn" data-tab="bubble" type="button" style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; border: ${curStudioTab === 'bubble' ? `1.5px solid ${akp}` : '1px solid rgba(255, 255, 255, 0.1)'}; background: ${curStudioTab === 'bubble' ? `${akp}22` : 'rgba(255, 255, 255, 0.04)'}; color: ${curStudioTab === 'bubble' ? '#ffffff' : '#a1a1aa'}; cursor: pointer; transition: all 0.15s ease;">
+          <span style="font-size: 14px;">💬</span>
+          <span style="font-size: 12px; font-weight: 600;">Bubble & Composer</span>
+        </button>
+        <button class="agy-studio-tab-btn" data-tab="accessories" type="button" style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; border: ${curStudioTab === 'accessories' ? `1.5px solid ${akp}` : '1px solid rgba(255, 255, 255, 0.1)'}; background: ${curStudioTab === 'accessories' ? `${akp}22` : 'rgba(255, 255, 255, 0.04)'}; color: ${curStudioTab === 'accessories' ? '#ffffff' : '#a1a1aa'}; cursor: pointer; transition: all 0.15s ease;">
+          <span style="font-size: 14px;">💎</span>
+          <span style="font-size: 12px; font-weight: 600;">Accessories Kit</span>
+          <span class="agy-tab-badge" style="font-size: 10px; padding: 1px 6px; border-radius: 9999px; background: ${curStudioTab === 'accessories' ? akp : 'rgba(255,255,255,0.08)'}; color: ${curStudioTab === 'accessories' ? '#000' : '#a1a1aa'}; font-weight: 700;">5 Parts</span>
+        </button>
+        <button class="agy-studio-tab-btn" data-tab="avatars" type="button" style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; border: ${curStudioTab === 'avatars' ? `1.5px solid ${akp}` : '1px solid rgba(255, 255, 255, 0.1)'}; background: ${curStudioTab === 'avatars' ? `${akp}22` : 'rgba(255, 255, 255, 0.04)'}; color: ${curStudioTab === 'avatars' ? '#ffffff' : '#a1a1aa'}; cursor: pointer; transition: all 0.15s ease;">
+          <span style="font-size: 14px;">👤</span>
+          <span style="font-size: 12px; font-weight: 600;">Avatars & Details</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Tab Content Container -->
+      <div id="agy-theme-scroll-container" style="flex: 1; overflow-y: auto; padding: 20px 24px 36px 24px; min-height: 0; color: #f4f4f5;">
+        <!-- Tab 1 Pane: Presets & Wallpaper -->
+        <div id="agy-tab-pane-themes" style="display: ${curStudioTab === 'themes' ? 'block' : 'none'}; max-width: 860px; margin: 0 auto;">
+          <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
               <div style="font-size: 14.5px; font-weight: 600; color: #f4f4f5; margin-bottom: 2px;">Wallpaper & Backdrop Dimming</div>
@@ -3247,33 +3347,52 @@
             </div>
           </div>
         </div>
-
-        <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 14px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <div style="font-size: 14px; font-weight: 600; color: #f4f4f5; margin-bottom: 2px;">Chat Avatars (User & AI Agent)</div>
-            <div style="font-size: 12px; color: #a1a1aa;">Optional circular profile badges rendered beside chat messages (auto-compressed WebP).</div>
+          <div style="margin-top: 14px;">
+            <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div style="font-size: 15px; font-weight: 600; color: #ffffff;">Theme Presets (${allThemeKeys.length})</div>
+            <span style="font-size: 12px; color: #a1a1aa;">Custom wallpapers are saved here</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div id="agy-user-av-preview" style="width: 30px; height: 30px; border-radius: 9999px; border: 1.5px solid ${mainTheme.primary}; background: rgba(255,255,255,0.06) ${effUserAv ? `url('${effUserAv}') center/cover no-repeat` : ''}; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a1a1aa;">${effUserAv ? '' : 'U'}</div>
-              <label style="padding: 4px 10px; border-radius: 7px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
-                User
-                <input id="agy-user-av-upload" type="file" accept="image/*" style="display: none;" />
-              </label>
-              <button id="agy-user-av-clear" type="button" style="padding: 4px 8px; border-radius: 7px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.14); color: #a1a1aa; font-size: 11.5px; cursor: pointer;">Off</button>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div id="agy-agent-av-preview" style="width: 30px; height: 30px; border-radius: 9999px; border: 1.5px solid ${mainTheme.secondary || mainTheme.primary}; background: rgba(255,255,255,0.06) ${effAgentAv ? `url('${effAgentAv}') center/cover no-repeat` : ''}; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a1a1aa;">${effAgentAv ? '' : 'AI'}</div>
-              <label style="padding: 4px 10px; border-radius: 7px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
-                Agent
-                <input id="agy-agent-av-upload" type="file" accept="image/*" style="display: none;" />
-              </label>
-              <button id="agy-agent-av-clear" type="button" style="padding: 4px 8px; border-radius: 7px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.14); color: #a1a1aa; font-size: 11.5px; cursor: pointer;">Off</button>
-            </div>
+          <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Complete backdrop, palette, unified L-glass, and matching ornaments. Click any preset to switch.</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+            ${allThemeKeys.map(name => {
+              const th = allThemes[name] || {};
+              const isSelected = name === st.themeName;
+              const isLive = th.bgMode === 'live' || Boolean(th.liveVideo);
+              const isCustomTheme = Boolean(th.isCustom || !THEMES[name]);
+              const thumbBg = th.wallpaper
+                ? `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(14,12,12,0.85)), url('${th.wallpaper}')`
+                : (th.pureBg || th.bg);
+              const thumbOrnamentStyle = th.isOrnament
+                ? 'right: 10px; bottom: 8px; width: 76px; height: 24px; background-position: center;'
+                : 'right: 12px; bottom: 4px; width: 42px; height: 38px; background-position: bottom center;';
+              const safeName = String(name).replace(/"/g, '&quot;');
+              return `
+                <div class="agy-preset-card" data-name="${safeName}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
+                  <div style="height: 68px; width: 100%; background-image: ${thumbBg}; background-size: cover; background-position: ${th.bgPosition || 'center'}; position: relative; display: flex; align-items: flex-end; padding: 8px 14px;">
+                    ${th.sticker ? `<div style="position: absolute; ${thumbOrnamentStyle} background-image: url('${th.sticker}'); background-size: contain; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
+                    <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); z-index: 1;">${name}</span>
+                    ${isCustomTheme ? `
+                      <button class="agy-delete-preset-btn" data-preset="${safeName}" title="Delete preset ${safeName}" style="position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
+                        ✕
+                      </button>
+                    ` : ''}
+                  </div>
+                  <div style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; color: #a1a1aa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;">${th.concept || ''}</span>
+                    <div class="agy-card-check-slot">${isSelected ? CHECK_SVG : ''}</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
           </div>
         </div>
 
-        <div style="margin-bottom: 28px;">
+        <!-- Tab 2 Pane: Bubble & Composer -->
+        <div id="agy-tab-pane-bubble" style="display: ${curStudioTab === 'bubble' ? 'block' : 'none'}; max-width: 860px; margin: 0 auto;">
+          <div style="margin-bottom: 28px;">
           <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">User Chat Bubble</div>
           <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Mix and match bubble frame & ornament independently from the active wallpaper.</div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
@@ -3330,8 +3449,8 @@
             }).join('')}
           </div>
         </div>
-
-        <div style="margin-bottom: 28px;">
+          <div style="margin-top: 14px;">
+            <div style="margin-bottom: 28px;">
           <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">Composer Style</div>
           <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Customize the chat input frame without affecting keyboard shortcuts or attachments.</div>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
@@ -3416,8 +3535,12 @@
             }).join('')}
           </div>
         </div>
+          </div>
+        </div>
 
-        <div style="margin-bottom: 28px;">
+        <!-- Tab 3 Pane: Accessories Kit -->
+        <div id="agy-tab-pane-accessories" style="display: ${curStudioTab === 'accessories' ? 'block' : 'none'}; max-width: 860px; margin: 0 auto;">
+          <div style="margin-bottom: 28px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <div style="font-size: 15px; font-weight: 600; color: #ffffff;">Message Box Accessories</div>
             <span style="font-size: 12px; color: #a1a1aa;">Thematic charms, seals, role badges & brooches</span>
@@ -3521,84 +3644,72 @@
               }).join('')}
             </div>
           </div>
+        </div>
+        </div>
 
-          <!-- Live Mini-Preview of Message Box Accessories -->
-          <div style="border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(10, 12, 18, 0.7); padding: 16px 20px; margin-top: 14px; position: relative;">
-            <div style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-              <span>LIVE ACCESSORIES PREVIEW (${curAccKit === 'sync' ? `SYNCED • ${st.themeName}` : curAccKit})</span>
-              <span style="font-size: 11.5px; color: ${akp}; font-weight: 600;">Mode: ${ACCESSORY_MODES[curAccMode]?.label || curAccMode}</span>
+        <!-- Tab 4 Pane: Avatars & Details -->
+        <div id="agy-tab-pane-avatars" style="display: ${curStudioTab === 'avatars' ? 'block' : 'none'}; max-width: 860px; margin: 0 auto;">
+          <div style="border: 1px solid ${mainTheme.borderColor}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 14px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #f4f4f5; margin-bottom: 2px;">Chat Avatars (User & AI Agent)</div>
+            <div style="font-size: 12px; color: #a1a1aa;">Optional circular profile badges rendered beside chat messages (auto-compressed WebP).</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div id="agy-user-av-preview" style="width: 30px; height: 30px; border-radius: 9999px; border: 1.5px solid ${mainTheme.primary}; background: rgba(255,255,255,0.06) ${effUserAv ? `url('${effUserAv}') center/cover no-repeat` : ''}; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a1a1aa;">${effUserAv ? '' : 'U'}</div>
+              <label style="padding: 4px 10px; border-radius: 7px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
+                User
+                <input id="agy-user-av-upload" type="file" accept="image/*" style="display: none;" />
+              </label>
+              <button id="agy-user-av-clear" type="button" style="padding: 4px 8px; border-radius: 7px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.14); color: #a1a1aa; font-size: 11.5px; cursor: pointer;">Off</button>
             </div>
-
-            <!-- Mini User Bubble Preview -->
-            <div style="position: relative; width: 100%; max-width: 440px; margin-left: auto; margin-top: 16px; margin-bottom: 16px; padding: 1.5px; border-radius: 12px; background: ${activeKitTh.frameBg || `linear-gradient(135deg, ${akp}, ${aks})`}; box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 10px ${akg}35;">
-              ${liveShowCorners ? `<div style="position: absolute; top: -11px; right: 20px; width: 120px; height: 18px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));"></div>` : ''}
-              ${liveShowCharm ? `<div style="position: absolute; top: -12px; left: -8px; width: 22px; height: 46px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.75));"></div>` : ''}
-              ${liveShowSeal ? `<div style="position: absolute; bottom: -8px; right: -6px; width: 26px; height: 26px; background-image: url('${liveSealUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 7; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.75));"></div>` : ''}
-              <div style="position: relative; background: ${activeKitTh.bg || 'rgba(17, 24, 39, 0.95)'}; border-radius: 11px; padding: 8px 18px 8px 22px; font-size: 12px; color: ${activeKitTh.textColor || '#fff'}; background-image: ${liveShowCorners ? `url('${liveWatermarkUrl}')` : 'none'}; background-size: 44px; background-position: right 6px bottom 4px; background-repeat: no-repeat;">
-                ${liveShowCorners ? `<div style="position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background-image: url('${liveCornerUrl}'); background-size: contain; background-repeat: no-repeat; opacity: 0.85;"></div>` : ''}
-                <span>Can we customize the message accessories per theme?</span>
-              </div>
-            </div>
-
-            <!-- Mini Agent Turn Preview -->
-            <div style="position: relative; width: 100%; margin-top: 24px; border-radius: 12px; border-left: ${liveShowRail ? `3.5px solid ${akp}` : `1px solid ${akp}20`}; border-top: 1px solid ${akp}35; border-right: 1px solid ${akp}20; border-bottom: 1px solid ${akp}20; background: rgba(18, 20, 28, 0.72); padding: 14px 16px; box-shadow: ${liveShowRail ? `0 4px 14px rgba(0,0,0,0.35), -2px 0 10px ${akg}25` : `0 2px 8px rgba(0,0,0,0.2)`};">
-              ${liveShowCrest ? `<div style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 180px; height: 26px; background-image: url('${liveCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 7; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 8px ${akg});"></div>` : ''}
-              ${liveShowCorners ? `<div style="position: absolute; top: -12px; left: 38px; width: 170px; height: 22px; background-image: url('${liveHeaderUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 5; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));"></div>` : ''}
-              ${liveShowSeal ? `<div style="position: absolute; top: -16px; right: 14px; width: 34px; height: 34px; background-image: url('${liveBroochUrl}'); background-size: contain; background-repeat: no-repeat; z-index: 6; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.75));"></div>` : ''}
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <div style="width: 20px; height: 20px; border-radius: 9999px; border: 1.2px solid ${aks}; background: #0c1424; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff;">AI</div>
-                <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Antigravity Engine</span>
-              </div>
-              <div style="font-size: 12px; color: #e2e8f0; line-height: 1.4;">
-                Each theme automatically crafts a matching set of hanging seals, crown crests, role plaques, intelligence banners, and jewelry brooches!
-              </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div id="agy-agent-av-preview" style="width: 30px; height: 30px; border-radius: 9999px; border: 1.5px solid ${mainTheme.secondary || mainTheme.primary}; background: rgba(255,255,255,0.06) ${effAgentAv ? `url('${effAgentAv}') center/cover no-repeat` : ''}; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a1a1aa;">${effAgentAv ? '' : 'AI'}</div>
+              <label style="padding: 4px 10px; border-radius: 7px; background: rgba(255, 255, 255, 0.08); border: 1px solid ${mainTheme.borderColor}; color: #f4f4f5; font-size: 12px; cursor: pointer; white-space: nowrap;">
+                Agent
+                <input id="agy-agent-av-upload" type="file" accept="image/*" style="display: none;" />
+              </label>
+              <button id="agy-agent-av-clear" type="button" style="padding: 4px 8px; border-radius: 7px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.14); color: #a1a1aa; font-size: 11.5px; cursor: pointer;">Off</button>
             </div>
           </div>
         </div>
+          
+        <div style="border: 1px solid ${mainTheme.borderColor || 'rgba(255, 255, 255, 0.12)'}; background: ${mainTheme.cardBg || 'rgba(22, 16, 14, 0.72)'}; border-radius: 12px; padding: 18px 22px; margin-top: 14px;">
+          <div style="font-size: 14.5px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">Theme Details & Color Architecture</div>
+          <div style="font-size: 12px; color: #a1a1aa; margin-bottom: 14px;">Real-time color tokens and aesthetic motif powering your active theme.</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;">
+            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;">
+              <span style="width: 20px; height: 20px; border-radius: 6px; background: ${akp}; display: inline-block; box-shadow: 0 0 8px ${akp};"></span>
+              <div>
+                <div style="font-size: 10.5px; color: #a1a1aa; text-transform: uppercase; font-weight: 600;">Primary Accent</div>
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">${akp}</div>
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;">
+              <span style="width: 20px; height: 20px; border-radius: 6px; background: ${aks}; display: inline-block; box-shadow: 0 0 8px ${aks};"></span>
+              <div>
+                <div style="font-size: 10.5px; color: #a1a1aa; text-transform: uppercase; font-weight: 600;">Secondary Glow</div>
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">${aks}</div>
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 18px;">🛡️</span>
+              <div>
+                <div style="font-size: 10.5px; color: #a1a1aa; text-transform: uppercase; font-weight: 600;">Detected Motif</div>
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">${activeKitMotif.replace('_', ' ').toUpperCase()}</div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #a1a1aa; line-height: 1.45;">
+            <strong style="color: #ffffff;">💡 Pro-tip:</strong> When importing new wallpapers via the <em style="color: #ffffff;">Presets & Wallpaper</em> tab, color extraction, contrast ratios, and a matching 5-part accessory kit are created on the fly automatically.
+          </div>
+        </div>
 
-        <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <div style="font-size: 15px; font-weight: 600; color: #ffffff;">Theme Presets (${allThemeKeys.length})</div>
-            <span style="font-size: 12px; color: #a1a1aa;">Custom wallpapers are saved here</span>
-          </div>
-          <div style="font-size: 12.5px; color: #a1a1aa; margin-bottom: 14px;">Complete backdrop, palette, unified L-glass, and matching ornaments. Click any preset to switch.</div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-            ${allThemeKeys.map(name => {
-              const th = allThemes[name] || {};
-              const isSelected = name === st.themeName;
-              const isLive = th.bgMode === 'live' || Boolean(th.liveVideo);
-              const isCustomTheme = Boolean(th.isCustom || !THEMES[name]);
-              const thumbBg = th.wallpaper
-                ? `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(14,12,12,0.85)), url('${th.wallpaper}')`
-                : (th.pureBg || th.bg);
-              const thumbOrnamentStyle = th.isOrnament
-                ? 'right: 10px; bottom: 8px; width: 76px; height: 24px; background-position: center;'
-                : 'right: 12px; bottom: 4px; width: 42px; height: 38px; background-position: bottom center;';
-              const safeName = String(name).replace(/"/g, '&quot;');
-              return `
-                <div class="agy-preset-card" data-name="${safeName}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: rgba(14, 12, 12, 0.82); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s ease, transform 0.1s ease;">
-                  <div style="height: 68px; width: 100%; background-image: ${thumbBg}; background-size: cover; background-position: ${th.bgPosition || 'center'}; position: relative; display: flex; align-items: flex-end; padding: 8px 14px;">
-                    ${th.sticker ? `<div style="position: absolute; ${thumbOrnamentStyle} background-image: url('${th.sticker}'); background-size: contain; background-repeat: no-repeat; pointer-events: none;"></div>` : ''}
-                    <span style="font-size: 13.5px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9); z-index: 1;">${name}</span>
-                    ${isCustomTheme ? `
-                      <button class="agy-delete-preset-btn" data-preset="${safeName}" title="Delete preset ${safeName}" style="position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 6px; background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.15s ease; z-index: 2;">
-                        ✕
-                      </button>
-                    ` : ''}
-                  </div>
-                  <div style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 12px; color: #a1a1aa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;">${th.concept || ''}</span>
-                    <div class="agy-card-check-slot">${isSelected ? CHECK_SVG : ''}</div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
         </div>
       </div>
     `;
 
-    function updateInputPreviews(bName) {
+        function updateInputPreviews(bName) {
       const allTh = getAllThemes();
       const activeTh = allTh[bName] || allTh[DEFAULT_THEME_KEY] || {};
       const p = activeTh.primary || '#38bdf8';
@@ -4102,6 +4213,36 @@
         const kit = card.dataset.kit;
         applyTheme({ accessoryKit: kit });
         renderThemePanels(container);
+      });
+    });
+
+
+    // Studio Tab Switching Handler
+    container.querySelectorAll('.agy-studio-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const tabKey = btn.dataset.tab;
+        localStorage.setItem('agy_studio_active_tab', tabKey);
+
+        container.querySelectorAll('.agy-studio-tab-btn').forEach(b => {
+          const isAct = b.dataset.tab === tabKey;
+          b.style.border = isAct ? `1.5px solid ${akp}` : '1px solid rgba(255, 255, 255, 0.1)';
+          b.style.background = isAct ? `${akp}22` : 'rgba(255, 255, 255, 0.04)';
+          b.style.color = isAct ? '#ffffff' : '#a1a1aa';
+          const badge = b.querySelector('.agy-tab-badge');
+          if (badge) {
+            badge.style.background = isAct ? akp : 'rgba(255,255,255,0.08)';
+            badge.style.color = isAct ? '#000' : '#a1a1aa';
+          }
+        });
+
+        ['themes', 'bubble', 'accessories', 'avatars'].forEach(t => {
+          const pane = container.querySelector(`#agy-tab-pane-${t}`);
+          if (pane) {
+            pane.style.display = (t === tabKey) ? 'block' : 'none';
+          }
+        });
       });
     });
 
