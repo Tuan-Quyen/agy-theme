@@ -869,15 +869,15 @@
     }
 
     let cleanTitle = (title || '✧ THEME STUDIO').replace(/\s+/g, ' ').trim();
-    if (cleanTitle.length > 24) {
-      cleanTitle = cleanTitle.slice(0, 22) + '…';
+    if (cleanTitle.length > 26) {
+      cleanTitle = cleanTitle.slice(0, 24) + '…';
     }
-    const estTextW = Math.ceil(cleanTitle.length * 7.2);
-    const totalW = Math.max(160, 32 + estTextW + 28);
+    const estTextW = Math.ceil(cleanTitle.length * 8.6);
+    const totalW = Math.max(160, 32 + estTextW + 36);
     const rectW = totalW - 2;
     const innerRectW = totalW - 6;
-    const dot1 = totalW - 16;
-    const dot2 = totalW - 9;
+    const dot1 = totalW - 20;
+    const dot2 = totalW - 11;
 
     return svgToDataUri(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 26" fill="none">
@@ -1353,8 +1353,8 @@
     }
 
     let cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
-    if (cleanTitle.length > 26) {
-      cleanTitle = cleanTitle.slice(0, 24) + '…';
+    if (cleanTitle.length > 28) {
+      cleanTitle = cleanTitle.slice(0, 26) + '…';
     }
 
     let iconSvg = '';
@@ -1390,8 +1390,8 @@
       `;
     }
 
-    // Dynamic width calculation: 36px left icon space + text (8.0px/char) + 36px right dots space
-    const estTextW = Math.ceil(cleanTitle.length * 8.0);
+    // Dynamic width calculation: 36px left icon space + text (8.8px/char generous bounds) + 36px right dots space
+    const estTextW = Math.ceil(cleanTitle.length * 8.8);
     const totalW = Math.max(160, 36 + estTextW + 36);
     const rectW = totalW - 2;
     const innerRectW = totalW - 6;
@@ -1627,11 +1627,11 @@
             changed = true;
           }
         }
-        if (!p.accessories || p.accessories.version !== 4) {
+        if (!p.accessories || p.accessories.version !== 5) {
           const pPrimary = p.primary || '#38bdf8';
           const pSecondary = p.secondary || pPrimary;
           p.accessories = {
-            version: 4,
+            version: 5,
             crest: getThemeTopCrestSvg(p.motif, pPrimary, pSecondary),
             seal: getThemeWaxSealSvg(p.motif, pPrimary, pSecondary),
             charm: getThemeUserCharmSvg(p.motif, pPrimary, pSecondary),
@@ -2129,8 +2129,8 @@
       else rawHeaderTitle = '✧ ANTIGRAVITY';
     }
     const cleanHdrTitle = rawHeaderTitle.replace(/\s+/g, ' ').trim();
-    const finalHdrTitle = cleanHdrTitle.length > 24 ? cleanHdrTitle.slice(0, 22) + '…' : cleanHdrTitle;
-    const estAgentHeaderW = Math.max(160, 36 + Math.ceil(finalHdrTitle.length * 8.0) + 36);
+    const finalHdrTitle = cleanHdrTitle.length > 28 ? cleanHdrTitle.slice(0, 26) + '…' : cleanHdrTitle;
+    const estAgentHeaderW = Math.max(160, 36 + Math.ceil(finalHdrTitle.length * 8.8) + 36);
 
     let rawComposerTitle = st.bubbleName || '';
     if (!rawComposerTitle) {
@@ -2142,13 +2142,14 @@
       else rawComposerTitle = '✧ THEME STUDIO';
     }
     const cleanComposerTitle = rawComposerTitle.replace(/\s+/g, ' ').trim();
-    const finalComposerTitle = cleanComposerTitle.length > 24 ? cleanComposerTitle.slice(0, 22) + '…' : cleanComposerTitle;
-    const estComposerBadgeW = Math.max(160, 36 + Math.ceil(finalComposerTitle.length * 8.0) + 36);
+    const finalComposerTitle = cleanComposerTitle.length > 28 ? cleanComposerTitle.slice(0, 26) + '…' : cleanComposerTitle;
+    const estComposerBadgeW = Math.max(160, 36 + Math.ceil(finalComposerTitle.length * 8.8) + 36);
+    const themeComposerBadgeUrl = getThemeAgentHeaderSvg(kitMotif, kitPrimary, kitSecondary, finalComposerTitle);
 
-    const showCrest = Boolean(st.accCrest) && (isOrnamental || isThematic);
-    const showCharm = Boolean(st.accCharm) && (isOrnamental || isThematic);
-    const showCorners = Boolean(st.accCorners) && (isOrnamental || isThematic);
-    const showSeal = Boolean(st.accSeal) && (isOrnamental || isThematic);
+    const showCrest = Boolean(st.accCrest);
+    const showCharm = Boolean(st.accCharm);
+    const showCorners = Boolean(st.accCorners);
+    const showSeal = Boolean(st.accSeal);
     const showRail = Boolean(st.accRail);
     const showUserBadge = showCorners;
     const showAgentHeader = showCorners;
@@ -2274,7 +2275,7 @@
 
     const inputStickerCss = (isOrnamental || isThematic) ? `
       .surface-composer {
-        margin-top: ${isOrnamental ? '24px' : '18px'} !important;
+        margin-top: ${(isOrnamental && showCrest) || showCharm || showUserBadge ? '24px' : '12px'} !important;
         overflow: visible !important;
       }
       /* Thematic Engraved Nameplate Badge */
@@ -2285,13 +2286,14 @@
         left: 32px;
         width: ${estComposerBadgeW}px;
         height: 26px;
-        background-image: url("${themeBadgeUrl}");
+        background-image: url("${themeComposerBadgeUrl}");
         background-size: contain;
         background-position: center left;
         background-repeat: no-repeat;
         z-index: 34;
         pointer-events: none !important;
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${bubbleTheme.glow});
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
+        display: ${showUserBadge ? 'block' : 'none'} !important;
       }
       /* Floating Thematic Charm / Tassel Pendant */
       .surface-composer::after {
@@ -2301,7 +2303,7 @@
         left: -12px;
         width: 36px;
         height: 80px;
-        background-image: url("${charmPendantUrl}");
+        background-image: url("${themeUserCharmUrl}");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: top center;
@@ -2309,47 +2311,47 @@
         pointer-events: none !important;
         transform-origin: top center;
         animation: agy-charm-sway 4.8s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${bubbleTheme.glow});
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${kitGlow});
         transition: filter 0.25s ease;
+        display: ${showCharm ? 'block' : 'none'} !important;
       }
       .surface-composer:hover::after {
         animation-duration: 2.4s;
-        filter: drop-shadow(0 5px 16px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px ${bubbleTheme.glow});
+        filter: drop-shadow(0 5px 16px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px ${kitGlow});
       }
-      /* Top-right crest & corner filigree on composer card */
+      /* Top-right crest on composer card */
       .surface-composer-card::before {
-        ${isOrnamental ? `
         content: "";
         position: absolute;
         top: -13px;
         ${composerSpec.crestPositionCss}
         width: 104px;
         height: 24px;
-        background-image: url("${crestOrnamentUrl}");
+        background-image: url("${themeTopCrestUrl}");
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
         z-index: 33;
         pointer-events: none !important;
-        filter: drop-shadow(0 2px 8px ${bubbleTheme.glow});
-        ` : 'display: none !important;'}
+        filter: drop-shadow(0 2px 8px ${kitGlow});
+        display: ${(isOrnamental && showCrest) ? 'block' : 'none'} !important;
       }
+      /* Bottom-right corner filigree on composer card */
       .surface-composer-card::after {
-        ${isOrnamental ? `
         content: "";
         position: absolute;
         bottom: 3px;
         right: 4px;
         width: 18px;
         height: 18px;
-        background-image: url("${cornerFiligreeUrl}");
+        background-image: url("${themeCornerSvgUrl}");
         background-size: contain;
         background-repeat: no-repeat;
         transform: rotate(180deg);
         z-index: 25;
         pointer-events: none !important;
         opacity: 0.88;
-        ` : 'display: none !important;'}
+        display: ${(isOrnamental && showFiligree) ? 'block' : 'none'} !important;
       }
     ` : `
       .surface-composer::before,
@@ -2360,17 +2362,28 @@
 
     const inputCardBg =
       isGlass
-        ? (bubbleTheme.inputGlassBg || 'rgba(16, 20, 30, 0.48)')
+        ? (bubbleTheme.inputGlassBg || 'rgba(10, 16, 28, 0.55)')
+        : isMinimal
+        ? '#090d14'
         : (bubbleTheme.inputCardBg || 'rgba(18, 24, 38, 0.90)');
 
     const inputOuterBorder =
       isOrnamental
         ? composerSpec.outerBorder
         : isThematic
-        ? bubbleTheme.frameBg
+        ? (bubbleTheme.frameBg || `linear-gradient(135deg, ${kitPrimary}, ${kitSecondary})`)
         : isGlass
-        ? 'rgba(255, 255, 255, 0.16)'
+        ? `linear-gradient(135deg, rgba(255, 255, 255, 0.5), ${kitPrimary}80 40%, rgba(255, 255, 255, 0.25) 70%, ${kitSecondary}70 100%)`
         : 'rgba(255, 255, 255, 0.12)';
+
+    const inputOuterShadow =
+      isOrnamental
+        ? composerSpec.boxShadow
+        : isThematic
+        ? `0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${kitGlow}`
+        : isGlass
+        ? `0 8px 32px rgba(0, 0, 0, 0.6), 0 0 18px ${kitGlow}50, inset 0 1px 2px rgba(255, 255, 255, 0.5)`
+        : `0 2px 10px rgba(0, 0, 0, 0.35)`;
 
     const sidebarBg = mainTheme.sidebarBg || 'rgba(14, 10, 8, 0.68)';
     const sidebarHoverBg = mainTheme.sidebarHoverBg || 'rgba(255, 255, 255, 0.08)';
@@ -2784,40 +2797,45 @@
       .surface-composer {
         background: ${inputOuterBorder} !important;
         border-radius: ${composerSpec.borderRadius} !important;
-        padding: ${isOrnamental ? '1.8px' : isThematic ? '1.5px' : '1px'} !important;
-        box-shadow: ${isOrnamental
-          ? composerSpec.boxShadow
-          : isThematic
-          ? `0 6px 24px rgba(0, 0, 0, 0.5), 0 0 14px ${bubbleTheme.glow}`
-          : `0 2px 12px rgba(0, 0, 0, 0.3)`
-        } !important;
+        padding: ${isOrnamental ? '1.8px' : isThematic || isGlass ? '1.5px' : '1px'} !important;
+        box-shadow: ${inputOuterShadow} !important;
         position: relative !important;
       }
 
       .surface-composer-card {
-        background-color: ${inputCardBg} !important;
-        background-image: ${isOrnamental || isThematic ? `url("${watermarkUrl}")` : 'none'} !important;
+        background-color: ${isGlass ? 'rgba(10, 16, 28, 0.60)' : isMinimal ? '#090d14' : inputCardBg} !important;
+        background-image: ${isOrnamental || isThematic ? `url("${themeWatermarkUrl}")` : 'none'} !important;
         background-repeat: no-repeat !important;
         background-position: right 24px center !important;
         background-size: 135px 135px !important;
-        backdrop-filter: none !important;
+        backdrop-filter: ${isGlass ? 'blur(16px)' : 'none'} !important;
         border-radius: ${composerSpec.innerRadius} !important;
         padding-left: 14px !important;
         position: relative !important;
         border: ${isGlass
-          ? '1px solid rgba(255, 255, 255, 0.08)'
+          ? '1px solid rgba(255, 255, 255, 0.22)'
           : isMinimal
-          ? '1px solid rgba(255, 255, 255, 0.06)'
+          ? '1px solid rgba(255, 255, 255, 0.08)'
           : (bubbleTheme.innerBorder || '1px solid rgba(255, 255, 255, 0.08)')
         } !important;
+        box-shadow: ${isGlass ? 'inset 0 1px 1px rgba(255, 255, 255, 0.25)' : 'none'} !important;
       }
 
       /* Thematic Action Orb (Send Button) */
       .surface-composer [data-testid="send-button"],
       .surface-composer .agy-send-button {
-        background: linear-gradient(135deg, ${primaryColor}f0, ${secondaryColor}d9) !important;
-        border: 1px solid rgba(255, 255, 255, 0.45) !important;
-        box-shadow: 0 0 14px ${bubbleTheme.glow}, 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+        background: ${isMinimal
+          ? 'rgba(255, 255, 255, 0.12)'
+          : `linear-gradient(135deg, ${kitPrimary}f0, ${kitSecondary}d9)`
+        } !important;
+        border: ${isMinimal
+          ? '1px solid rgba(255, 255, 255, 0.18)'
+          : '1px solid rgba(255, 255, 255, 0.45)'
+        } !important;
+        box-shadow: ${isMinimal
+          ? 'none'
+          : `0 0 14px ${kitGlow}, 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6)`
+        } !important;
         transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
         position: relative !important;
       }
@@ -2825,7 +2843,7 @@
       .surface-composer [data-testid="send-button"]:hover,
       .surface-composer .agy-send-button:hover {
         transform: scale(1.12) !important;
-        box-shadow: 0 0 22px ${bubbleTheme.glow}, 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 2px #ffffff !important;
+        box-shadow: ${isMinimal ? '0 0 8px rgba(255,255,255,0.2)' : `0 0 22px ${kitGlow}, 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 2px #ffffff`} !important;
       }
 
       .surface-composer [data-testid="send-button"] svg,
@@ -3223,6 +3241,50 @@
       : (mainTheme.pureBg || mainTheme.bg);
     const dimmingStagePercent = (st.dimming !== undefined ? st.dimming : 60) / 100;
 
+    const activeSpec = getThemeComposerSpec(activeKitMotif, akp, aks, activeKitTh.glow, activeKitTh.secondaryGlow);
+
+    const liveCompOuterBorder = curInputStyle === 'ornamental'
+      ? (activeSpec.outerBorder || `linear-gradient(90deg, ${akp}, ${aks} 50%, ${akp})`)
+      : curInputStyle === 'thematic'
+      ? (activeKitTh.frameBg || `linear-gradient(135deg, ${akp}, ${aks})`)
+      : curInputStyle === 'glass'
+      ? `linear-gradient(135deg, rgba(255, 255, 255, 0.5), ${akp}80 40%, rgba(255, 255, 255, 0.25) 70%, ${aks}70 100%)`
+      : 'rgba(255, 255, 255, 0.12)';
+
+    const liveCompOuterShadow = curInputStyle === 'ornamental'
+      ? `0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px ${akg}60`
+      : curInputStyle === 'thematic'
+      ? `0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px ${akg}40`
+      : curInputStyle === 'glass'
+      ? `0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px ${akp}40, inset 0 1px 1px rgba(255, 255, 255, 0.4)`
+      : '0 2px 6px rgba(0, 0, 0, 0.3)';
+
+    const liveCompRadius = (curInputStyle === 'ornamental' || curInputStyle === 'thematic')
+      ? (activeSpec.previewRadius || '10px')
+      : curInputStyle === 'glass' ? '10px' : '6px';
+
+    const liveCompInnerRadius = (curInputStyle === 'ornamental' || curInputStyle === 'thematic')
+      ? (activeSpec.previewInnerRadius || '8.5px')
+      : curInputStyle === 'glass' ? '8.5px' : '5px';
+
+    const liveCompInnerBg = curInputStyle === 'glass'
+      ? (activeKitTh.inputGlassBg || 'rgba(12, 18, 30, 0.55)')
+      : curInputStyle === 'minimal'
+      ? '#090d14'
+      : (activeKitTh.inputCardBg || 'rgba(18, 24, 38, 0.92)');
+
+    const liveCompBorder = curInputStyle === 'glass'
+      ? '1px solid rgba(255, 255, 255, 0.22)'
+      : curInputStyle === 'minimal'
+      ? '1px solid rgba(255, 255, 255, 0.08)'
+      : (activeKitTh.innerBorder || '1px solid rgba(255, 255, 255, 0.08)');
+
+    const liveCompShowCharm = (curInputStyle === 'ornamental' || curInputStyle === 'thematic') && liveShowCharm;
+    const liveCompShowBadge = (curInputStyle === 'ornamental' || curInputStyle === 'thematic') && liveShowCorners;
+    const liveCompShowCrest = curInputStyle === 'ornamental' && liveShowCrest;
+    const liveCompShowCorner = curInputStyle === 'ornamental' && liveShowCorners;
+    const liveCompWatermark = (curInputStyle === 'ornamental' || curInputStyle === 'thematic') ? `url('${liveWatermarkUrl}')` : 'none';
+
     container.innerHTML = `
       <!-- Pinned Live Stage (Nested at Top, Always Visible) -->
       <div id="agy-studio-pinned-stage" style="flex-shrink: 0; padding: 12px 24px 10px 24px; background: rgba(14, 11, 10, 0.94); border-bottom: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); position: relative; z-index: 10;">
@@ -3234,7 +3296,7 @@
             <span style="font-size: 10px; padding: 1.5px 7px; border-radius: 9999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #d4d4d8;">Mode: ${ACCESSORY_MODES[curAccMode]?.label || curAccMode}</span>
           </div>
           <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 11px; color: #a1a1aa;">Style: <strong style="color: #fff;">${curInputStyle}</strong></span>
+            <span style="font-size: 11px; color: #a1a1aa;">Style: <strong style="color: #fff; text-transform: uppercase;">${curInputStyle}</strong></span>
             <span style="font-size: 11px; color: #a1a1aa;">Kit: <strong style="color: #fff;">${curAccKit === 'sync' ? 'Synced' : curAccKit}</strong></span>
             <div style="display: flex; align-items: center; gap: 4px;" title="Palette: ${akp} / ${aks}">
               <span style="width: 11px; height: 11px; border-radius: 50%; background: ${akp}; display: inline-block; box-shadow: 0 0 6px ${akp};"></span>
@@ -3272,13 +3334,19 @@
             <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.4px solid ${akp}; background: #0c1220 ${effUserAv ? `url('${effUserAv}') center/cover` : ''}; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; box-shadow: 0 0 6px ${akp}40;">${effUserAv ? '' : 'U'}</div>
           </div>
 
-          <!-- Turn 3: Composer Input Bar -->
-          <div style="position: relative; z-index: 2; width: 100%; border-radius: 7px; background: ${activeBubbleTh.inputCardBg || 'rgba(20, 16, 26, 0.92)'}; border: 1px solid ${akp}40; padding: 3px 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 10px; color: ${akp}; font-weight: 600;">✦</span>
-              <span style="font-size: 10.5px; color: #94a3b8;">Ask anything, @ to mention, / for workflows...</span>
+          <!-- Turn 3: Composer Input Bar (Dynamic Live Preview) -->
+          <div style="position: relative; z-index: 2; width: 100%; border-radius: ${liveCompRadius}; background: ${liveCompOuterBorder}; box-shadow: ${liveCompOuterShadow}; padding: ${curInputStyle === 'ornamental' ? '1.5px' : curInputStyle === 'thematic' || curInputStyle === 'glass' ? '1.2px' : '1px'}; margin-top: ${liveCompShowCharm || liveCompShowBadge ? '10px' : '2px'};">
+            ${liveCompShowCharm ? `<div style="position: absolute; top: -9px; left: -6px; width: 14px; height: 30px; background-image: url('${liveCharmUrl}'); background-size: contain; background-repeat: no-repeat; background-position: top center; pointer-events: none; transform-origin: top center; animation: agy-charm-sway 4.8s infinite; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8)); z-index: 4;"></div>` : ''}
+            ${liveCompShowBadge ? `<div style="position: absolute; top: -8px; left: 16px; width: 75px; height: 14px; background-image: url('${liveBadgeUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center left; pointer-events: none; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); z-index: 4;"></div>` : ''}
+            ${liveCompShowCrest ? `<div style="position: absolute; top: -8px; right: 12px; width: 45px; height: 13px; background-image: url('${liveCrestUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; filter: drop-shadow(0 2px 5px ${akg}); z-index: 4;"></div>` : ''}
+            ${liveCompShowCorner ? `<div style="position: absolute; bottom: 1px; right: 2px; width: 10px; height: 10px; background-image: url('${liveCornerUrl}'); background-size: contain; background-repeat: no-repeat; transform: rotate(180deg); pointer-events: none; z-index: 4; opacity: 0.85;"></div>` : ''}
+            <div style="position: relative; border-radius: ${liveCompInnerRadius}; background-color: ${liveCompInnerBg}; background-image: ${liveCompWatermark}; background-repeat: no-repeat; background-position: right 6px center; background-size: 38px 38px; border: ${liveCompBorder}; padding: 4px 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 10px; color: ${akp}; font-weight: 600;">✦</span>
+                <span style="font-size: 10.5px; color: ${curInputStyle === 'minimal' ? '#71717a' : '#94a3b8'};">Ask anything, @ to mention, / for workflows...</span>
+              </div>
+              <span style="font-size: 9.5px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: ${curInputStyle === 'minimal' ? 'rgba(255,255,255,0.1)' : `linear-gradient(135deg, ${akp}, ${aks})`}; color: #fff; box-shadow: ${curInputStyle === 'minimal' ? 'none' : `0 0 6px ${akg}60`}; border: ${curInputStyle === 'glass' ? '1px solid rgba(255,255,255,0.4)' : 'none'};">Send →</span>
             </div>
-            <span style="font-size: 9.5px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: linear-gradient(135deg, ${akp}, ${aks}); color: #fff; box-shadow: 0 0 6px ${akg}60;">Send →</span>
           </div>
         </div>
       </div>
@@ -3430,7 +3498,7 @@
               }
 
               return `
-                <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 22px 18px 14px 18px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; transition: border-color 0.15s ease, background-color 0.15s ease;">
+                <div class="agy-bubble-card" data-name="${name}" style="position: relative; border-radius: 12px; border: ${isSelected ? '1.5px solid #f4f4f5' : '1px solid rgba(255, 255, 255, 0.12)'}; background: ${isSelected ? 'rgba(42, 34, 30, 0.68)' : 'rgba(14, 12, 12, 0.78)'}; padding: 12px 14px 10px 14px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 80px; transition: border-color 0.15s ease, background-color 0.15s ease;">
                   <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 6px; margin-bottom: 10px;">
                     <div class="agy-bubble-preview-outer" style="position: relative; width: 192px; height: 46px; padding: 1.2px; border-radius: ${th.isScroll ? '6px' : bSpec.bubblePreviewRadius}; background: ${bOuterBg}; box-shadow: ${bOuterShadow};">
                       <div class="agy-bubble-preview-crest" style="position: absolute; top: -10px; ${bSpec.bubblePreviewCrestCss} width: 62px; height: 16px; background-image: url('${bCrestSvg}'); background-size: contain; background-position: center; background-repeat: no-repeat; filter: drop-shadow(0 2px 6px ${th.glow || bp}); display: ${showBubbleOrnaments ? 'block' : 'none'}; pointer-events: none; z-index: 5;"></div>
@@ -3897,7 +3965,7 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
-              version: 4,
+              version: 5,
               crest: getThemeTopCrestSvg(motif, p, s),
               seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
@@ -3950,7 +4018,7 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
-              version: 4,
+              version: 5,
               crest: getThemeTopCrestSvg(motif, p, s),
               seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
@@ -4088,7 +4156,6 @@
         applyTheme({
           themeName: name,
           bubbleName: name,
-          inputStyle: 'ornamental',
           customWp: '',
           bgMode: targetMode
         });
