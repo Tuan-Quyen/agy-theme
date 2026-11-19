@@ -1064,17 +1064,32 @@
     if (motif === 'frost_blade') {
       return svgToDataUri(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
-          <circle cx="17" cy="6" r="3" stroke="${s}" stroke-width="1.2" fill="#0c1424"/>
-          <line x1="17" y1="9" x2="17" y2="15" stroke="${p}" stroke-width="1.4"/>
-          <rect x="7" y="15" width="20" height="24" rx="4" fill="#0f172a" stroke="${p}" stroke-width="1.4"/>
-          <rect x="9" y="17" width="16" height="20" rx="2" stroke="${s}" stroke-width="0.8" stroke-dasharray="2 1.5" fill="none"/>
-          <polygon points="17,21 21,27 17,33 13,27" fill="${p}"/>
-          <circle cx="17" cy="27" r="1.5" fill="#ffffff"/>
-          <circle cx="17" cy="42" r="2" fill="${s}"/>
-          <path d="M13 46 Q17 44 21 46 L20 49 Q17 48 14 49 Z" fill="${p}"/>
-          <path d="M14 49 Q12 59 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
-          <path d="M17 49 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
-          <path d="M20 49 Q22 59 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="uCharmMetFB" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="50%" stop-color="${p}"/>
+              <stop offset="100%" stop-color="${s}"/>
+            </linearGradient>
+          </defs>
+          <circle cx="17" cy="5" r="3.5" stroke="url(#uCharmMetFB)" stroke-width="1.3" fill="#090d18"/>
+          <circle cx="17" cy="5" r="2" fill="none" stroke="${s}" stroke-width="0.6"/>
+          <line x1="17" y1="8.5" x2="17" y2="15" stroke="${s}" stroke-width="1.5" stroke-dasharray="2 1"/>
+          <path d="M11 15 L23 15 L21 19 L13 19 Z" fill="url(#uCharmMetFB)" stroke="${p}" stroke-width="0.6"/>
+          <!-- Faceted Crystal Body -->
+          <polygon points="17,19 25,26 25,35 17,42 9,35 9,26" fill="#0b1326" stroke="${p}" stroke-width="1.3"/>
+          <polygon points="17,19 25,26 17,29 9,26" fill="#ffffff" opacity="0.3"/>
+          <polygon points="17,29 25,26 25,35 17,42" fill="${s}" opacity="0.6"/>
+          <polygon points="17,29 9,26 9,35 17,42" fill="${p}" opacity="0.75"/>
+          <polygon points="17,23 21,29 17,35 13,29" fill="#ffffff" opacity="0.85"/>
+          <circle cx="17" cy="29" r="1.6" fill="${p}"/>
+          <!-- Bead separator -->
+          <circle cx="17" cy="45" r="2.2" fill="url(#uCharmMetFB)"/>
+          <!-- Tassel skirt -->
+          <path d="M12 47 Q17 45 22 47 L21 50 Q17 49 13 50 Z" fill="${p}"/>
+          <!-- Silky strands -->
+          <path d="M14 50 Q11 60 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M17 50 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 50 Q23 60 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
           <circle cx="17" cy="62" r="1.4" fill="#ffffff"/>
         </svg>
       `);
@@ -1083,16 +1098,26 @@
     if (motif === 'night_astral') {
       return svgToDataUri(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
-          <line x1="17" y1="2" x2="17" y2="14" stroke="${s}" stroke-width="1" stroke-dasharray="1.5 1.5"/>
-          <circle cx="17" cy="14" r="2.5" fill="${p}"/>
-          <circle cx="17" cy="26" r="11" fill="#090d1f" stroke="${p}" stroke-width="1.4"/>
-          <path d="M14 18 A 8 8 0 1 0 20 32 A 6 6 0 1 1 14 18 Z" fill="${s}"/>
-          <circle cx="19" cy="23" r="1.5" fill="#ffffff"/>
-          <line x1="17" y1="37" x2="17" y2="48" stroke="${s}" stroke-width="1" stroke-dasharray="2 1.5"/>
-          <g transform="translate(17, 56)">
-            <polygon points="0,-10 2,-2 10,-2 3.5,2 6,9 0,4.5 -6,9 -3.5,2 -10,-2 -2,-2" fill="${s}" stroke="#ffffff" stroke-width="0.6"/>
-            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
-          </g>
+          <defs>
+            <linearGradient id="uCharmMetNA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="50%" stop-color="${p}"/>
+              <stop offset="100%" stop-color="${s}"/>
+            </linearGradient>
+          </defs>
+          <circle cx="17" cy="5" r="3.5" stroke="url(#uCharmMetNA)" stroke-width="1.3" fill="#090d18"/>
+          <line x1="17" y1="8.5" x2="17" y2="15" stroke="${s}" stroke-width="1.5" stroke-dasharray="2 1"/>
+          <path d="M11 15 L23 15 L21 19 L13 19 Z" fill="url(#uCharmMetNA)" stroke="${p}" stroke-width="0.6"/>
+          <circle cx="17" cy="30" r="11" fill="#090d1f" stroke="${p}" stroke-width="1.3"/>
+          <ellipse cx="17" cy="30" rx="11" ry="4.5" stroke="${s}" stroke-width="0.8" fill="none" opacity="0.85"/>
+          <path d="M14 21 A 8 8 0 1 0 20 36 A 6.5 6.5 0 1 1 14 21 Z" fill="${s}" opacity="0.95"/>
+          <circle cx="19" cy="26" r="1.6" fill="#ffffff"/>
+          <circle cx="17" cy="45" r="2.2" fill="url(#uCharmMetNA)"/>
+          <path d="M12 47 Q17 45 22 47 L21 50 Q17 49 13 50 Z" fill="${p}"/>
+          <path d="M14 50 Q11 60 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M17 50 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 50 Q23 60 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="17" cy="62" r="1.4" fill="#ffffff"/>
         </svg>
       `);
     }
@@ -1100,50 +1125,55 @@
     if (motif === 'royal_crest') {
       return svgToDataUri(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
-          <rect x="8" y="2" width="18" height="4" rx="2" fill="${p}" stroke="#ffffff" stroke-width="0.6"/>
-          <path d="M12 6 L9 20 L17 17 L25 20 L22 6 Z" fill="#991b1b" stroke="${p}" stroke-width="1"/>
-          <circle cx="17" cy="28" r="11" fill="#7f1d1d" stroke="${p}" stroke-width="1.6"/>
-          <circle cx="17" cy="28" r="9" stroke="${s}" stroke-width="0.8" stroke-dasharray="1.5 1.5" fill="none"/>
-          <g transform="translate(17, 28)">
+          <defs>
+            <linearGradient id="uCharmMetRC" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="50%" stop-color="${p}"/>
+              <stop offset="100%" stop-color="${s}"/>
+            </linearGradient>
+          </defs>
+          <circle cx="17" cy="5" r="3.5" stroke="url(#uCharmMetRC)" stroke-width="1.3" fill="#180e0c"/>
+          <line x1="17" y1="8.5" x2="17" y2="15" stroke="${p}" stroke-width="1.5" stroke-dasharray="2 1"/>
+          <path d="M10 15 L24 15 L22 19 L12 19 Z" fill="url(#uCharmMetRC)" stroke="${p}" stroke-width="0.6"/>
+          <circle cx="17" cy="30" r="11" fill="#1c140a" stroke="${p}" stroke-width="1.5"/>
+          <circle cx="17" cy="30" r="9" stroke="${s}" stroke-width="0.8" stroke-dasharray="1.5 1.5"/>
+          <g transform="translate(17, 30)">
             <path d="M0 -6 C-1.5 -3 -2 -1 0 2 C2 -1 1.5 -3 0 -6 Z" fill="${p}"/>
-            <path d="M-1 0 C-4 -1 -5 -2 -4 -4 C-3 -3 -2 -1 -1 0 Z" fill="${s}"/>
-            <path d="M1 0 C4 -1 5 -2 4 -4 C3 -3 2 -1 1 0 Z" fill="${s}"/>
-            <rect x="-3" y="1" width="6" height="1.4" rx="0.7" fill="${p}"/>
+            <circle cx="0" cy="2" r="1" fill="#ffffff"/>
           </g>
-          <line x1="17" y1="39" x2="17" y2="48" stroke="${p}" stroke-width="1.2"/>
-          <path d="M17 50 C14 56 13 62 17 66 C21 62 20 56 17 50 Z" fill="#fef08a" stroke="${p}" stroke-width="1"/>
-        </svg>
-      `);
-    }
-
-    if (motif === 'obsidian_prism') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
-          <polygon points="17,2 20,4 20,8 17,10 14,8 14,4" stroke="${p}" stroke-width="1" fill="none"/>
-          <polygon points="17,8 20,10 20,14 17,16 14,14 14,10" stroke="${s}" stroke-width="1" fill="none"/>
-          <circle cx="17" cy="19" r="2.5" fill="${p}" stroke="#ffffff" stroke-width="0.6"/>
-          <g transform="translate(17, 40)">
-            <polygon points="0,-18 11,-8 7,16 0,26 -7,16 -11,-8" fill="#090514" stroke="${p}" stroke-width="1.4"/>
-            <polygon points="0,-18 11,-8 0,-3" fill="${p}" opacity="0.5"/>
-            <polygon points="0,-18 -11,-8 0,-3" fill="${s}" opacity="0.4"/>
-            <polygon points="11,-8 7,16 0,5 0,-3" fill="${s}" opacity="0.6"/>
-            <polygon points="-11,-8 -7,16 0,5 0,-3" fill="${p}" opacity="0.7"/>
-            <polygon points="0,5 7,16 0,26" fill="${p}" opacity="0.85"/>
-            <polygon points="0,5 -7,16 0,26" fill="${s}" opacity="0.95"/>
-            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
-          </g>
+          <circle cx="17" cy="45" r="2.2" fill="url(#uCharmMetRC)"/>
+          <path d="M12 47 Q17 45 22 47 L21 50 Q17 49 13 50 Z" fill="${p}"/>
+          <path d="M14 50 Q11 60 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M17 50 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 50 Q23 60 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="17" cy="62" r="1.4" fill="#ffffff"/>
         </svg>
       `);
     }
 
     return svgToDataUri(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 68" fill="none">
-        <line x1="17" y1="2" x2="17" y2="16" stroke="${p}" stroke-width="1.4"/>
-        <circle cx="17" cy="18" r="3.5" fill="${s}"/>
-        <polygon points="17,24 26,36 17,48 8,36" fill="#111827" stroke="${p}" stroke-width="1.5"/>
-        <circle cx="17" cy="36" r="2" fill="#ffffff"/>
-        <line x1="17" y1="48" x2="17" y2="66" stroke="${p}" stroke-width="1.4"/>
-        <circle cx="17" cy="66" r="2" fill="${s}"/>
+        <defs>
+          <linearGradient id="uCharmMetDef" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="50%" stop-color="${p}"/>
+            <stop offset="100%" stop-color="${s}"/>
+          </linearGradient>
+        </defs>
+        <circle cx="17" cy="5" r="3.5" stroke="url(#uCharmMetDef)" stroke-width="1.3" fill="#090d18"/>
+        <line x1="17" y1="8.5" x2="17" y2="15" stroke="${s}" stroke-width="1.5" stroke-dasharray="2 1"/>
+        <path d="M11 15 L23 15 L21 19 L13 19 Z" fill="url(#uCharmMetDef)" stroke="${p}" stroke-width="0.6"/>
+        <polygon points="17,19 25,26 25,35 17,42 9,35 9,26" fill="#0b1326" stroke="${p}" stroke-width="1.3"/>
+        <polygon points="17,19 25,26 17,29 9,26" fill="#ffffff" opacity="0.3"/>
+        <polygon points="17,29 25,26 25,35 17,42" fill="${s}" opacity="0.6"/>
+        <polygon points="17,29 9,26 9,35 17,42" fill="${p}" opacity="0.75"/>
+        <circle cx="17" cy="29" r="1.8" fill="#ffffff"/>
+        <circle cx="17" cy="45" r="2.2" fill="url(#uCharmMetDef)"/>
+        <path d="M12 47 Q17 45 22 47 L21 50 Q17 49 13 50 Z" fill="${p}"/>
+        <path d="M14 50 Q11 60 13 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M17 50 L17 68" stroke="${s}" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M20 50 Q23 60 21 68" stroke="${p}" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="17" cy="62" r="1.4" fill="#ffffff"/>
       </svg>
     `);
   }
@@ -1153,149 +1183,49 @@
     const p = primary || '#38bdf8';
     const s = secondary || p;
 
-    if (motif === 'frost_blade') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
-          <defs>
-            <linearGradient id="frostWingL" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="frostWingR" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="crestGem" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="40%" stop-color="${p}"/>
-              <stop offset="100%" stop-color="${s}"/>
-            </linearGradient>
-          </defs>
-          <path d="M110 18 Q80 14 30 18 Q65 10 95 12 Z" fill="url(#frostWingL)"/>
-          <path d="M110 18 Q85 22 45 25 Q75 19 100 18 Z" fill="url(#frostWingL)" opacity="0.6"/>
-          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#frostWingL)" stroke-width="1.2"/>
-          <circle cx="50" cy="18" r="2" fill="${s}"/>
-          <circle cx="30" cy="18" r="1.5" fill="#fff"/>
-          <circle cx="15" cy="18" r="1" fill="${p}"/>
-
-          <path d="M110 18 Q140 14 190 18 Q155 10 125 12 Z" fill="url(#frostWingR)"/>
-          <path d="M110 18 Q135 22 175 25 Q145 19 120 18 Z" fill="url(#frostWingR)" opacity="0.6"/>
-          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#frostWingR)" stroke-width="1.2"/>
-          <circle cx="170" cy="18" r="2" fill="${s}"/>
-          <circle cx="190" cy="18" r="1.5" fill="#fff"/>
-          <circle cx="205" cy="18" r="1" fill="${p}"/>
-
-          <g transform="translate(110, 18)">
-            <circle cx="0" cy="0" r="11" fill="#090d16" stroke="${p}" stroke-width="1.2"/>
-            <polygon points="0,-14 5,-4 13,0 5,4 0,14 -5,4 -13,0 -5,-4" fill="url(#crestGem)"/>
-            <line x1="-8" y1="0" x2="8" y2="0" stroke="#fff" stroke-width="1.2"/>
-            <line x1="0" y1="-8" x2="0" y2="8" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="0" cy="0" r="2.2" fill="#ffffff"/>
-          </g>
-        </svg>
-      `);
-    } else if (motif === 'night_astral') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
-          <defs>
-            <linearGradient id="astralWingL" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="65%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="astralWingR" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="65%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M110 18 Q75 8 25 18 Q65 14 100 16 Z" fill="url(#astralWingL)"/>
-          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#astralWingL)" stroke-width="1.2"/>
-          <polygon points="55,16 57,18 55,20 53,18" fill="#fff"/>
-          <polygon points="35,16 36.5,18 35,20 33.5,18" fill="${s}"/>
-          <circle cx="16" cy="18" r="1.5" fill="${p}"/>
-
-          <path d="M110 18 Q145 8 195 18 Q155 14 120 16 Z" fill="url(#astralWingR)"/>
-          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#astralWingR)" stroke-width="1.2"/>
-          <polygon points="165,16 167,18 165,20 163,18" fill="#fff"/>
-          <polygon points="185,16 186.5,18 185,20 183.5,18" fill="${s}"/>
-          <circle cx="204" cy="18" r="1.5" fill="${p}"/>
-
-          <g transform="translate(110, 18)">
-            <circle cx="0" cy="0" r="11" fill="#090d16" stroke="${s}" stroke-width="1.2"/>
-            <path d="M-4 -9 A 9 9 0 1 0 6 7 A 6.8 6.8 0 1 1 -4 -9 Z" fill="${p}"/>
-            <polygon points="3,-4 4.5,-1 7.5,0 4.5,1 3,4 1.5,1 -1.5,0 1.5,-1" fill="#fff"/>
-            <circle cx="3" cy="0" r="1.2" fill="${s}"/>
-          </g>
-        </svg>
-      `);
-    } else if (motif === 'royal_crest') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
-          <defs>
-            <linearGradient id="goldWingL" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="goldWingR" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M110 18 Q80 12 30 18 Q65 14 95 16 Z" fill="url(#goldWingL)"/>
-          <line x1="110" y1="18" x2="20" y2="18" stroke="url(#goldWingL)" stroke-width="1.2"/>
-          <circle cx="50" cy="18" r="2" fill="${s}"/>
-          <circle cx="25" cy="18" r="1.5" fill="#fff"/>
-
-          <path d="M110 18 Q140 12 190 18 Q155 14 125 16 Z" fill="url(#goldWingR)"/>
-          <line x1="110" y1="18" x2="200" y2="18" stroke="url(#goldWingR)" stroke-width="1.2"/>
-          <circle cx="170" cy="18" r="2" fill="${s}"/>
-          <circle cx="195" cy="18" r="1.5" fill="#fff"/>
-
-          <g transform="translate(110, 18)">
-            <circle cx="0" cy="0" r="11" fill="#140f0c" stroke="${p}" stroke-width="1.2"/>
-            <path d="M0 -9 C-3 -4 -3 -1 0 3 C3 -1 3 -4 0 -9 Z" fill="${p}"/>
-            <path d="M-2 -2 C-6 -3 -9 -6 -8 -8 C-6 -7 -5 -4 -2 -2 Z" fill="${s}"/>
-            <path d="M2 -2 C6 -3 9 -6 8 -8 C6 -7 5 -4 2 -2 Z" fill="${s}"/>
-            <circle cx="0" cy="0" r="1.8" fill="#fff"/>
-          </g>
-        </svg>
-      `);
-    } else {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
-          <defs>
-            <linearGradient id="cyberWingL" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="cyberWingR" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
-              <stop offset="70%" stop-color="${s}" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <polyline points="110,18 70,18 60,14 20,14" stroke="url(#cyberWingL)" stroke-width="1.2" fill="none"/>
-          <rect x="40" y="12" width="10" height="4" fill="${s}" opacity="0.6"/>
-          <circle cx="20" cy="14" r="1.5" fill="${p}"/>
-
-          <polyline points="110,18 150,18 160,14 200,14" stroke="url(#cyberWingR)" stroke-width="1.2" fill="none"/>
-          <rect x="170" y="12" width="10" height="4" fill="${s}" opacity="0.6"/>
-          <circle cx="200" cy="14" r="1.5" fill="${p}"/>
-
-          <g transform="translate(110, 18)">
-            <polygon points="0,-11 9,-5 9,5 0,11 -9,5 -9,-5" fill="#090d16" stroke="${p}" stroke-width="1.2"/>
-            <polygon points="0,-7 6,-3 6,3 0,7 -6,3 -6,-3" fill="${s}" opacity="0.8"/>
-            <circle cx="0" cy="0" r="2.2" fill="#fff"/>
-          </g>
-        </svg>
-      `);
-    }
+    return svgToDataUri(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+        <defs>
+          <linearGradient id="crestWingL_${motif}" x1="1" y1="0" x2="0" y2="0">
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="60%" stop-color="${s}" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="crestWingR_${motif}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="60%" stop-color="${s}" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="${p}" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="crestGleam_${motif}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+            <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Sculpted Plumes Tier 1 -->
+        <path d="M110 18 Q80 11 25 16 Q65 8 95 11 Z" fill="url(#crestWingL_${motif})"/>
+        <path d="M110 18 Q140 11 195 16 Q155 8 125 11 Z" fill="url(#crestWingR_${motif})"/>
+        <!-- Tier 2 -->
+        <path d="M110 18 Q85 23 45 25 Q75 19 100 18 Z" fill="url(#crestWingL_${motif})" opacity="0.65"/>
+        <path d="M110 18 Q135 23 175 25 Q145 19 120 18 Z" fill="url(#crestWingR_${motif})" opacity="0.65"/>
+        <!-- Specular top hairline -->
+        <path d="M15 17 Q65 10 110 11 Q155 10 205 17" stroke="url(#crestGleam_${motif})" stroke-width="0.9" fill="none"/>
+        <!-- Wing Bead Finials -->
+        <circle cx="50" cy="18" r="2" fill="${s}"/>
+        <circle cx="28" cy="17" r="1.5" fill="#fff"/>
+        <circle cx="170" cy="18" r="2" fill="${s}"/>
+        <circle cx="192" cy="17" r="1.5" fill="#fff"/>
+        <!-- Center Crown Diadem -->
+        <path d="M96 20 L100 9 L105 14 L110 6 L115 14 L120 9 L124 20 Z" fill="#0b1326" stroke="${p}" stroke-width="1.2"/>
+        <circle cx="100" cy="9" r="1.4" fill="#ffffff"/>
+        <circle cx="110" cy="6" r="1.8" fill="#ffffff"/>
+        <circle cx="120" cy="9" r="1.4" fill="#ffffff"/>
+        <!-- Radiant Gem -->
+        <polygon points="110,11 114,18 110,25 106,18" fill="${s}"/>
+        <polygon points="110,13 113,18 110,23 107,18" fill="#ffffff" opacity="0.9"/>
+        <circle cx="110" cy="18" r="1.5" fill="#ffffff"/>
+      </svg>
+    `);
   }
 
   // 3D Wax Seal / Royal Sigil Stamp (viewBox="0 0 36 36")
@@ -1306,43 +1236,50 @@
     let symbolSvg = '';
     if (motif === 'frost_blade') {
       symbolSvg = `
-        <polygon points="0,-8 2,-2 8,0 2,2 0,8 -2,2 -8,0 -2,-2" fill="#ffffff"/>
+        <polygon points="0,-7 2,-2 7,0 2,2 0,7 -2,2 -7,0 -2,-2" fill="${s}" opacity="0.4" transform="translate(0, 1)"/>
+        <polygon points="0,-7 2,-2 7,0 2,2 0,7 -2,2 -7,0 -2,-2" fill="#ffffff"/>
         <circle cx="0" cy="0" r="1.8" fill="${p}"/>
-        <line x1="-5" y1="-5" x2="5" y2="5" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
-        <line x1="5" y1="-5" x2="-5" y2="5" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
       `;
     } else if (motif === 'night_astral') {
       symbolSvg = `
-        <path d="M-2 -7 A 7 7 0 1 0 5 5 A 5.5 5.5 0 1 1 -2 -7 Z" fill="#ffffff"/>
-        <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="${s}"/>
+        <path d="M-2 -6 A 6 6 0 1 0 4 4 A 4.8 4.8 0 1 1 -2 -6 Z" fill="#ffffff"/>
+        <circle cx="2" cy="0" r="1.5" fill="${s}"/>
       `;
     } else if (motif === 'royal_crest') {
       symbolSvg = `
-        <path d="M0 -7 C-2 -4 -2 -1 0 2 C2 -1 2 -4 0 -7 Z" fill="#ffffff"/>
-        <path d="M-1 -1 C-4 -2 -6 -4 -5 -5 C-4 -4 -3 -2 -1 -1 Z" fill="${s}"/>
-        <path d="M1 -1 C4 -2 6 -4 5 -5 C4 -4 3 -2 1 -1 Z" fill="${s}"/>
-        <circle cx="0" cy="0" r="1.5" fill="#fff"/>
+        <path d="M0 -6 C-2 -3 -2 -1 0 2 C2 -1 2 -3 0 -6 Z" fill="#ffffff"/>
+        <circle cx="0" cy="3" r="1.2" fill="${s}"/>
       `;
     } else {
       symbolSvg = `
-        <polygon points="0,-7 6,-3 6,3 0,7 -6,3 -6,-3" stroke="#ffffff" stroke-width="1" fill="${p}" fill-opacity="0.3"/>
-        <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+        <polygon points="0,-6 5,-2 5,2 0,6 -5,2 -5,-2" stroke="#ffffff" stroke-width="1" fill="${p}" fill-opacity="0.4"/>
+        <circle cx="0" cy="0" r="1.6" fill="#ffffff"/>
       `;
     }
 
     return svgToDataUri(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 38" fill="none">
         <defs>
-          <radialGradient id="sealShine_${motif}" cx="35%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
-            <stop offset="45%" stop-color="${p}" stop-opacity="0.95"/>
-            <stop offset="100%" stop-color="${s}" stop-opacity="0.85"/>
+          <radialGradient id="sealShine_${motif}" cx="30%" cy="25%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+            <stop offset="40%" stop-color="${p}" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="${s}" stop-opacity="0.9"/>
           </radialGradient>
+          <linearGradient id="sealBevel_${motif}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.6"/>
+          </linearGradient>
         </defs>
-        <path d="M18 1 C22 0.5 25 3 28 5 C31 7 34 10 35 14 C36 18 34 22 33 25 C31 29 28 32 24 34 C20 35 16 35 12 34 C8 32 5 29 3 25 C1 22 0 18 1 14 C2 10 5 7 8 5 C11 3 14 0.5 18 1 Z" fill="url(#sealShine_${motif})" stroke="${p}" stroke-width="0.8"/>
-        <circle cx="18" cy="18" r="13" fill="#090d16" fill-opacity="0.85" stroke="${p}" stroke-width="1.2"/>
-        <circle cx="18" cy="18" r="11.5" fill="none" stroke="${s}" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.85"/>
-        <g transform="translate(18, 18)">
+        <!-- 12-Lobed Organic Molten Wax Perimeter -->
+        <path d="M19 2 C23 1.5 27 3.5 30 6 C33 8.5 36 12 37 16 C38 20 36.5 24 35 28 C33 32 29 35.5 25 37 C21 38 17 37.5 13 36 C9 34 5.5 31 3.5 27 C1.5 23 1 19 2 15 C3 11 6 7.5 9 5 C12 2.5 15.5 2 19 2 Z" fill="url(#sealShine_${motif})" stroke="${p}" stroke-width="0.8"/>
+        <path d="M19 2 C23 1.5 27 3.5 30 6 C33 8.5 36 12 37 16 C38 20 36.5 24 35 28 C33 32 29 35.5 25 37 C21 38 17 37.5 13 36 C9 34 5.5 31 3.5 27 C1.5 23 1 19 2 15 C3 11 6 7.5 9 5 C12 2.5 15.5 2 19 2 Z" fill="url(#sealBevel_${motif})" opacity="0.3"/>
+        <!-- Top Specular Crescent Gloss -->
+        <path d="M11 7 C15 4 23 4 27 7 C21 6 15 6 11 7 Z" fill="#ffffff" opacity="0.55"/>
+        <!-- Debossed Inner Seal Stamping Bed -->
+        <circle cx="19" cy="19" r="13" fill="#090d16" fill-opacity="0.88" stroke="${p}" stroke-width="1.2"/>
+        <circle cx="19" cy="19" r="11.5" fill="none" stroke="${s}" stroke-width="0.6" stroke-dasharray="2 1.5" opacity="0.8"/>
+        <!-- 3D Embossed Relief Motif -->
+        <g transform="translate(19, 19)">
           ${symbolSvg}
         </g>
       </svg>
@@ -1353,17 +1290,18 @@
     const p = primary || '#38bdf8';
     const s = secondary || p;
 
-    let title = (customTitle || '').trim();
-    if (!title) {
-      if (motif === 'frost_blade') title = '❄ OPERATOR';
-      else if (motif === 'night_astral') title = '✦ STAR PILOT';
-      else if (motif === 'royal_crest') title = '⚜ IMPERIAL MASTER';
-      else if (motif === 'obsidian_prism') title = '◈ CIPHER NODE';
-      else title = '✦ OPERATOR';
+    let rawTitle = (customTitle || '').trim();
+    if (!rawTitle) {
+      if (motif === 'frost_blade') rawTitle = '❄ OPERATOR';
+      else if (motif === 'night_astral') rawTitle = '✦ STAR PILOT';
+      else if (motif === 'royal_crest') rawTitle = '⚜ IMPERIAL MASTER';
+      else if (motif === 'obsidian_prism') rawTitle = '◈ CIPHER NODE';
+      else rawTitle = '✦ OPERATOR';
     }
 
-    if (title.length > 20) {
-      title = title.slice(0, 18) + '…';
+    let cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
+    if (cleanTitle.length > 22) {
+      cleanTitle = cleanTitle.slice(0, 20) + '…';
     }
 
     let iconSvg = `<polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>`;
@@ -1377,10 +1315,10 @@
       iconSvg = `<polygon points="0,-4 4,-1 2,3 0,4 -2,3 -4,-1" stroke="${p}" stroke-width="1" fill="${s}"/>`;
     }
 
-    // Dynamic width calculation so text NEVER overlaps the right dot
-    const estW = Math.ceil(title.length * 6.8);
-    const totalW = Math.max(120, 26 + estW + 22);
-    const dotX = totalW - 10;
+    // Dynamic width calculation: 30px left icon space + text (7.8px/char) + 28px right dot space
+    const estW = Math.ceil(cleanTitle.length * 7.8);
+    const totalW = Math.max(130, 30 + estW + 28);
+    const dotX = totalW - 12;
     const rectW = totalW - 2;
 
     return svgToDataUri(`
@@ -1392,10 +1330,10 @@
           </linearGradient>
         </defs>
         <rect x="1" y="1" width="${rectW}" height="20" rx="10" fill="#090d16" stroke="url(#uBadgeBrd_${motif})" stroke-width="1.2"/>
-        <g transform="translate(13, 11)">
+        <g transform="translate(14, 11)">
           ${iconSvg}
         </g>
-        <text x="25" y="14.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${title}</text>
+        <text x="28" y="14.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${cleanTitle}</text>
         <circle cx="${dotX}" cy="11" r="1.5" fill="${p}"/>
       </svg>
     `);
@@ -1414,51 +1352,51 @@
       else rawTitle = '✧ ANTIGRAVITY';
     }
 
-    let title = rawTitle.replace(/\s+/g, ' ').trim();
-    if (title.length > 24) {
-      title = title.slice(0, 22) + '…';
+    let cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
+    if (cleanTitle.length > 26) {
+      cleanTitle = cleanTitle.slice(0, 24) + '…';
     }
 
     let iconSvg = '';
     if (motif === 'frost_blade') {
       iconSvg = `
-        <g transform="translate(14, 13)">
-          <line x1="-6" y1="0" x2="6" y2="0" stroke="${p}" stroke-width="1.3"/>
-          <line x1="0" y1="-6" x2="0" y2="6" stroke="${p}" stroke-width="1.3"/>
-          <polygon points="0,-4 3,0 0,4 -3,0" fill="${s}"/>
-          <circle cx="0" cy="0" r="1.4" fill="#fff"/>
+        <g transform="translate(16, 13)">
+          <line x1="-7" y1="0" x2="7" y2="0" stroke="${p}" stroke-width="1.3"/>
+          <line x1="0" y1="-7" x2="0" y2="7" stroke="${p}" stroke-width="1.3"/>
+          <polygon points="0,-4 3.5,0 0,4 -3.5,0" fill="${s}"/>
+          <circle cx="0" cy="0" r="1.5" fill="#fff"/>
         </g>
       `;
     } else if (motif === 'night_astral') {
       iconSvg = `
-        <g transform="translate(14, 13)">
+        <g transform="translate(16, 13)">
           <path d="M-3 -5 A 5 5 0 1 0 3 4 A 4 4 0 1 1 -3 -5 Z" fill="${s}"/>
           <polygon points="2,-3 3,-1 5,0 3,1 2,3 1,1 -1,0 1,-1" fill="#ffffff"/>
         </g>
       `;
     } else if (motif === 'royal_crest') {
       iconSvg = `
-        <g transform="translate(14, 13)">
+        <g transform="translate(16, 13)">
           <path d="M0 -5 C-1.5 -2.5 -1.5 0 0 2.5 C1.5 0 1.5 -2.5 0 -5 Z" fill="${p}"/>
           <circle cx="0" cy="2" r="1" fill="${s}"/>
         </g>
       `;
     } else {
       iconSvg = `
-        <g transform="translate(14, 13)">
+        <g transform="translate(16, 13)">
           <polygon points="0,-5 2,-2 5,0 2,2 0,5 -2,2 -5,0 -2,-2" fill="${p}"/>
           <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
         </g>
       `;
     }
 
-    // Dynamic width calculation: 30px left icon space + text + 26px right dots space
-    const estTextW = Math.ceil(title.length * 7.1);
-    const totalW = Math.max(140, 30 + estTextW + 26);
+    // Dynamic width calculation: 36px left icon space + text (8.0px/char) + 36px right dots space
+    const estTextW = Math.ceil(cleanTitle.length * 8.0);
+    const totalW = Math.max(160, 36 + estTextW + 36);
     const rectW = totalW - 2;
     const innerRectW = totalW - 6;
-    const dot1 = totalW - 14;
-    const dot2 = totalW - 8;
+    const dot1 = totalW - 20;
+    const dot2 = totalW - 11;
 
     return svgToDataUri(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 26" fill="none">
@@ -1472,9 +1410,9 @@
         <rect x="1" y="1" width="${rectW}" height="24" rx="12" fill="#090d16" stroke="url(#agHdrBrd_${motif})" stroke-width="1.2"/>
         <rect x="3" y="3" width="${innerRectW}" height="20" rx="10" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" fill="none"/>
         ${iconSvg}
-        <text x="28" y="16.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${title}</text>
-        <circle cx="${dot1}" cy="13" r="1.6" fill="${p}"/>
-        <circle cx="${dot2}" cy="13" r="1.6" fill="${s}"/>
+        <text x="32" y="16.5" fill="#f8fafc" font-size="9" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="0.5">${cleanTitle}</text>
+        <circle cx="${dot1}" cy="13" r="1.8" fill="${p}"/>
+        <circle cx="${dot2}" cy="13" r="1.8" fill="${s}"/>
       </svg>
     `);
   }
@@ -1483,78 +1421,49 @@
     const p = primary || '#38bdf8';
     const s = secondary || p;
 
-    if (motif === 'frost_blade') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="21" fill="#0c1424" stroke="${p}" stroke-width="1.6"/>
-          <circle cx="24" cy="24" r="18" stroke="${s}" stroke-width="0.9" stroke-dasharray="2 2" fill="none"/>
-          <g transform="translate(24, 24)">
-            <line x1="0" y1="-14" x2="0" y2="14" stroke="${p}" stroke-width="1.4"/>
-            <line x1="-12.1" y1="-7" x2="12.1" y2="7" stroke="${p}" stroke-width="1.4"/>
-            <line x1="-12.1" y1="7" x2="12.1" y2="-7" stroke="${p}" stroke-width="1.4"/>
-            <polygon points="0,-12 3.5,-5 0,0 -3.5,-5" fill="${s}"/>
-            <polygon points="0,12 3.5,5 0,0 -3.5,5" fill="${s}"/>
-            <polygon points="-10.4,-6 -3.5,-5 0,0 -7,-1" fill="${p}"/>
-            <polygon points="10.4,6 3.5,5 0,0 7,1" fill="${p}"/>
-            <polygon points="-10.4,6 -3.5,5 0,0 -7,1" fill="${p}"/>
-            <polygon points="10.4,-6 3.5,-5 0,0 7,-1" fill="${p}"/>
-            <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-          </g>
-        </svg>
-      `);
-    }
-
-    if (motif === 'night_astral') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="21" fill="#090d1f" stroke="${p}" stroke-width="1.6"/>
-          <ellipse cx="24" cy="24" rx="21" ry="8" stroke="${s}" stroke-width="1" stroke-dasharray="2 1.5" transform="rotate(30 24 24)" fill="none"/>
-          <g transform="translate(24, 24)">
-            <path d="M-6 -10 A 11 11 0 1 0 7 11 A 8.5 8.5 0 1 1 -6 -10 Z" fill="${s}"/>
-            <polygon points="0,-8 1.8,-1.8 8,0 1.8,1.8 0,8 -1.8,1.8 -8,0 -1.8,-1.8" fill="#ffffff"/>
-            <circle cx="0" cy="0" r="1.5" fill="${p}"/>
-          </g>
-        </svg>
-      `);
-    }
-
-    if (motif === 'royal_crest') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="21" fill="#1c140a" stroke="${p}" stroke-width="1.8"/>
-          <circle cx="24" cy="24" r="18" stroke="${s}" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
-          <g transform="translate(24, 24)">
-            <path d="M-10 6 L-12 -3 L-5 1 L0 -7 L5 1 L12 -3 L10 6 Z" fill="${p}" stroke="#ffffff" stroke-width="0.8"/>
-            <circle cx="-12" cy="-4" r="1.5" fill="${s}"/>
-            <circle cx="0" cy="-8" r="2" fill="#ffffff"/>
-            <circle cx="12" cy="-4" r="1.5" fill="${s}"/>
-            <line x1="-9" y1="6" x2="9" y2="6" stroke="${s}" stroke-width="1.8"/>
-            <circle cx="0" cy="2" r="1.5" fill="${s}"/>
-          </g>
-        </svg>
-      `);
-    }
-
-    if (motif === 'obsidian_prism') {
-      return svgToDataUri(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <polygon points="24,3 42,13 42,35 24,45 6,35 6,13" fill="#090514" stroke="${p}" stroke-width="1.6"/>
-          <polygon points="24,9 37,17 37,31 24,39 11,31 11,17" stroke="${s}" stroke-width="1" fill="none"/>
-          <g transform="translate(24, 24)">
-            <polygon points="0,-15 13,-7 0,0 -13,-7" fill="${p}" opacity="0.65"/>
-            <polygon points="0,0 13,-7 13,8 0,15" fill="${s}" opacity="0.8"/>
-            <polygon points="0,0 -13,-7 -13,8 0,15" fill="${p}" opacity="0.95"/>
-            <circle cx="0" cy="0" r="2.5" fill="#ffffff"/>
-          </g>
-        </svg>
-      `);
+    let pearlsSvg = '';
+    for (let i = 0; i < 20; i++) {
+      const rad = i * (2 * Math.PI / 20);
+      const cx = (24 + 19.5 * Math.cos(rad)).toFixed(2);
+      const cy = (24 + 19.5 * Math.sin(rad)).toFixed(2);
+      pearlsSvg += `<circle cx="${cx}" cy="${cy}" r="1.3" fill="#ffffff" opacity="0.9"/>`;
     }
 
     return svgToDataUri(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="21" fill="#111827" stroke="${p}" stroke-width="1.6"/>
-        <polygon points="24,8 36,24 24,40 12,24" fill="${s}" opacity="0.8"/>
-        <circle cx="24" cy="24" r="3" fill="#ffffff"/>
+        <defs>
+          <radialGradient id="broochGem_${motif}" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="45%" stop-color="${p}"/>
+            <stop offset="100%" stop-color="${s}"/>
+          </radialGradient>
+          <linearGradient id="broochBezel_${motif}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="${p}" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="${s}" stop-opacity="0.7"/>
+          </linearGradient>
+        </defs>
+        <!-- Outer Micro-Pearl Filigree Bezel -->
+        <circle cx="24" cy="24" r="21.5" fill="#090d18" stroke="url(#broochBezel_${motif})" stroke-width="1.4"/>
+        ${pearlsSvg}
+        <circle cx="24" cy="24" r="17" fill="#0b1326" stroke="${p}" stroke-width="1.2"/>
+        <circle cx="24" cy="24" r="15" stroke="${s}" stroke-width="0.8" stroke-dasharray="2 1.5" fill="none" opacity="0.85"/>
+        <!-- Curved Glass Dome Specular Gloss Arc -->
+        <path d="M 12 17 C 18 11, 30 11, 36 17 C 29 14.5, 19 14.5, 12 17 Z" fill="#ffffff" opacity="0.5"/>
+        <!-- 8-Point Faceted Diamond Star Refraction -->
+        <g transform="translate(24, 24)">
+          <polygon points="0,-12 3,-4 0,0 -3,-4" fill="#ffffff" opacity="0.95"/>
+          <polygon points="12,0 4,3 0,0 4,-3" fill="${p}" opacity="0.85"/>
+          <polygon points="0,12 3,4 0,0 -3,4" fill="${s}" opacity="0.75"/>
+          <polygon points="-12,0 -4,3 0,0 -4,-3" fill="${p}" opacity="0.85"/>
+          <polygon points="8.5,-8.5 2.5,-3 0,0 3,-2.5" fill="#ffffff" opacity="0.8"/>
+          <polygon points="8.5,8.5 3,2.5 0,0 2.5,3" fill="${s}" opacity="0.7"/>
+          <polygon points="-8.5,8.5 -2.5,3 0,0 -3,2.5" fill="${s}" opacity="0.7"/>
+          <polygon points="-8.5,-8.5 -3,-2.5 0,0 -2.5,-3" fill="#ffffff" opacity="0.8"/>
+          <!-- Central Optical Diamond Flare -->
+          <circle cx="0" cy="0" r="2.8" fill="#ffffff"/>
+          <circle cx="0" cy="0" r="1.6" fill="${p}"/>
+        </g>
       </svg>
     `);
   }
@@ -1718,11 +1627,11 @@
             changed = true;
           }
         }
-        if (!p.accessories || p.accessories.version !== 3) {
+        if (!p.accessories || p.accessories.version !== 4) {
           const pPrimary = p.primary || '#38bdf8';
           const pSecondary = p.secondary || pPrimary;
           p.accessories = {
-            version: 3,
+            version: 4,
             crest: getThemeTopCrestSvg(p.motif, pPrimary, pSecondary),
             seal: getThemeWaxSealSvg(p.motif, pPrimary, pSecondary),
             charm: getThemeUserCharmSvg(p.motif, pPrimary, pSecondary),
@@ -1867,16 +1776,16 @@
 
     const accCrest = localStorage.getItem(STORAGE_ACC_CREST) !== null
       ? localStorage.getItem(STORAGE_ACC_CREST) === 'true'
-      : (accessoryMode === 'full' || accessoryMode === 'crown');
+      : (accessoryMode === 'full');
     const accCharm = localStorage.getItem(STORAGE_ACC_CHARM) !== null
       ? localStorage.getItem(STORAGE_ACC_CHARM) === 'true'
-      : (accessoryMode === 'full' || accessoryMode === 'jewelry');
+      : (accessoryMode === 'full' || accessoryMode === 'charms');
     const accCorners = localStorage.getItem(STORAGE_ACC_CORNERS) !== null
       ? localStorage.getItem(STORAGE_ACC_CORNERS) === 'true'
-      : (accessoryMode !== 'minimal');
+      : (accessoryMode === 'full' || accessoryMode === 'badges');
     const accSeal = localStorage.getItem(STORAGE_ACC_SEAL) !== null
       ? localStorage.getItem(STORAGE_ACC_SEAL) === 'true'
-      : (accessoryMode !== 'minimal');
+      : (accessoryMode === 'full' || accessoryMode === 'charms');
     const accRail = localStorage.getItem(STORAGE_ACC_RAIL) !== null
       ? localStorage.getItem(STORAGE_ACC_RAIL) === 'true'
       : true;
@@ -2209,7 +2118,7 @@
     }
     const cleanBadgeTitle = rawBadgeTitle.replace(/\s+/g, ' ').trim();
     const finalBadgeTitle = cleanBadgeTitle.length > 20 ? cleanBadgeTitle.slice(0, 18) + '…' : cleanBadgeTitle;
-    const estUserBadgeW = Math.max(120, 26 + Math.ceil(finalBadgeTitle.length * 6.8) + 22);
+    const estUserBadgeW = Math.max(130, 30 + Math.ceil(finalBadgeTitle.length * 7.8) + 28);
 
     let rawHeaderTitle = kitTheme.isCustom ? `✧ ${kitKey.toUpperCase()}` : '';
     if (!rawHeaderTitle) {
@@ -2221,7 +2130,7 @@
     }
     const cleanHdrTitle = rawHeaderTitle.replace(/\s+/g, ' ').trim();
     const finalHdrTitle = cleanHdrTitle.length > 24 ? cleanHdrTitle.slice(0, 22) + '…' : cleanHdrTitle;
-    const estAgentHeaderW = Math.max(140, 30 + Math.ceil(finalHdrTitle.length * 7.1) + 26);
+    const estAgentHeaderW = Math.max(160, 36 + Math.ceil(finalHdrTitle.length * 8.0) + 36);
 
     let rawComposerTitle = st.bubbleName || '';
     if (!rawComposerTitle) {
@@ -2234,7 +2143,7 @@
     }
     const cleanComposerTitle = rawComposerTitle.replace(/\s+/g, ' ').trim();
     const finalComposerTitle = cleanComposerTitle.length > 24 ? cleanComposerTitle.slice(0, 22) + '…' : cleanComposerTitle;
-    const estComposerBadgeW = Math.max(160, 32 + Math.ceil(finalComposerTitle.length * 7.2) + 28);
+    const estComposerBadgeW = Math.max(160, 36 + Math.ceil(finalComposerTitle.length * 8.0) + 36);
 
     const showCrest = Boolean(st.accCrest) && (isOrnamental || isThematic);
     const showCharm = Boolean(st.accCharm) && (isOrnamental || isThematic);
@@ -2247,6 +2156,42 @@
     const showFiligree = showCorners;
 
     const bubbleStickerCss = (isOrnamental || isThematic) ? `
+      @keyframes agy-charm-sway {
+        0%, 100% { transform: rotate(0deg); }
+        30% { transform: rotate(2.4deg); }
+        70% { transform: rotate(-1.8deg); }
+      }
+      @keyframes agy-seal-breathe {
+        0%, 100% {
+          transform: scale(1) rotate(0deg);
+          filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 5px ${kitGlow});
+        }
+        50% {
+          transform: scale(1.04) rotate(-0.8deg);
+          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 9px ${kitGlow});
+        }
+      }
+      @keyframes agy-brooch-gleam {
+        0%, 100% {
+          transform: scale(1) rotate(0deg);
+          filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 7px ${kitGlow});
+        }
+        50% {
+          transform: scale(1.05) rotate(1.2deg);
+          filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 13px ${kitGlow});
+        }
+      }
+      @keyframes agy-crest-aura {
+        0%, 100% {
+          transform: translateX(-50%) translateY(0);
+          filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 9px ${kitGlow});
+        }
+        50% {
+          transform: translateX(-50%) translateY(-2.5px);
+          filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 15px ${kitGlow});
+        }
+      }
+
       .group\\/user-input-step {
         padding-top: ${(showCharm || showUserBadge) ? '22px' : '6px'} !important;
       }
@@ -2265,9 +2210,14 @@
         z-index: 25;
         pointer-events: none !important;
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
+        transition: transform 0.2s ease, filter 0.2s ease;
         display: ${showUserBadge ? 'block' : 'none'} !important;
       }
-      /* Floating Thematic Hanging Talisman Charm */
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"])):hover::before {
+        transform: translateY(-1.5px);
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 9px ${kitGlow});
+      }
+      /* Floating Thematic Hanging Talisman Charm (Physics Pendulum Sway) */
       :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"]))::after {
         content: "";
         position: absolute;
@@ -2281,10 +2231,17 @@
         background-repeat: no-repeat;
         z-index: 26;
         pointer-events: none !important;
+        transform-origin: top center;
+        animation: agy-charm-sway 4.8s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
         filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 6px ${kitGlow});
+        transition: filter 0.25s ease;
         display: ${showCharm ? 'block' : 'none'} !important;
       }
-      /* 3D Wax Seal Stamp on User Bubble (Bottom Right) */
+      :is(.agy-user-bubble-frame, div:has(> [data-testid="user-message-bubble"])):hover::after {
+        animation-duration: 2.4s;
+        filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px ${kitGlow});
+      }
+      /* 3D Wax Seal Stamp on User Bubble (Tactile Breathing Glow) */
       :is(.agy-user-bubble, [data-testid="user-message-bubble"])::after {
         content: "";
         position: absolute;
@@ -2298,8 +2255,13 @@
         background-position: center;
         z-index: 28;
         pointer-events: none !important;
-        filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 6px ${kitGlow});
+        animation: agy-seal-breathe 5.2s ease-in-out infinite;
+        transition: transform 0.25s ease, filter 0.25s ease;
         display: ${showSeal ? 'block' : 'none'} !important;
+      }
+      :is(.agy-user-bubble, [data-testid="user-message-bubble"]):hover::after {
+        transform: scale(1.08) rotate(-2deg);
+        filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px ${kitGlow});
       }
     ` : `
       .group\\/user-input-step {
@@ -2345,11 +2307,14 @@
         background-position: top center;
         z-index: 35;
         pointer-events: none !important;
+        transform-origin: top center;
+        animation: agy-charm-sway 4.8s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
         filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${bubbleTheme.glow});
-        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: filter 0.25s ease;
       }
       .surface-composer:hover::after {
-        transform: translateY(-2px) rotate(2deg);
+        animation-duration: 2.4s;
+        filter: drop-shadow(0 5px 16px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px ${bubbleTheme.glow});
       }
       /* Top-right crest & corner filigree on composer card */
       .surface-composer-card::before {
@@ -2525,16 +2490,20 @@
         background-position: left center;
         pointer-events: none !important;
         filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px ${kitGlow});
+        transition: transform 0.2s ease, filter 0.2s ease;
         z-index: 10;
         display: ${showAgentHeader ? 'block' : 'none'} !important;
       }
-      /* Top Crown Crest (Centered symmetrically on top border) */
+      .agy-shell [data-testid="agent-response"]:hover::after {
+        transform: translateY(-1.5px);
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 9px ${kitGlow});
+      }
+      /* Top Crown Crest (Celestial Breathing Aura) */
       .agy-shell [data-testid="agent-response"] > div:not(.sr-only):first-of-type::after {
         content: "";
         position: absolute;
         top: -18px;
         left: 50%;
-        transform: translateX(-50%);
         width: 220px;
         height: 32px;
         background-image: url("${themeTopCrestUrl}");
@@ -2542,11 +2511,16 @@
         background-repeat: no-repeat;
         background-position: center;
         pointer-events: none !important;
-        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px ${kitGlow});
+        animation: agy-crest-aura 6s ease-in-out infinite;
+        transition: filter 0.25s ease;
         z-index: 15;
         display: ${showCrest ? 'block' : 'none'} !important;
       }
-      /* Thematic Corner Brooch / Medallion */
+      .agy-shell [data-testid="agent-response"]:hover > div:not(.sr-only):first-of-type::after {
+        transform: translateX(-50%) translateY(-3.5px) scale(1.02);
+        filter: drop-shadow(0 5px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 16px ${kitGlow});
+      }
+      /* Thematic Corner Brooch / Medallion (Faceted Star Gleam) */
       .agy-shell [data-testid="agent-response"] > div:not(.sr-only):first-of-type::before {
         content: "";
         position: absolute;
@@ -2559,9 +2533,14 @@
         background-repeat: no-repeat;
         background-position: center;
         pointer-events: none !important;
-        filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px ${kitGlow});
+        animation: agy-brooch-gleam 5s ease-in-out infinite;
+        transition: transform 0.25s ease, filter 0.25s ease;
         z-index: 12;
         display: ${showAgentBrooch ? 'block' : 'none'} !important;
+      }
+      .agy-shell [data-testid="agent-response"]:hover > div:not(.sr-only):first-of-type::before {
+        transform: scale(1.12) rotate(4deg);
+        filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px ${kitGlow});
       }
       .agy-shell [data-testid="agent-response"] pre {
         border-left: 2.5px solid ${kitPrimary} !important;
@@ -3807,7 +3786,7 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
-              version: 3,
+              version: 4,
               crest: getThemeTopCrestSvg(motif, p, s),
               seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
@@ -3860,7 +3839,7 @@
             const p = palette.primary || '#38bdf8';
             const s = palette.secondary || p;
             const newAccessories = {
-              version: 3,
+              version: 4,
               crest: getThemeTopCrestSvg(motif, p, s),
               seal: getThemeWaxSealSvg(motif, p, s),
               charm: getThemeUserCharmSvg(motif, p, s),
@@ -4080,17 +4059,17 @@
           overrides.accCorners = true;
           overrides.accSeal = true;
           overrides.accRail = true;
-        } else if (mode === 'jewelry') {
+        } else if (mode === 'charms') {
           overrides.accCrest = false;
           overrides.accCharm = true;
-          overrides.accCorners = true;
+          overrides.accCorners = false;
           overrides.accSeal = true;
           overrides.accRail = true;
-        } else if (mode === 'crown') {
-          overrides.accCrest = true;
+        } else if (mode === 'badges') {
+          overrides.accCrest = false;
           overrides.accCharm = false;
           overrides.accCorners = true;
-          overrides.accSeal = true;
+          overrides.accSeal = false;
           overrides.accRail = true;
         } else if (mode === 'minimal') {
           overrides.accCrest = false;
